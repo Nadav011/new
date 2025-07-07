@@ -9,10 +9,11 @@ document.addEventListener("DOMContentLoaded", function() {
     console.log('openSidebar called'); // Debug
     const sidebar = getSidebar();
     if (!sidebar) {
-      console.log('Sidebar not found!'); // Debug
+      console.error('Sidebar not found!'); // Debug
       return;
     }
     sidebar.classList.add('mobile-open');
+    sidebar.style.border = '3px solid #1976d2'; // Debug: make visible
     let backdrop = getBackdrop();
     if (!backdrop) {
       backdrop = document.createElement('div');
@@ -42,10 +43,10 @@ document.addEventListener("DOMContentLoaded", function() {
   }
   // Toggle on button click
   function handleMenuToggle(e) {
-    console.log('Menu button event:', e.type); // Debug
+    console.log('Menu button tapped:', e.type); // Debug
     const sidebar = getSidebar();
     if (!sidebar) {
-      console.log('Sidebar not found in handler!'); // Debug
+      console.error('Sidebar not found in handler!'); // Debug
       return;
     }
     if (sidebar.classList.contains('mobile-open')) closeSidebar();
@@ -62,5 +63,5 @@ document.addEventListener("DOMContentLoaded", function() {
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeSidebar();
   });
-  console.log(getComputedStyle(document.querySelector('.sidebar')).transform);
+  window.closeSidebar = closeSidebar;
 }); 

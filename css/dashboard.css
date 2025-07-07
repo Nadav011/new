@@ -3,12 +3,25 @@ body {
   font-family: 'Heebo', sans-serif;
   background-color: #f7f8fa;
   display: flex;
+  position: relative;
+}
+
+.sidebar {
+  width: 200px;
+  position: fixed;
+  right: 0;
+  top: 0;
+  height: 100vh;
+  z-index: 1000;
+  background: #fff;
+  box-sizing: border-box;
 }
 
 .main {
-  flex: 1;
+  margin-right: 200px !important;
+  min-width: 0;
   padding: 48px 48px 32px 48px;
-  margin-right: 240px;
+  flex: 1;
   min-height: 100vh;
 }
 

@@ -10,19 +10,17 @@
 <link href="css/dashboard.css" rel="stylesheet"/>
 </head>
 <body>
-  <button id="mobile-menu-btn" aria-label="תפריט"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
-  <!-- Sidebar (loaded via JavaScript) -->
-  <div id="sidebar-container"></div>
-  <script>
-    fetch("sidebar.html")
-      .then(res => res.text())
-      .then(data => {
-        document.getElementById("sidebar-container").innerHTML = data;
-        var script = document.createElement('script');
-        script.src = 'js/mobile-menu.js';
-        document.body.appendChild(script);
-      });
-  </script>
+  <!-- Sidebar: always visible, no close button -->
+  <div class="sidebar">
+    <h3>המקסיקני | בקרה</h3>
+    <ul>
+      <li><a href="dashboard.html">📊 לוח בקרה</a></li>
+      <li><a href="branches.html">🏪 סניפים</a></li>
+      <li><a href="reviews.html">📝 ביקורות</a></li>
+      <li><a href="add-review.html">➕ הוספת ביקורת</a></li>
+      <li><a href="surveys.html">📋 ניהול שאלונים</a></li>
+    </ul>
+  </div>
   <!-- Main Content -->
   <div class="main">
 <div class="dashboard-header">לוח בקרה</div>
