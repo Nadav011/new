@@ -73,6 +73,20 @@
 
 /* Backdrop and body scroll lock are not needed */
 
-.main {
-  margin-right: 200px !important;
+@media (max-width: 900px) {
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    right: auto;
+    top: auto;
+    margin-bottom: 18px;
+    box-shadow: none;
+    border-radius: 0;
+    z-index: auto;
+    transform: none;
+    transition: none;
+    display: flex;
+    flex-direction: column;
+  }
 }

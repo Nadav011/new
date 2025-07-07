@@ -1,3 +1,5 @@
+* { box-sizing: border-box; }
+
 body {
   font-family: 'Heebo', sans-serif;
   background: #f7f8fa;
@@ -96,24 +98,10 @@ body {
   color: #888;
 }
 
-@media (max-width: 900px) {
-  .main {
-    margin-right: 0;
-    padding: 24px 8px 16px 8px;
-  }
-  .header {
-    flex-direction: column;
-    gap: 18px;
-    align-items: flex-start;
-  }
-  .branches-table th, .branches-table td {
-    padding: 12px 8px;
-  }
-}
-
 @media (max-width: 600px) {
   .main {
     padding: 8px 2px 8px 2px;
+    width: 100%;
   }
   .header h2 {
     font-size: 20px;
@@ -131,6 +119,10 @@ body {
   }
   .branch-sub {
     font-size: 11px;
+  }
+  .branches-table {
+    min-width: 600px;
+    font-size: 12px;
   }
 }
 

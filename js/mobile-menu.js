@@ -1,67 +1,54 @@
+// Sidebar toggle removed: sidebar is hidden on mobile by CSS, no JS needed.
+
 document.addEventListener("DOMContentLoaded", function() {
-  function getSidebar() {
-    return document.querySelector('.sidebar');
-  }
-  function getBackdrop() {
-    return document.querySelector('.sidebar-backdrop');
-  }
+  var sidebar = document.querySelector('.sidebar');
+  var menuBtn = document.getElementById('mobile-menu-btn');
+  var closeBtn = document.querySelector('.sidebar-close-btn');
+  var backdrop = document.querySelector('.sidebar-backdrop');
+
   function openSidebar() {
-    console.log('openSidebar called'); // Debug
-    const sidebar = getSidebar();
-    if (!sidebar) {
-      console.error('Sidebar not found!'); // Debug
-      return;
-    }
-    sidebar.classList.add('mobile-open');
-    sidebar.style.border = '3px solid #1976d2'; // Debug: make visible
-    let backdrop = getBackdrop();
-    if (!backdrop) {
-      backdrop = document.createElement('div');
-      backdrop.className = 'sidebar-backdrop';
-      sidebar.parentNode.insertBefore(backdrop, sidebar.nextSibling);
-    }
-    backdrop.style.display = 'block';
-    setTimeout(() => { backdrop.style.opacity = 1; }, 10);
-    backdrop.onclick = closeSidebar;
-    document.body.style.overflow = 'hidden';
-    // Trap focus
-    sidebar.setAttribute('tabindex', '-1');
-    sidebar.focus();
+    if (sidebar) sidebar.classList.add('mobile-open');
+    if (backdrop) backdrop.style.display = 'block';
   }
   function closeSidebar() {
-    const sidebar = getSidebar();
-    if (!sidebar) return;
-    sidebar.classList.remove('mobile-open');
-    const backdrop = getBackdrop();
-    if (backdrop) {
-      backdrop.style.opacity = 0;
-      setTimeout(() => { backdrop.style.display = 'none'; }, 200);
-    }
-    document.body.style.overflow = '';
-    // Remove focus trap
-    sidebar.removeAttribute('tabindex');
+    if (sidebar) sidebar.classList.remove('mobile-open');
+    if (backdrop) backdrop.style.display = 'none';
   }
-  // Toggle on button click
-  function handleMenuToggle(e) {
-    console.log('Menu button tapped:', e.type); // Debug
-    const sidebar = getSidebar();
-    if (!sidebar) {
-      console.error('Sidebar not found in handler!'); // Debug
-      return;
-    }
-    if (sidebar.classList.contains('mobile-open')) closeSidebar();
-    else openSidebar();
-  }
-  var menuBtn = document.getElementById('mobile-menu-btn');
+
+  // Toggle button
   if (menuBtn) {
-    menuBtn.addEventListener('click', handleMenuToggle);
-    menuBtn.addEventListener('touchstart', handleMenuToggle, { passive: false });
-  } else {
-    console.log('Menu button not found!'); // Debug
+    menuBtn.addEventListener('click', function(e) {
+      openSidebar();
+    });
   }
-  // Close on Escape
-  document.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') closeSidebar();
-  });
+  // Close button
+  if (closeBtn) {
+    closeBtn.addEventListener('click', function(e) {
+      closeSidebar();
+    });
+  }
+  // Backdrop
+  if (backdrop) {
+    backdrop.addEventListener('click', function(e) {
+      closeSidebar();
+    });
+  }
+
+  // Hide sidebar and toggle button on desktop
+  function handleResize() {
+    if (window.innerWidth > 900) {
+      if (sidebar) sidebar.classList.remove('mobile-open');
+      if (backdrop) backdrop.style.display = 'none';
+      if (menuBtn) menuBtn.style.display = 'none';
+      if (closeBtn) closeBtn.style.display = 'none';
+    } else {
+      if (menuBtn) menuBtn.style.display = 'flex';
+      if (closeBtn) closeBtn.style.display = 'flex';
+    }
+  }
+  window.addEventListener('resize', handleResize);
+  handleResize();
+
+  // Expose for inline close button
   window.closeSidebar = closeSidebar;
 }); 

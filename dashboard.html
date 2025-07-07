@@ -10,8 +10,11 @@
 <link href="css/dashboard.css" rel="stylesheet"/>
 </head>
 <body>
-  <!-- Sidebar: always visible, no close button -->
+  <button id="mobile-menu-btn" aria-label="תפריט" style="display:none;position:fixed;top:16px;right:16px;z-index:2001;background:#fff;border:none;border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(0,0,0,0.1);cursor:pointer;min-width:48px;min-height:48px;">
+    <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg>
+  </button>
   <div class="sidebar">
+    <button class="sidebar-close-btn" aria-label="סגור תפריט" style="display:none;position:absolute;top:12px;left:12px;width:36px;height:36px;background:#f5f5f5;border:none;border-radius:50%;font-size:22px;color:#1976d2;z-index:2200;cursor:pointer;">×</button>
     <h3>המקסיקני | בקרה</h3>
     <ul>
       <li><a href="dashboard.html">📊 לוח בקרה</a></li>
@@ -21,6 +24,7 @@
       <li><a href="surveys.html">📋 ניהול שאלונים</a></li>
     </ul>
   </div>
+  <div class="sidebar-backdrop" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.4);z-index:1999;transition:opacity 0.3s;backdrop-filter:blur(2px);"></div>
   <!-- Main Content -->
   <div class="main">
 <div class="dashboard-header">לוח בקרה</div>

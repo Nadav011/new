@@ -1,3 +1,5 @@
+* { box-sizing: border-box; }
+
 body {
   font-family: 'Heebo', sans-serif;
   background: #f8f9fa;
@@ -108,23 +110,10 @@ body {
   margin-right: 240px;
 }
 
-@media (max-width: 900px) {
-  .main-content {
-    padding: 1rem 0.5rem;
-  }
-  .survey-card {
-    padding: 18px 6px 18px 6px;
-    border-radius: 14px;
-  }
-  .survey-grid {
-    grid-template-columns: 1fr;
-    gap: 16px;
-  }
-}
-
 @media (max-width: 600px) {
   .main-content {
     padding: 8px 2px 8px 2px;
+    width: 100%;
   }
   .survey-card {
     padding: 12px 4px 12px 4px;
