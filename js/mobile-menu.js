@@ -6,8 +6,12 @@ document.addEventListener("DOMContentLoaded", function() {
     return document.querySelector('.sidebar-backdrop');
   }
   function openSidebar() {
+    console.log('openSidebar called'); // Debug
     const sidebar = getSidebar();
-    if (!sidebar) return;
+    if (!sidebar) {
+      console.log('Sidebar not found!'); // Debug
+      return;
+    }
     sidebar.classList.add('mobile-open');
     let backdrop = getBackdrop();
     if (!backdrop) {
@@ -37,15 +41,26 @@ document.addEventListener("DOMContentLoaded", function() {
     sidebar.removeAttribute('tabindex');
   }
   // Toggle on button click
-  document.addEventListener('click', function(e) {
-    if (e.target && e.target.id === 'mobile-menu-btn') {
-      const sidebar = getSidebar();
-      if (sidebar && sidebar.classList.contains('mobile-open')) closeSidebar();
-      else openSidebar();
+  function handleMenuToggle(e) {
+    console.log('Menu button event:', e.type); // Debug
+    const sidebar = getSidebar();
+    if (!sidebar) {
+      console.log('Sidebar not found in handler!'); // Debug
+      return;
     }
-  });
+    if (sidebar.classList.contains('mobile-open')) closeSidebar();
+    else openSidebar();
+  }
+  var menuBtn = document.getElementById('mobile-menu-btn');
+  if (menuBtn) {
+    menuBtn.addEventListener('click', handleMenuToggle);
+    menuBtn.addEventListener('touchstart', handleMenuToggle, { passive: false });
+  } else {
+    console.log('Menu button not found!'); // Debug
+  }
   // Close on Escape
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') closeSidebar();
   });
+  console.log(getComputedStyle(document.querySelector('.sidebar')).transform);
 }); 
