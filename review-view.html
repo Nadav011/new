@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>צפייה בביקורת - המקסיקני</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/review-view.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <a href="reviews.html" class="back-link">⬅ חזרה לרשימת ביקורות</a>
+        <h1 class="page-title">צפייה בביקורת</h1>
+        <p class="page-description">פרטי הביקורת המלאים</p>
+      </div>
+      <div class="header-actions">
+        <button class="btn btn-secondary" onclick="printReview()">
+          <span class="print-icon">🖨️</span> הדפסה
+        </button>
+        <button class="btn btn-secondary" onclick="saveAsPDF()">
+          <span class="pdf-icon">📄</span> שמור כקובץ PDF
+        </button>
+        <button class="btn btn-primary" onclick="editReview()">
+          <span class="edit-icon">✏️</span> עריכה
+        </button>
+      </div>
+    </div>
+
+    <div class="review-container">
+      <!-- Branch Information Section -->
+      <div class="review-section branch-info">
+        <div class="section-header">
+          <h2 class="section-title">פרטי הסניף</h2>
+          <div class="section-icon">🏢</div>
+        </div>
+        <div class="branch-details">
+          <div class="branch-main">
+            <h3 class="branch-name" id="branchName"></h3>
+            <p class="branch-address" id="branchAddress"></p>
+          </div>
+          <div class="branch-manager">
+            <div class="manager-info">
+              <span class="manager-label">מנהל הסניף:</span>
+              <span class="manager-name" id="managerName"></span>
+            </div>
+            <div class="manager-info">
+              <span class="manager-label">טלפון:</span>
+              <span class="manager-phone" id="managerPhone"></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Review Metadata Section -->
+      <div class="review-section review-meta">
+        <div class="section-header">
+          <h2 class="section-title">פרטי הביקורת</h2>
+          <div class="section-icon">📋</div>
+        </div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">תאריך ביקורת:</span>
+            <span class="meta-value" id="reviewDate"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">מבקר:</span>
+            <span class="meta-value" id="reviewerName"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">סוג ביקורת:</span>
+            <span class="meta-value" id="reviewType"></span>
+          </div>
+          <div class="meta-item">
+            <span class="meta-label">ציון כולל:</span>
+            <span class="meta-value score" id="totalScore"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Questions and Answers Section -->
+      <div class="review-section questions-section">
+        <div class="section-header">
+          <h2 class="section-title">שאלות ותשובות</h2>
+          <div class="section-icon">❓</div>
+        </div>
+        <div id="questionsContainer" class="questions-container">
+          <!-- Questions will be loaded here -->
+        </div>
+      </div>
+
+      <!-- Summary Section -->
+      <div class="review-section summary-section">
+        <div class="section-header">
+          <h2 class="section-title">סיכום הביקורת</h2>
+          <div class="section-icon">📊</div>
+        </div>
+        <div class="summary-content">
+          <div class="summary-item">
+            <span class="summary-label">סיכום מנהל:</span>
+            <p class="summary-text" id="managerSummary"></p>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">נקודות לשימור:</span>
+            <p class="summary-text" id="keyStrengths"></p>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">נקודות לשיפור:</span>
+            <p class="summary-text" id="areasForImprovement"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/review-view.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html> 

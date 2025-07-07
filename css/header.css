@@ -310,6 +310,17 @@ html {
   max-width: 100%;
 }
 
+/* Action buttons container styling */
+.action-btns {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  white-space: nowrap;
+  text-align: center;
+}
+
 /* Desktop table styles */
 table {
   width: 100%;
@@ -420,6 +431,12 @@ table tbody tr:last-child td {
 .btn-icon,
 .btn-view,
 .btn-edit,
+.btn-delete,
+button.btn-icon,
+button.btn-view,
+button.btn-edit,
+button.btn-delete,
+.btn-edit,
 .btn-delete {
   background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
   color: #374151;
@@ -438,11 +455,25 @@ table tbody tr:last-child td {
   letter-spacing: -0.01em;
   min-height: 36px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  box-sizing: border-box;
+  margin: 0;
+  line-height: 1;
+  width: auto;
+  max-width: none;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .action-btn:hover,
 .btn-icon:hover,
 .btn-view:hover,
+.btn-edit:hover,
+.btn-delete:hover,
+button.btn-icon:hover,
+button.btn-view:hover,
+button.btn-edit:hover,
+button.btn-delete:hover,
 .btn-edit:hover,
 .btn-delete:hover {
   background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
@@ -456,41 +487,53 @@ table tbody tr:last-child td {
 .btn-icon:active,
 .btn-view:active,
 .btn-edit:active,
+.btn-delete:active,
+button.btn-icon:active,
+button.btn-view:active,
+button.btn-edit:active,
+button.btn-delete:active,
+.btn-edit:active,
 .btn-delete:active {
   transform: translateY(0);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 /* Specific button styles */
-.btn-view {
+.btn-view,
+button.btn-view {
   background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
   color: #1e40af;
   border-color: rgba(30, 64, 175, 0.2);
 }
 
-.btn-view:hover {
+.btn-view:hover,
+button.btn-view:hover {
   background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
   color: #1e40af;
 }
 
-.btn-edit {
+.btn-edit,
+button.btn-edit {
   background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
   color: #d97706;
   border-color: rgba(217, 119, 6, 0.2);
 }
 
-.btn-edit:hover {
+.btn-edit:hover,
+button.btn-edit:hover {
   background: linear-gradient(135deg, #fde68a 0%, #fbbf24 100%);
   color: #d97706;
 }
 
-.btn-delete {
+.btn-delete,
+button.btn-delete {
   background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
   color: #dc2626;
   border-color: rgba(220, 38, 38, 0.2);
 }
 
-.btn-delete:hover {
+.btn-delete:hover,
+button.btn-delete:hover {
   background: linear-gradient(135deg, #fecaca 0%, #fca5a5 100%);
   color: #dc2626;
 }
@@ -501,11 +544,28 @@ table tbody tr:last-child td {
   .btn-icon,
   .btn-view,
   .btn-edit,
+  .btn-delete,
+  button.btn-icon,
+  button.btn-view,
+  button.btn-edit,
+  button.btn-delete,
+  .btn-edit,
   .btn-delete {
     padding: 6px 12px;
     font-size: 13px;
     min-height: 32px;
     gap: 4px;
+    width: auto;
+    max-width: none;
+  }
+  
+  /* Ensure action buttons container is properly sized */
+  .action-btns {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
   }
 }
 
@@ -514,10 +574,27 @@ table tbody tr:last-child td {
   .btn-icon,
   .btn-view,
   .btn-edit,
+  .btn-delete,
+  button.btn-icon,
+  button.btn-view,
+  button.btn-edit,
+  button.btn-delete,
+  .btn-edit,
   .btn-delete {
     padding: 5px 10px;
     font-size: 12px;
     min-height: 30px;
     gap: 3px;
+    width: auto;
+    max-width: none;
+  }
+  
+  /* Ensure action buttons container is properly sized on mobile */
+  .action-btns {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
   }
 } 

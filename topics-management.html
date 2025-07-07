@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ניהול נושאים - המקסיקני</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/topics-management.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header">
+      <div class="header-left">
+        <a href="questions-setup.html" class="back-link">⬅ חזרה להגדרת שאלות</a>
+        <h1 class="page-title">ניהול נושאים</h1>
+        <p class="page-description">הוסף, ערוך ומחק נושאים עבור השאלות</p>
+      </div>
+    </div>
+
+    <div class="topics-container">
+      <div class="add-topic-section">
+        <h2 class="section-title">הוסף נושא חדש</h2>
+        <div class="add-topic-form">
+          <div class="input-group">
+            <input type="text" id="newTopicName" placeholder="הכנס שם נושא חדש" maxlength="50">
+            <button type="button" class="btn btn-primary" onclick="addTopic()">
+              <span class="plus-icon">＋</span> הוסף נושא
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="topics-list-section">
+        <h2 class="section-title">נושאים קיימים</h2>
+        <div id="topicsList" class="topics-grid">
+          <!-- Topics will be loaded here -->
+        </div>
+        
+        <div id="emptyTopicsState" class="empty-state">
+          <div class="empty-icon">📋</div>
+          <h3 class="empty-title">לא נוספו נושאים עדיין</h3>
+          <p class="empty-description">הוסף נושאים ראשונים כדי להתחיל</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/topics-management.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html> 

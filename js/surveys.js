@@ -35,6 +35,11 @@ function renderSurveys() {
     `;
     container.appendChild(card);
   });
+  
+  // Small delay to ensure CSS is applied
+  setTimeout(() => {
+    // Any additional initialization can go here
+  }, 10);
 }
 
 function deleteSurvey(index) {

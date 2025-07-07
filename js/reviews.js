@@ -43,9 +43,14 @@ document.addEventListener("DOMContentLoaded", () => {
     filteredReviews.forEach((review, index) => {
       const row = document.createElement("tr");
 
+      // Use new scoring system
+      const score = review.averageScore || review.score || 0;
+      const answeredQuestions = review.answeredQuestions || 0;
+      const totalQuestions = review.totalQuestions || 0;
+      
       let scoreColor = "green";
-      if (review.score <= 3) scoreColor = "red";
-      else if (review.score <= 7) scoreColor = "yellow";
+      if (score <= 3) scoreColor = "red";
+      else if (score <= 7) scoreColor = "yellow";
 
       let typeColor = "lightgreen";
       if (review.type?.includes("משלוח")) typeColor = "yellow";
@@ -60,7 +65,12 @@ document.addEventListener("DOMContentLoaded", () => {
         </td>
         <td data-label="סוג ביקורת"><span class="badge ${typeColor}">${review.type || ''}</span></td>
         <td data-label="מבקר">${review.reviewer || ''}</td>
-        <td data-label="ציון"><span class="badge ${scoreColor}">${review.score || 0}/10</span></td>
+        <td data-label="ציון">
+          <span class="badge ${scoreColor}">${score.toFixed(1)}/10</span>
+          <div class="score-details" style="font-size: 11px; color: #666; margin-top: 2px;">
+            ${answeredQuestions}/${totalQuestions} שאלות
+          </div>
+        </td>
         <td data-label="פעולות" class="actions">
           <button class="btn btn-icon btn-view view" data-index="${index}">👁️ צפייה</button>
           <button class="btn btn-icon btn-edit edit" data-index="${index}">✏️ עריכה</button>
@@ -70,8 +80,10 @@ document.addEventListener("DOMContentLoaded", () => {
       tableBody.appendChild(row);
     });
 
-    // Add event listeners for action buttons
-    addActionButtonListeners();
+    // Add event listeners for action buttons with small delay to ensure CSS is applied
+    setTimeout(() => {
+      addActionButtonListeners();
+    }, 10);
   }
 
   function addActionButtonListeners() {

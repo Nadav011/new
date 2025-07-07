@@ -36,19 +36,43 @@ function updateBranchPerformanceStats(reviews, branches) {
   // Group reviews by branch and calculate average scores
   const branchScores = {};
   reviews.forEach(review => {
-    if (review.branch && review.score) {
+    if (review.branch) {
       if (!branchScores[review.branch]) {
-        branchScores[review.branch] = { total: 0, count: 0 };
+        branchScores[review.branch] = { total: 0, count: 0, scores: [] };
       }
-      branchScores[review.branch].total += review.score;
-      branchScores[review.branch].count += 1;
+      
+      // Calculate review score based on questions
+      let reviewScore = 0;
+      let questionCount = 0;
+      
+      if (review.questions && review.questions.length > 0) {
+        review.questions.forEach(question => {
+          if (question.score && !isNaN(question.score)) {
+            reviewScore += parseInt(question.score);
+            questionCount++;
+          }
+        });
+      }
+      
+      if (questionCount > 0) {
+        const averageScore = reviewScore / questionCount;
+        branchScores[review.branch].total += averageScore;
+        branchScores[review.branch].count += 1;
+        branchScores[review.branch].scores.push(averageScore);
+      } else if (review.averageScore) {
+        // Use pre-calculated average score if available
+        branchScores[review.branch].total += review.averageScore;
+        branchScores[review.branch].count += 1;
+        branchScores[review.branch].scores.push(review.averageScore);
+      }
     }
   });
   
   // Calculate averages and find top/bottom performers
   const branchAverages = Object.keys(branchScores).map(branch => ({
     name: branch,
-    average: branchScores[branch].total / branchScores[branch].count
+    average: branchScores[branch].total / branchScores[branch].count,
+    scores: branchScores[branch].scores
   }));
   
   if (branchAverages.length > 0) {
@@ -64,11 +88,18 @@ function updateBranchPerformanceStats(reviews, branches) {
       const valueElement = card.querySelector(".stat-value");
       
       if (title === "סניף מצטיין") {
-        valueElement.innerText = topPerformer.name;
+        valueElement.innerText = `${topPerformer.name} (${topPerformer.average.toFixed(1)})`;
+        valueElement.style.color = '#2e7d32';
+        valueElement.style.fontWeight = '600';
       } else if (title === "סניף דורש שיפור") {
-        valueElement.innerText = needsImprovement.name;
+        valueElement.innerText = `${needsImprovement.name} (${needsImprovement.average.toFixed(1)})`;
+        valueElement.style.color = '#d32f2f';
+        valueElement.style.fontWeight = '600';
       }
     });
+    
+    // Update branch rankings section
+    updateBranchRankingsWithScores(branchAverages);
   }
 }
 
@@ -233,6 +264,110 @@ function viewReviewDetails(reviewIndex) {
 }
 
 // Update branch rankings section
+function updateBranchRankingsWithScores(branchAverages) {
+  const rankingsContainer = document.querySelector('.box:first-child');
+  
+  if (branchAverages.length === 0) {
+    rankingsContainer.innerHTML = `
+      <div class="section-title">דירוג סניפים (ציון ממוצע)</div>
+      <div class="list-empty">אין נתונים להצגה</div>
+    `;
+    return;
+  }
+  
+  let rankingsHTML = `
+    <div class="section-title">דירוג סניפים (ציון ממוצע)</div>
+    <div class="branch-rankings-table" style="
+      width: 100%;
+      border-collapse: collapse;
+      background-color: #fff;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    ">
+  `;
+  
+  // Add table header
+  rankingsHTML += `
+    <div style="
+      background-color: #f7f7f7;
+      padding: 12px 16px;
+      font-weight: bold;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      display: grid;
+      grid-template-columns: 40px 1fr 80px;
+      gap: 16px;
+      align-items: center;
+    ">
+      <div style="text-align: center;">דירוג</div>
+      <div>שם הסניף</div>
+      <div style="text-align: center;">ציון ממוצע</div>
+    </div>
+  `;
+  
+  // Add branch rows
+  branchAverages.forEach((branch, index) => {
+    const rank = index + 1;
+    const isTop3 = rank <= 3;
+    const isBottom3 = rank > branchAverages.length - 3;
+    
+    let rankColor = '#666';
+    let backgroundColor = '#fff';
+    
+    if (isTop3) {
+      rankColor = '#2e7d32';
+      backgroundColor = '#f0f8f0';
+    } else if (isBottom3) {
+      rankColor = '#d32f2f';
+      backgroundColor = '#fff5f5';
+    }
+    
+    let scoreColor = '#666';
+    if (branch.average >= 8) scoreColor = '#2e7d32';
+    else if (branch.average >= 6) scoreColor = '#f57c00';
+    else scoreColor = '#d32f2f';
+    
+    rankingsHTML += `
+      <div class="branch-ranking-row" 
+           style="
+             padding: 12px 16px;
+             border-bottom: 1px solid #eee;
+             display: grid;
+             grid-template-columns: 40px 1fr 80px;
+             gap: 16px;
+             align-items: center;
+             background-color: ${backgroundColor};
+             transition: background-color 0.2s ease;
+           "
+           onmouseover="this.style.backgroundColor='${backgroundColor === '#fff' ? '#f8f9fa' : backgroundColor === '#f0f8f0' ? '#e8f5e8' : '#ffe8e8'}'"
+           onmouseout="this.style.backgroundColor='${backgroundColor}'">
+        <div style="text-align: center; font-weight: bold; color: ${rankColor};">
+          ${rank}
+        </div>
+        <div style="font-weight: 600; color: #333;">
+          ${branch.name}
+        </div>
+        <div style="text-align: center;">
+          <span style="
+            padding: 6px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            display: inline-block;
+            background-color: ${scoreColor === '#2e7d32' ? '#e0f8e9' : scoreColor === '#f57c00' ? '#fff3e0' : '#fdecea'};
+            color: ${scoreColor};
+          ">${branch.average.toFixed(1)}/10</span>
+        </div>
+      </div>
+    `;
+  });
+  
+  rankingsHTML += '</div>';
+  
+  rankingsContainer.innerHTML = rankingsHTML;
+}
+
 function updateBranchRankings() {
   const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
   const branchesContainer = document.querySelector('.box:first-child');

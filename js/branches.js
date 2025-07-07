@@ -76,7 +76,11 @@ function addBranchToTable(branch, index) {
     </td>
   `;
   table.appendChild(row);
-  attachActions();
+  
+  // Small delay to ensure CSS is applied
+  setTimeout(() => {
+    attachActions();
+  }, 10);
 }
 
 // טעינה ראשונית של הסניפים
@@ -100,7 +104,6 @@ function openBranchPopup(branch = null, index = null) {
       setTimeout(() => { modal.style.transition = 'opacity 0.22s'; modal.style.opacity = 1; }, 10);
 
       const saveBtn = modal.querySelector('[data-save]');
-      const saveExitBtn = modal.querySelector('[data-save-exit]');
       const cancelBtn = modal.querySelector('[data-cancel]');
       const form = modal.querySelector("#branchForm");
 
@@ -117,7 +120,7 @@ function openBranchPopup(branch = null, index = null) {
         form.reset();
       }
 
-      function saveDataAndMaybeClose(closeAfter) {
+      function saveDataAndClose() {
         const inputs = form.querySelectorAll("input[name], select[name]");
         const data = {};
         inputs.forEach(input => {
@@ -148,14 +151,20 @@ function openBranchPopup(branch = null, index = null) {
           console.error('branch-list element not found!');
         }
         
-        if (closeAfter) closeModal();
+        // Show success message and close popup
+        const saveBtn = modal.querySelector('[data-save]');
+        const originalText = saveBtn.textContent;
+        saveBtn.textContent = 'נשמר בהצלחה!';
+        saveBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+        saveBtn.disabled = true;
+        
+        setTimeout(() => {
+          closeModal();
+        }, 1000);
       }
 
       if (saveBtn) {
-        saveBtn.addEventListener("click", () => saveDataAndMaybeClose(false));
-      }
-      if (saveExitBtn) {
-        saveExitBtn.addEventListener("click", () => saveDataAndMaybeClose(true));
+        saveBtn.addEventListener("click", saveDataAndClose);
       }
       if (cancelBtn) {
         cancelBtn.addEventListener("click", closeModal);

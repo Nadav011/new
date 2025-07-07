@@ -44,31 +44,7 @@ body {
   text-decoration: none;
 }
 
-.btn-edit {
-  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
-  color: white;
-  border: none;
-  padding: 12px 24px;
-  border-radius: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
-  font-family: inherit;
-  letter-spacing: -0.01em;
-}
-
-.btn-edit:hover {
-  background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
-}
-
-.btn-edit:active {
-  transform: translateY(0);
-  box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
-}
+/* Button styles use global styles from header.css */
 
 /* Branch Header */
 .branch-header {
@@ -251,11 +227,7 @@ body {
     justify-content: center;
   }
   
-  .btn-edit {
-    width: 100%;
-    justify-content: center;
-    padding: 14px 24px;
-  }
+  /* Button styles use global responsive styles */
   
   .branch-header {
     padding: 32px 20px;
@@ -385,7 +357,6 @@ body {
 
 /* Focus styles for accessibility */
 .back-link:focus,
-.btn-edit:focus,
 .stat-box:focus,
 .branch-details-list li:focus {
   outline: 2px solid #1976d2;

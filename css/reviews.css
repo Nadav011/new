@@ -321,11 +321,7 @@ body {
     padding: 12px 16px;
   }
   
-  .action-btn {
-    padding: 6px 10px;
-    font-size: 13px;
-    margin: 0 2px;
-  }
+  /* Action buttons use global responsive styles */
 }
 
 @media (max-width: 480px) {
@@ -361,11 +357,7 @@ body {
     padding: 10px 12px;
   }
   
-  .action-btn {
-    padding: 5px 8px;
-    font-size: 12px;
-    margin: 0 1px;
-  }
+  /* Action buttons use global responsive styles */
   
   .score-badge {
     font-size: 12px;
