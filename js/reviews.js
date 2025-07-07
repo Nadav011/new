@@ -53,15 +53,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // RTL column order: Date | Branch | Review Type | Reviewer | Score | Actions
       row.innerHTML = `
-        <td>${review.date || ''}<br><span class="calendar-icon">📅 ${review.day || ''}</span></td>
-        <td>
+        <td data-label="תאריך">${review.date || ''}<br><span class="calendar-icon">📅 ${review.day || ''}</span></td>
+        <td data-label="סניף">
           <div class="branch-name">${review.branch || ''}</div>
           <div class="branch-sub">${review.city || ''}</div>
         </td>
-        <td><span class="badge ${typeColor}">${review.type || ''}</span></td>
-        <td>${review.reviewer || ''}</td>
-        <td><span class="badge ${scoreColor}">${review.score || 0}/10</span></td>
-        <td class="actions">
+        <td data-label="סוג ביקורת"><span class="badge ${typeColor}">${review.type || ''}</span></td>
+        <td data-label="מבקר">${review.reviewer || ''}</td>
+        <td data-label="ציון"><span class="badge ${scoreColor}">${review.score || 0}/10</span></td>
+        <td data-label="פעולות" class="actions">
           <button class="btn btn-icon btn-view view" data-index="${index}">👁️ צפייה</button>
           <button class="btn btn-icon btn-edit edit" data-index="${index}">✏️ עריכה</button>
           <button class="btn btn-icon btn-delete delete" data-index="${index}">🗑️ מחיקה</button>

@@ -5,6 +5,7 @@
   <title>login - המקסיקני ביקורת סניפים</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <link rel="stylesheet" href="css/header.css">
   <style>
     body {
       margin: 0;
@@ -17,7 +18,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      min-height: calc(100vh - 70px);
     }
     .login-box {
       background-color: white;
@@ -86,35 +87,46 @@
       color: #1976d2;
       text-decoration: none;
     }
+    
+    @media (max-width: 768px) {
+      .login-wrapper {
+        min-height: calc(100vh - 60px);
+        padding: 20px 16px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="login-wrapper">
-    <div class="login-box">
-      <img src="https://upload.wikimedia.org/wikipedia/he/thumb/f/fb/Mexicany_logo.png/240px-Mexicany_logo.png" alt="לוגו">
-      <h2>המקסיקני - ביקרת סניפים</h2>
-      <p>התחבר כדי להמשיך</p>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="login-wrapper">
+      <div class="login-box">
+        <img src="https://upload.wikimedia.org/wikipedia/he/thumb/f/fb/Mexicany_logo.png/240px-Mexicany_logo.png" alt="לוגו">
+        <h2>המקסיקני - ביקרת סניפים</h2>
+        <p>התחבר כדי להמשיך</p>
 
-      <div id="g_id_onload"
-           data-client_id="971789798047-roi3o3j6spitscordhs4iisg6ror62i5.apps.googleusercontent.com"
-           data-context="signin"
-           data-callback="handleGoogleCredentialResponse"
-           data-auto_prompt="false">
-      </div>
-      <div class="google-login-container">
-        <div class="g_id_signin" data-type="standard" data-size="large"></div>
-      </div>
+        <div id="g_id_onload"
+             data-client_id="971789798047-roi3o3j6spitscordhs4iisg6ror62i5.apps.googleusercontent.com"
+             data-context="signin"
+             data-callback="handleGoogleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="google-login-container">
+          <div class="g_id_signin" data-type="standard" data-size="large"></div>
+        </div>
 
-      <div class="separator"><span>או</span></div>
+        <div class="separator"><span>או</span></div>
 
-      <input type="text" id="username" placeholder="אימייל או שם משתמש">
-      <input type="password" id="password" placeholder="סיסמה">
-      <button class="btn btn-primary login-btn" onclick="login()">התחבר</button>
+        <input type="text" id="username" placeholder="אימייל או שם משתמש">
+        <input type="password" id="password" placeholder="סיסמה">
+        <button class="btn btn-primary login-btn" onclick="login()">התחבר</button>
 
-      <div class="footer-links">
-        <a href="#">שכחת סיסמה?</a>
-        <span>|</span>
-        <a href="#">אין לך משתמש? צור קשר</a>
+        <div class="footer-links">
+          <a href="#">שכחת סיסמה?</a>
+          <span>|</span>
+          <a href="#">אין לך משתמש? צור קשר</a>
+        </div>
       </div>
     </div>
   </div>
@@ -140,6 +152,22 @@
       // כאן תוכל להחליט האם לאשר לפי אימייל או דומיין וכו'
       window.location.href = "dashboard.html";
     }
+
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
   </script>
 </body>
 </html>

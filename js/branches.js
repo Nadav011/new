@@ -33,10 +33,12 @@ function attachActions() {
 
 function closeModal() {
   const modal = document.getElementById("branchModal");
-  if (modal) modal.parentElement.remove();
-  document.body.style.overflow = "auto";
-  // Remove focus from any element
-  if (document.activeElement) document.activeElement.blur();
+  if (modal) {
+    modal.parentElement.remove();
+    document.body.style.overflow = "auto";
+    // Remove focus from any element
+    if (document.activeElement) document.activeElement.blur();
+  }
 }
 
 function getBadge(className, text) {
@@ -45,6 +47,12 @@ function getBadge(className, text) {
 
 function addBranchToTable(branch, index) {
   const table = document.getElementById("branch-list");
+  
+  if (!table) {
+    console.error('branch-list table not found!');
+    return;
+  }
+  
   const row = document.createElement("tr");
 
   // Determine badge classes
@@ -53,15 +61,15 @@ function addBranchToTable(branch, index) {
   const statusBadge = branch.status === "פעיל" ? 'success' : branch.status === "בשיפוצים" ? 'warning' : branch.status === "לא פעיל" ? 'danger' : 'secondary';
 
   row.innerHTML = `
-    <td>
+    <td data-label="שם סניף">
       <div class="branch-name">${branch.name || ''}</div>
       <div class="branch-sub">${branch.city || ''}</div>
     </td>
-    <td>${branch.address || ''}</td>
-    <td>${getBadge(businessBadge, branch.businessType || 'לא מוגדר')}</td>
-    <td>${getBadge(kosherBadge, branch.kosherType || 'ללא')}</td>
-    <td>${getBadge(statusBadge, branch.status || 'לא מוגדר')}</td>
-    <td class="action-btns">
+    <td data-label="כתובת">${branch.address || ''}</td>
+    <td data-label="סוג עסק">${getBadge(businessBadge, branch.businessType || 'לא מוגדר')}</td>
+    <td data-label="כשרות">${getBadge(kosherBadge, branch.kosherType || 'ללא')}</td>
+    <td data-label="סטטוס">${getBadge(statusBadge, branch.status || 'לא מוגדר')}</td>
+    <td data-label="פעולות" class="action-btns">
       <button class="btn btn-icon btn-view view" data-index="${index}">👁️ צפייה</button>
       <button class="btn btn-icon btn-edit edit" data-index="${index}">✏️ עריכה</button>
       <button class="btn btn-icon btn-delete delete" data-index="${index}">🗑️ מחיקה</button>
@@ -116,19 +124,30 @@ function openBranchPopup(branch = null, index = null) {
           if (input.type === 'file') return;
           data[input.name] = input.value.trim();
         });
+        
         if (!data["name"] || !data["address"] || !data["businessType"] || !data["status"]) {
           alert("נא למלא את כל השדות החיוניים: שם סניף, כתובת, סוג עסק, סטטוס");
           return;
         }
+        
         let branches = JSON.parse(localStorage.getItem("branches") || "[]");
         if (branch && index !== null) {
           branches[index] = data;
         } else {
           branches.push(data);
         }
+        
         localStorage.setItem("branches", JSON.stringify(branches));
-        document.getElementById("branch-list").innerHTML = "";
-        branches.forEach((b, i) => addBranchToTable(b, i));
+        
+        // Clear and rebuild table
+        const branchList = document.getElementById("branch-list");
+        if (branchList) {
+          branchList.innerHTML = "";
+          branches.forEach((b, i) => addBranchToTable(b, i));
+        } else {
+          console.error('branch-list element not found!');
+        }
+        
         if (closeAfter) closeModal();
       }
 

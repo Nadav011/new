@@ -4,43 +4,56 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>פרטי סניף</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css" />
   <link rel="stylesheet" href="css/branch-details.css" />
-  <link rel="stylesheet" href="css/sidebar.css" />
 </head>
 <body>
-  <button id="mobile-menu-btn" aria-label="תפריט"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
-  <div id="sidebar-placeholder"></div>
-  <script>
-    fetch("sidebar.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("sidebar-placeholder").innerHTML = html;
-        var script = document.createElement('script');
-        script.src = 'js/mobile-menu.js';
-        document.body.appendChild(script);
-      });
-  </script>
+  <div id="header-container"></div>
+  
   <div class="main-content">
     <div class="top-bar">
       <a class="back-link" href="branches.html">⬅ חזרה לכל הסניפים</a>
-      <button class="btn btn-edit" onclick="openEditPopup()">✏️ עריכת פרטי סניף</button>
+      <button class="btn-edit" onclick="openEditPopup()">✏️ עריכת פרטי סניף</button>
     </div>
 
-    <h1 id="branch-name">שם סניף</h1>
-    <p id="branch-address">כתובת מלאה</p>
+    <div class="branch-header">
+      <h1 class="branch-name" id="branch-name">שם סניף</h1>
+      <p class="branch-address" id="branch-address">כתובת מלאה</p>
+    </div>
 
     <div class="stats-container">
-      <div class="stat-box">📉 ציון הנמוך ביותר<br /><strong>0</strong></div>
-      <div class="stat-box">📈 ציון הגבוה ביותר<br /><strong>0</strong></div>
-      <div class="stat-box">⭐ ציון ממוצע<br /><strong>0</strong></div>
-      <div class="stat-box">📅 סה״כ ביקורות<br /><strong>0</strong></div>
+      <div class="stat-box">
+        <div class="stat-icon">📉</div>
+        <div class="stat-label">ציון הנמוך ביותר</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">ציון הגבוה ביותר</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-label">ציון ממוצע</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">סה״כ ביקורות</div>
+        <div class="stat-value">0</div>
+      </div>
     </div>
 
-    <h2>היסטוריית ביקורות בסניף</h2>
-    <p>לא בוצעו ביקורות בסניף זה עדיין.</p>
+    <div class="reviews-history">
+      <h2 class="section-header">היסטוריית ביקורות בסניף</h2>
+      <div class="reviews-empty">לא בוצעו ביקורות בסניף זה עדיין.</div>
+    </div>
 
-    <h2>פרטי הסניף</h2>
-    <ul id="branch-details-list"></ul>
+    <div class="branch-details">
+      <h2 class="section-header">פרטי הסניף</h2>
+      <ul class="branch-details-list" id="branch-details-list"></ul>
+    </div>
   </div>
 
   <script>
@@ -51,65 +64,52 @@
       document.getElementById("branch-name").textContent = branch.name;
       document.getElementById("branch-address").textContent = `${branch.address}, ${branch.city}`;
       document.querySelector("#branch-details-list").innerHTML = `
-        <li><strong>מנהל:</strong> ${branch.manager || "-"}</li>
-        <li><strong>טלפון:</strong> ${branch.phone || "-"}</li>
-        <li><strong>כשרות:</strong> ${branch.kosherType || "-"}</li>
-        <li><strong>סטטוס:</strong> ${branch.status || "-"}</li>
+        <li><strong>מנהל:</strong> <span>${branch.manager || "-"}</span></li>
+        <li><strong>טלפון מנהל:</strong> <span>${branch.managerPhone || "-"}</span></li>
+        <li><strong>סוג כשרות:</strong> <span>${branch.kosherType}</span></li>
+        <li><strong>סטטוס:</strong> <span>${branch.status}</span></li>
+        <li><strong>זכיין:</strong> <span>${branch.firstName} ${branch.lastName}</span></li>
+        <li><strong>טלפון זכיין:</strong> <span>${branch.phone || "-"}</span></li>
+        <li><strong>סוג עסק:</strong> <span>${branch.businessType}</span></li>
       `;
     }
 
     function openEditPopup() {
-      fetch("popup.html")
-        .then(res => res.text())
-        .then(html => {
-          const container = document.createElement("div");
-          container.innerHTML = html;
-          document.body.appendChild(container);
-
-          const form = container.querySelector("#branchForm");
-          Object.entries(currentBranch).forEach(([key, value]) => {
-            const input = form.querySelector(`[name="${key}"]`);
-            if (input) input.value = value;
-          });
-
-          const saveBtn = container.querySelector('[data-save]');
-          const cancelBtn = container.querySelector('[data-cancel]');
-
-          saveBtn.addEventListener("click", () => {
-            const inputs = form.querySelectorAll("input[name], select[name]");
-            const data = {};
-            inputs.forEach(input => {
-              data[input.name] = input.value.trim();
-            });
-
-            if (!data["name"] || !data["address"] || !data["businessType"] || !data["status"]) {
-              alert("נא למלא את כל השדות החיוניים: שם סניף, כתובת, סוג עסק, סטטוס");
-              return;
-            }
-
-            const branches = JSON.parse(localStorage.getItem("branches") || "[]");
-            branches[currentBranchIndex] = data;
-            localStorage.setItem("branches", JSON.stringify(branches));
-            currentBranch = data;
-            fillBranchDetails(data);
-            container.remove();
-          });
-
-          cancelBtn.addEventListener("click", () => {
-            container.remove();
-          });
-        });
+      // Implementation for edit popup
+      alert("פונקציונליות עריכה תתווסף בקרוב");
     }
 
-    window.onload = () => {
-      const branches = JSON.parse(localStorage.getItem("branches") || "[]");
-      const index = localStorage.getItem("viewBranchIndex");
-      if (index && branches[index]) {
-        currentBranchIndex = index;
-        currentBranch = branches[index];
-        fillBranchDetails(currentBranch);
+    // Load branch details from URL parameters
+    window.addEventListener('load', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const branchIndex = urlParams.get('index');
+      
+      if (branchIndex !== null) {
+        currentBranchIndex = parseInt(branchIndex);
+        const branches = JSON.parse(localStorage.getItem('branches') || '[]');
+        
+        if (branches[currentBranchIndex]) {
+          currentBranch = branches[currentBranchIndex];
+          fillBranchDetails(currentBranch);
+        }
       }
-    };
+    });
+
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
   </script>
 </body>
 </html>

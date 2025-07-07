@@ -4,28 +4,23 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>הוספת ביקורת</title>
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/sidebar.css">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/add-review.css">
 </head>
 <body>
-  <button id="mobile-menu-btn" aria-label="תפריט"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
-  <div id="sidebar-container"></div>
-  <script>
-    fetch("sidebar.html")
-      .then(res => res.text())
-      .then(html => {
-        document.getElementById("sidebar-container").innerHTML = html;
-        var script = document.createElement('script');
-        script.src = 'js/mobile-menu.js';
-        document.body.appendChild(script);
-      });
-  </script>
+  <div id="header-container"></div>
+  
   <div class="main-content">
-    <h2>פרטי הביקורת הכללים</h2>
-    <div class="review-form-table-centered">
+    <div class="page-header">
+      <h1 class="page-title">הוספת ביקורת</h1>
+      <p class="page-description">מלא את פרטי הביקורת וענה על השאלות עבור הסניף הנבחר</p>
+    </div>
+    
+    <div class="review-form-section">
+      <h2 class="form-section-title">פרטי הביקורת הכלליים</h2>
       <form id="reviewForm" class="review-form-table">
-        <div style="display: flex; gap: 24px; align-items: flex-end; flex-wrap: wrap; justify-content: center;">
+        <div class="form-row">
           <div class="form-group">
             <label for="branchSelect">סניף</label>
             <select id="branchSelect"><option>בחר סניף...</option></select>
@@ -52,7 +47,9 @@
         <div id="questionsContainer" class="questions-container"></div>
         <div id="noQuestionsBox" class="no-questions-box">
           <div class="no-questions-message">לא הוגדרו שאלות</div>
-          <button type="button" class="btn btn-primary btn-define" id="defineQuestionsBtn"> <span class="plus-icon">➕</span> עבור להגדרת שאלות </button>
+          <button type="button" class="btn btn-primary btn-define" id="defineQuestionsBtn">
+            <span class="plus-icon">➕</span> עבור להגדרת שאלות
+          </button>
         </div>
       </div>
       <div class="text-areas-section">
@@ -70,49 +67,29 @@
         </div>
       </div>
     </div>
+    
     <div class="save-btn-row">
       <button type="button" class="btn btn-primary btn-save-modern" id="saveReviewBtn">שמור ביקורת</button>
     </div>
   </div>
 
-  <style>
-    .hidden { display: none !important; }
-    .questions-container { width: 100%; }
-    .no-questions-box { flex-direction: column; align-items: center; width: 100%; }
-    .save-btn-row { margin-top: 30px; text-align: center; }
-    .plus-icon { font-size: 1.2em; }
-    .review-card { transition: box-shadow 0.2s, opacity 0.2s; }
-    .questions-list { list-style: none; padding: 0; margin: 0 0 16px 0; width: 100%; }
-    .questions-list li { background: #f7f7f7; border-radius: 10px; margin-bottom: 10px; padding: 12px 18px; font-size: 1.08em; text-align: right; }
-    .no-questions-message { color: #888; font-size: 1.1em; text-align: center; }
-    .btn-define { min-width: 180px; font-size: 1.08em; }
-    .text-areas-section { display: none; grid-template-columns: 1fr; gap: 18px; margin-top: 32px; }
-    .text-area-group label { font-weight: 500; margin-bottom: 6px; display: block; }
-    .text-area-group textarea { width: 100%; min-height: 60px; border-radius: 10px; border: 1px solid #e0e0e0; padding: 10px; font-size: 1em; background: #fafbfc; transition: border 0.2s; }
-    .text-area-group textarea:focus { border: 1.5px solid #0071e3; outline: none; }
-    @media (max-width: 600px) {
-      .review-card { padding: 16px 4vw; }
-    }
-  </style>
-
-  <script>
-    // Trap focus in modal and close on Escape
-    document.addEventListener('keydown', function(e) {
-      const modal = document.querySelector('.review-card[role="dialog"]');
-      if (modal && !modal.classList.contains('hidden') && e.key === 'Escape') {
-        modal.classList.add('hidden');
-      }
-      if (modal && !modal.classList.contains('hidden') && e.key === 'Tab') {
-        const focusable = modal.querySelectorAll('input, button, textarea, [tabindex]:not([tabindex="-1"])');
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
-          e.preventDefault();
-          (e.shiftKey ? last : first).focus();
-        }
-      }
-    });
-  </script>
   <script src="js/add-review.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
 </body>
 </html>

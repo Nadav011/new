@@ -4,21 +4,19 @@
   <meta charset="UTF-8">
   <title>רשימת ביקורות - המקסיקני</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/sidebar.css">
-  <link rel="stylesheet" href="css/branches.css">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
   <link rel="stylesheet" href="css/reviews.css">
-  <link rel="stylesheet" href="css/buttons.css">
 </head>
 <body>
-  <button id="mobile-menu-btn" aria-label="תפריט"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
-  <div id="sidebar-placeholder"></div>
-  <div class="main">
-    <div class="header">
-      <h2>רשימת ביקורות</h2>
-      <button class="add-btn btn btn-primary">הוספת ביקורת חדשה</button>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">רשימת ביקורות</h1>
+      <button class="add-btn" onclick="window.location.href='add-review.html'">הוספת ביקורת חדשה</button>
     </div>
-
+    
     <div class="filter-box">
       <div class="filter-header">סינון וחיפוש</div>
       <div class="filter-row">
@@ -35,7 +33,7 @@
         </div>
       </div>
     </div>
-
+    
     <div class="table-responsive">
       <table class="branches-table">
         <thead>
@@ -52,14 +50,21 @@
       </table>
     </div>
   </div>
-
+  
   <script>
-    fetch('sidebar.html')
+    fetch("header.html")
       .then(res => res.text())
       .then(html => {
-        document.getElementById("sidebar-placeholder").innerHTML = html;
-        var script = document.createElement('script');
-        script.src = 'js/mobile-menu.js';
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
         document.body.appendChild(script);
       });
   </script>
