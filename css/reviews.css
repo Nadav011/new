@@ -1,0 +1,233 @@
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #f7f8fa;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  margin-right: 250px;
+  padding: 48px 48px 32px 48px;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+
+.add-btn {
+  @apply .btn-primary;
+}
+
+.filter-box {
+  background: linear-gradient(180deg, #fff 90%, #f7f8fa 100%);
+  border: 1px solid #ececec;
+  border-radius: 20px;
+  padding: 28px 24px 18px 24px;
+  margin-bottom: 36px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.filter-header {
+  font-weight: 700;
+  margin-bottom: 16px;
+  font-size: 18px;
+  color: #444;
+}
+
+.filter-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+}
+
+.filter-row input[type="text"],
+.filter-row select {
+  padding: 10px 14px;
+  border: 1px solid #e0e0e0;
+  border-radius: 999px;
+  font-size: 15px;
+  background: #f7f8fa;
+  transition: border 0.18s;
+  outline: none;
+  min-width: 180px;
+}
+
+.filter-row input[type="text"]:focus,
+.filter-row select:focus {
+  border: 1.5px solid #1976d2;
+  background: #fff;
+}
+
+.review-count {
+  margin-right: auto;
+  font-size: 15px;
+  color: #555;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-weight: 500;
+}
+
+.branches-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: linear-gradient(180deg, #fff 90%, #f7f8fa 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 32px;
+}
+
+.branches-table th,
+.branches-table td {
+  padding: 18px 18px;
+  text-align: right;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+.branches-table th {
+  background: #f7f8fa;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #ececec;
+  font-size: 16px;
+}
+
+.branches-table tr:last-child td {
+  border-bottom: none;
+}
+
+.branches-table tbody tr {
+  transition: background 0.15s;
+}
+
+.branches-table tbody tr:hover {
+  background: #f5f7fa;
+}
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: 0.01em;
+}
+
+.badge.green { background: #e0f8e9; color: #2e7d32; }
+.badge.yellow { background: #fff7cc; color: #c79b00; }
+.badge.red { background: #fdecea; color: #d32f2f; }
+.badge.pink { background: #ffe0f0; color: #c2185b; }
+.badge.lightgreen { background: #e0f7fa; color: #00695c; }
+
+.branch-name {
+  font-weight: 700;
+  color: #222;
+  font-size: 15px;
+}
+
+.branch-sub {
+  font-size: 13px;
+  color: #888;
+}
+
+.actions {
+  white-space: nowrap;
+  text-align: center;
+}
+
+.calendar-icon {
+  font-size: 13px;
+  color: #666;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 900px) {
+  .main {
+    margin-right: 0;
+    padding: 24px 8px 16px 8px;
+  }
+  .header {
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .branches-table th, .branches-table td {
+    padding: 12px 8px;
+  }
+  .filter-box {
+    padding: 16px 8px 10px 8px;
+    border-radius: 14px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 8px 2px 8px 2px;
+  }
+  .header h2 {
+    font-size: 20px;
+  }
+  .branches-table th, .branches-table td {
+    font-size: 13px;
+    padding: 8px 4px;
+  }
+  .badge {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  .branch-name {
+    font-size: 13px;
+  }
+  .branch-sub {
+    font-size: 11px;
+  }
+  .filter-header {
+    font-size: 15px;
+  }
+  .filter-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .filter-row input[type="text"],
+  .filter-row select {
+    min-width: unset;
+    width: 100%;
+  }
+  .review-count {
+    margin-right: 0;
+    justify-content: center;
+    margin-top: 10px;
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+@media (max-width: 480px) {
+  .branches-table {
+    min-width: 600px;
+    font-size: 12px;
+  }
+  .main {
+    padding: 4px 1px 4px 1px;
+  }
+}

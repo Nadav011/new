@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<title>לוח בקרה - המקסיקני</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<link href="css/sidebar.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+</head>
+<body>
+  <button id="mobile-menu-btn" aria-label="תפריט" style="display:none;"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
+  <!-- Sidebar (loaded via JavaScript) -->
+  <div id="sidebar-container"></div>
+  <script>
+    fetch("sidebar.html")
+      .then(res => res.text())
+      .then(data => {
+        document.getElementById("sidebar-container").innerHTML = data;
+        var script = document.createElement('script');
+        script.src = 'js/mobile-menu.js';
+        document.body.appendChild(script);
+      });
+  </script>
+  <!-- Main Content -->
+  <div class="main">
+<div class="dashboard-header">לוח בקרה</div>
+<!-- Stats -->
+<div class="stats">
+<div class="stat-card">
+<div class="stat-title">סניפים פעילים</div>
+<div class="stat-value">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-title">ביקורות שבוצעו</div>
+<div class="stat-value">0</div>
+</div>
+<div class="stat-card">
+<div class="stat-title">סניף מצטיין</div>
+<div class="stat-value">אין נתונים</div>
+</div>
+<div class="stat-card">
+<div class="stat-title">סניף דורש שיפור</div>
+<div class="stat-value">אין נתונים</div>
+</div>
+</div>
+<!-- Two Side-by-Side Boxes -->
+<div class="sections-grid">
+<div class="box">
+<div class="section-title">דירוג סניפים (ציון ממוצע)</div>
+<div class="list-empty">אין נתונים להצגה</div>
+</div>
+<div class="box">
+<div class="section-title">ביקורות אחרונות</div>
+<div class="list-empty">לא קיימות ביקורות להצגה כרגע.</div>
+</div>
+</div>
+</div>
+
+<script src="js/dashboard.js"></script>
+</body>
+</html>

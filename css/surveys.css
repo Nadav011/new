@@ -1,0 +1,214 @@
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #f8f9fa;
+  margin: 0;
+  padding: 20px;
+}
+
+.main-content {
+  max-width: 1200px;
+  margin: auto;
+}
+
+.add-btn,
+.survey-card button,
+.modal-content button {
+  all: unset;
+}
+
+.add-btn {
+  margin-bottom: 0;
+}
+
+.add-btn {
+  @apply .btn-primary;
+}
+
+.survey-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.survey-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+  padding: 20px;
+}
+
+.survey-card h4 {
+  margin: 0 0 10px;
+}
+
+.survey-card p {
+  margin: 0 0 10px;
+  color: #555;
+  font-size: 14px;
+}
+
+.survey-card .actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 100;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  max-width: 500px;
+  margin: 100px auto;
+  position: relative;
+}
+
+.modal-content input,
+.modal-content textarea {
+  width: 100%;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.modal-content button {
+  background-color: #28a745;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.modal-content .close {
+  position: absolute;
+  top: 10px;
+  left: 15px;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+
+.layout {
+  display: flex;
+  direction: rtl;
+}
+
+.main-content {
+  flex: 1;
+  padding: 40px 20px;
+  margin-right: 240px;
+}
+
+@media (max-width: 900px) {
+  .main-content {
+    padding: 1rem 0.5rem;
+  }
+  .survey-card {
+    padding: 18px 6px 18px 6px;
+    border-radius: 14px;
+  }
+  .survey-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main-content {
+    padding: 8px 2px 8px 2px;
+  }
+  .survey-card {
+    padding: 12px 4px 12px 4px;
+    border-radius: 10px;
+    min-height: 120px;
+  }
+  .survey-card .survey-header {
+    font-size: 1em;
+    padding: 8px 0 6px 0;
+    border-radius: 8px;
+  }
+  .survey-card p {
+    font-size: 0.97em;
+    margin-bottom: 10px;
+  }
+  .survey-card .actions {
+    gap: 6px;
+  }
+  .survey-card .btn {
+    font-size: 0.97em;
+    padding: 5px 10px;
+    min-height: 28px;
+  }
+  .modal-content {
+    padding: 18px 6px 18px 6px;
+    max-width: 98vw;
+    border-radius: 14px;
+    max-height: 98vh;
+  }
+  .modal-content input,
+  .modal-content textarea {
+    font-size: 0.97em;
+    padding: 10px;
+    border-radius: 8px;
+  }
+  .modal-content .close {
+    font-size: 20px;
+    top: 8px;
+    left: 10px;
+  }
+}
+
+.btn-add-modern {
+  font-size: 1.13em;
+  min-width: 200px;
+  border-radius: 999px;
+  box-shadow: 0 2px 8px rgba(25,118,210,0.07);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: linear-gradient(180deg, #1976d2 90%, #1565c0 100%);
+  color: #fff;
+  border: 1px solid #1976d2;
+  font-weight: 600;
+  justify-content: center;
+}
+.btn-add-modern:hover, .btn-add-modern:focus {
+  background: linear-gradient(180deg, #1565c0 90%, #1976d2 100%);
+  color: #fff;
+  border: 1.5px solid #1251a3;
+}
+.section-title-gradient {
+  text-align: center;
+  font-size: 2em;
+  font-weight: 700;
+  margin-bottom: 10px;
+  background: linear-gradient(90deg,#f7f8fa 60%,#e3f2fd 100%);
+  color: #1976d2;
+  border-radius: 16px;
+  padding: 12px 0 10px 0;
+  letter-spacing: 0.01em;
+}
+.section-title-small-gradient {
+  text-align: center;
+  font-size: 1.3em;
+  font-weight: 600;
+  margin-bottom: 18px;
+  background: linear-gradient(90deg,#f7f8fa 60%,#e3f2fd 100%);
+  color: #1976d2;
+  border-radius: 12px;
+  padding: 10px 0 8px 0;
+}
+.btn-cancel-outline {
+  background: #f7f8fa;
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+}

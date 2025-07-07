@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>login - המקסיקני ביקורת סניפים</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      direction: rtl;
+    }
+    .login-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .login-box {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .login-box img {
+      width: 80px;
+      margin-bottom: 20px;
+    }
+    .login-box h2 {
+      margin: 0 0 10px;
+      font-size: 24px;
+    }
+    .login-box p {
+      color: #666;
+      margin-bottom: 20px;
+    }
+    .google-login-container {
+      margin-bottom: 20px;
+    }
+    .separator {
+      display: flex;
+      align-items: center;
+      margin: 15px 0;
+    }
+    .separator::before,
+    .separator::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: #ccc;
+    }
+    .separator span {
+      margin: 0 10px;
+      color: #999;
+    }
+    .login-box input {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 16px;
+    }
+    .login-box button.login-btn {
+      background-color: #111827;
+      color: white;
+      border: none;
+      width: 100%;
+      padding: 10px;
+      border-radius: 6px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .login-box .footer-links {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+    .login-box .footer-links a {
+      margin-right: 10px;
+      color: #1976d2;
+      text-decoration: none;
+    }
+  </style>
+</head>
+<body>
+  <div class="login-wrapper">
+    <div class="login-box">
+      <img src="https://upload.wikimedia.org/wikipedia/he/thumb/f/fb/Mexicany_logo.png/240px-Mexicany_logo.png" alt="לוגו">
+      <h2>המקסיקני - ביקרת סניפים</h2>
+      <p>התחבר כדי להמשיך</p>
+
+      <div id="g_id_onload"
+           data-client_id="971789798047-roi3o3j6spitscordhs4iisg6ror62i5.apps.googleusercontent.com"
+           data-context="signin"
+           data-callback="handleGoogleCredentialResponse"
+           data-auto_prompt="false">
+      </div>
+      <div class="google-login-container">
+        <div class="g_id_signin" data-type="standard" data-size="large"></div>
+      </div>
+
+      <div class="separator"><span>או</span></div>
+
+      <input type="text" id="username" placeholder="אימייל או שם משתמש">
+      <input type="password" id="password" placeholder="סיסמה">
+      <button class="btn btn-primary login-btn" onclick="login()">התחבר</button>
+
+      <div class="footer-links">
+        <a href="#">שכחת סיסמה?</a>
+        <span>|</span>
+        <a href="#">אין לך משתמש? צור קשר</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const users = [
+      { username: "admin", password: "1234" }
+    ];
+
+    function login() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const found = users.find(u => u.username === user && u.password === pass);
+      if (found) {
+        window.location.href = "dashboard.html";
+      } else {
+        alert("שם משתמש או סיסמה שגויים");
+      }
+    }
+
+    function handleGoogleCredentialResponse(response) {
+      console.log("Encoded JWT ID token: " + response.credential);
+      // כאן תוכל להחליט האם לאשר לפי אימייל או דומיין וכו'
+      window.location.href = "dashboard.html";
+    }
+  </script>
+</body>
+</html>

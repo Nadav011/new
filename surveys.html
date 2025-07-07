@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>ניהול שאלונים</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/surveys.css">
+</head>
+<body>
+  <button id="mobile-menu-btn" aria-label="תפריט" style="display:none;"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
+  <div class="layout">
+    <div id="sidebar-container"></div>
+    <div class="main-content">
+      <div class="centered-btn-row">
+        <button class="btn btn-primary btn-add-modern" onclick="openModal()">
+          <span class="plus-icon">＋</span> הוסף שאלון חדש
+        </button>
+      </div>
+      <h2 class="section-title section-title-gradient">ניהול שאלונים</h2>
+      <p class="section-description">בחר שאלון כדי להוסיף, לערוך ולנהל את השאלות עבור כל סוג ביקורת.</p>
+      <div id="surveyList" class="survey-grid"></div>
+    </div>
+  </div>
+
+  <div class="modal" id="surveyModal" role="dialog" aria-modal="true" aria-labelledby="surveyModalTitle" tabindex="-1">
+    <div class="modal-content modern-modal">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h3 class="section-title section-title-small-gradient" id="surveyModalTitle">יצירת שאלון חדש</h3>
+      <input type="text" id="surveyName" placeholder="שם השאלון (לדוגמה: ביקורת בטיחות מזון)">
+      <textarea id="surveyDescription" placeholder="תיאור קצר של מטרת השאלון ותחום הביקורת..." style="min-height:70px;"></textarea>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="saveSurveyBtn">שמור ויציאה</button>
+        <button class="btn btn-cancel-outline" onclick="closeModal()">ביטול</button>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    body { background: #f8f9fa; }
+    .main-content { max-width: 900px; margin: 0 auto; padding: 40px 0; }
+    .survey-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 28px;
+      margin-top: 18px;
+    }
+    .survey-card {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 32px 24px 24px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      transition: box-shadow 0.18s;
+      min-height: 160px;
+    }
+    .survey-card .survey-header {
+      width: 100%;
+      background: linear-gradient(90deg,#f7f8fa 60%,#e3f2fd 100%);
+      color: #1976d2;
+      border-radius: 12px;
+      padding: 10px 0 8px 0;
+      font-size: 1.13em;
+      font-weight: 700;
+      margin-bottom: 10px;
+      text-align: right;
+      letter-spacing: 0.01em;
+    }
+    .survey-card p {
+      margin: 0 0 18px 0;
+      color: #555;
+      font-size: 1.04em;
+    }
+    .survey-card .actions {
+      margin-top: auto;
+      width: 100%;
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+    .survey-card .btn {
+      font-size: 1em;
+      border-radius: 999px;
+      padding: 5px 16px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+      transition: background 0.18s, color 0.18s, border 0.18s;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .survey-card .btn-edit {
+      color: #fd7e14;
+      background: linear-gradient(180deg, #fff8f2 90%, #fbeee3 100%);
+      border: 1px solid #ffe0b2;
+    }
+    .survey-card .btn-edit:hover, .survey-card .btn-edit:focus {
+      background: linear-gradient(180deg, #ffe0b2 90%, #ffd699 100%);
+      color: #b25c00;
+      border: 1.5px solid #fd7e14;
+    }
+    .survey-card .btn-delete {
+      color: #d32f2f;
+      background: linear-gradient(180deg, #fff5f5 90%, #fbeaea 100%);
+      border: 1px solid #ffcdd2;
+    }
+    .survey-card .btn-delete:hover, .survey-card .btn-delete:focus {
+      background: linear-gradient(180deg, #ffcdd2 90%, #ffb3b3 100%);
+      color: #a31515;
+      border: 1.5px solid #d32f2f;
+    }
+    .btn-add-modern {
+      font-size: 1.13em;
+      min-width: 200px;
+      border-radius: 999px;
+      box-shadow: 0 2px 8px rgba(25,118,210,0.07);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(180deg, #1976d2 90%, #1565c0 100%);
+      color: #fff;
+      border: 1px solid #1976d2;
+      font-weight: 600;
+    }
+    .btn-add-modern:hover, .btn-add-modern:focus {
+      background: linear-gradient(180deg, #1565c0 90%, #1976d2 100%);
+      color: #fff;
+      border: 1.5px solid #1251a3;
+    }
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 100;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.18);
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-content.modern-modal {
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.13);
+      padding: 36px 28px 28px 28px;
+      max-width: 420px;
+      width: 92vw;
+      margin: 0 auto;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      animation: modalIn 0.22s cubic-bezier(.4,1.4,.6,1) both;
+    }
+    @keyframes modalIn {
+      from { opacity: 0; transform: translateY(40px) scale(0.98); }
+      to { opacity: 1; transform: none; }
+    }
+    .modal-content input,
+    .modal-content textarea {
+      width: 100%;
+      margin-bottom: 0;
+      padding: 12px;
+      border-radius: 10px;
+      border: 1px solid #e0e0e0;
+      font-size: 1em;
+      background: #fafbfc;
+      transition: border 0.2s;
+    }
+    .modal-content input:focus,
+    .modal-content textarea:focus {
+      border: 1.5px solid #1976d2;
+      outline: none;
+    }
+    .modal-content .close {
+      position: absolute;
+      top: 12px;
+      left: 18px;
+      font-size: 26px;
+      color: #888;
+      cursor: pointer;
+      transition: color 0.18s;
+    }
+    .modal-content .close:hover {
+      color: #d32f2f;
+    }
+    @media (max-width: 600px) {
+      .main-content { padding: 18px 0; }
+      .survey-card { padding: 18px 8px 16px 8px; }
+      .modal-content.modern-modal { padding: 18px 6vw 18px 6vw; }
+    }
+    .section-title {
+      background: linear-gradient(90deg,#f7f8fa 60%,#e3f2fd 100%);
+      color: #1976d2;
+      border-radius: 16px;
+      padding: 12px 0 10px 0;
+      font-weight: 700;
+      letter-spacing: 0.01em;
+    }
+    .centered-btn-row { display: flex; justify-content: center; margin-bottom: 32px; }
+    .section-description { text-align: center; color: #666; margin-bottom: 32px; }
+    .btn-row { display: flex; gap: 12px; margin-top: 18px; }
+    .plus-icon { font-size: 1.3em; }
+  </style>
+
+  <script src="js/surveys.js"></script>
+  <script>
+    fetch("sidebar.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("sidebar-container").innerHTML = html;
+        var script = document.createElement('script');
+        script.src = 'js/mobile-menu.js';
+        document.body.appendChild(script);
+      });
+
+    // Trap focus in modal and close on Escape
+    document.addEventListener('keydown', function(e) {
+      const modal = document.getElementById('surveyModal');
+      if (modal && modal.style.display !== 'none' && e.key === 'Escape') {
+        closeModal();
+      }
+      if (modal && modal.style.display !== 'none' && e.key === 'Tab') {
+        const focusable = modal.querySelectorAll('input, button, textarea, [tabindex]:not([tabindex="-1"])');
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (e.shiftKey ? document.activeElement === first : document.activeElement === last) {
+          e.preventDefault();
+          (e.shiftKey ? last : first).focus();
+        }
+      }
+    });
+  </script>
+</body>
+</html>

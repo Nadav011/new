@@ -1,0 +1,72 @@
+body {
+  font-family: 'Heebo', sans-serif;
+  background-color: #f7f9fb;
+  margin: 0;
+  padding: 0;
+  direction: rtl;
+}
+
+.main-content {
+  padding: 2rem;
+  margin-right: 260px; /* להשאיר מקום לסיידבר */
+}
+
+.top-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.back-link {
+  color: #0d6efd;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.edit-btn {
+  all: unset;
+}
+
+.edit-btn {
+  @apply .btn;
+}
+
+.stats-container {
+  display: flex;
+  gap: 1rem;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+}
+
+.stat-box {
+  background-color: white;
+  border-radius: 12px;
+  padding: 20px;
+  flex: 1;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+
+h1 {
+  margin-bottom: 0;
+}
+
+h2 {
+  margin-top: 2rem;
+  font-size: 1.3rem;
+  border-bottom: 2px solid #dee2e6;
+  padding-bottom: 0.5rem;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  font-size: 1rem;
+}
+
+ul li {
+  margin-bottom: 0.5rem;
+}

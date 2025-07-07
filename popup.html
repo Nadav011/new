@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הוספת סניף חדש</title>
+  <link rel="stylesheet" href="css/popup.css"> <!-- זה מחבר את ה־CSS החיצוני -->
+</head>
+<body>
+
+  <div class="modal" id="branchModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+    <div class="modal-content">
+      <h3 id="modalTitle">הוספת סניף חדש</h3>
+
+      <form id="branchForm">
+        <div class="section-title">פרטי סניף</div>
+        <div class="form-grid">
+          <input type="text" placeholder="שם הסניף" name="name" required>
+          <input type="text" placeholder="עיר" name="city">
+          <input type="text" placeholder="כתובת מלאה" name="address" required>
+          <input type="text" placeholder="שם מנהל הסניף" name="managerName">
+          <input type="text" placeholder="טלפון מנהל הסניף" name="managerPhone">
+          <select name="kosherType" required>
+            <option disabled selected value="">בחר סוג כשרות</option>
+            <option>כשרות רגילה</option>
+            <option>כשרות בד"ץ</option>
+            <option>כשרות צהר</option>
+            <option>ללא תעודת כשרות</option>
+          </select>
+          <select name="status" required>
+            <option disabled selected value="">בחר סטטוס הסניף</option>
+            <option>פעיל</option>
+            <option>לא פעיל</option>
+            <option>בשיפוצים</option>
+          </select>
+
+          <div class="section-title" style="grid-column: 1 / -1">פרטי הזכיין</div>
+          <input type="text" placeholder="שם זכיין" name="firstName">
+          <input type="text" placeholder="שם משפחה" name="lastName">
+          <input type="text" placeholder="מספר טלפון" name="phone">
+          <input type="text" placeholder="מספר תעודת זהות" name="idNumber">
+          <input type="text" placeholder="כתובת זכיין" name="ownerAddress">
+          <select name="businessType" required>
+            <option disabled selected value="">בחר סוג עסק</option>
+            <option>עוסק מורשה</option>
+            <option>חברה בע"מ</option>
+          </select>
+        </div>
+
+        <div class="section-title">מסמכים נדרשים</div>
+        <div class="form-grid">
+          <label>תעודת זהות<input type="file" name="idFile" accept=".pdf,image/*"></label>
+          <label>תעודת התאגדות<input type="file" name="companyFile" accept=".pdf,image/*"></label>
+          <label>מורשה חתימה<input type="file" name="signatureFile" accept=".pdf,image/*"></label>
+          <label>פרטי חשבון בנק<input type="file" name="bankFile" accept=".pdf,image/*"></label>
+          <label>אישור ניהול ספרים<input type="file" name="approvalFile" accept=".pdf,image/*"></label>
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: flex-start; margin-top: 20px">
+          <button type="button" class="btn btn-primary" data-save>שמור</button>
+          <button type="button" class="btn" data-cancel class="modal-close">ביטול</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+</body>
+</html>

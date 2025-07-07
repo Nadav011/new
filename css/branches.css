@@ -1,0 +1,149 @@
+body {
+  font-family: 'Heebo', sans-serif;
+  background: #f7f8fa;
+  margin: 0;
+  padding: 0;
+}
+
+.main {
+  margin-right: 250px;
+  padding: 48px 48px 32px 48px;
+  min-height: 100vh;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 32px;
+}
+
+.header h2 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  letter-spacing: 0.01em;
+}
+
+/* Only keep the .action-btns layout rule, just like in reviews.css */
+.action-btns {
+  white-space: nowrap;
+  text-align: center;
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  align-items: center;
+}
+
+.branches-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: linear-gradient(180deg, #fff 90%, #f7f8fa 100%);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  margin-bottom: 32px;
+}
+
+.branches-table th,
+.branches-table td {
+  padding: 18px 18px;
+  text-align: right;
+  border-bottom: 1px solid #f0f0f0;
+  font-size: 15px;
+  vertical-align: middle;
+}
+
+.branches-table th {
+  background: #f7f8fa;
+  font-weight: 700;
+  color: #333;
+  border-bottom: 2px solid #ececec;
+  font-size: 16px;
+}
+
+.branches-table tr:last-child td {
+  border-bottom: none;
+}
+
+.branches-table tbody tr {
+  transition: background 0.15s;
+}
+
+.branches-table tbody tr:hover {
+  background: #f5f7fa;
+}
+
+.badge {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 600;
+  display: inline-block;
+  letter-spacing: 0.01em;
+}
+
+.branch-name {
+  font-weight: 700;
+  color: #222;
+  font-size: 15px;
+}
+
+.branch-sub {
+  font-size: 13px;
+  color: #888;
+}
+
+@media (max-width: 900px) {
+  .main {
+    margin-right: 0;
+    padding: 24px 8px 16px 8px;
+  }
+  .header {
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+  }
+  .branches-table th, .branches-table td {
+    padding: 12px 8px;
+  }
+}
+
+@media (max-width: 600px) {
+  .main {
+    padding: 8px 2px 8px 2px;
+  }
+  .header h2 {
+    font-size: 20px;
+  }
+  .branches-table th, .branches-table td {
+    font-size: 13px;
+    padding: 8px 4px;
+  }
+  .badge {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+  .branch-name {
+    font-size: 13px;
+  }
+  .branch-sub {
+    font-size: 11px;
+  }
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+}
+@media (max-width: 480px) {
+  .branches-table {
+    min-width: 600px;
+    font-size: 12px;
+  }
+  .main {
+    padding: 4px 1px 4px 1px;
+  }
+}

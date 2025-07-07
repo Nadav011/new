@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>רשימת סניפים - המקסיקני</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/sidebar.css">
+  <link rel="stylesheet" href="css/branches.css">
+  <link rel="stylesheet" href="css/branches-tags.css">
+  <link rel="stylesheet" href="css/buttons.css">
+  <style>
+    .action-btns {
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <button id="mobile-menu-btn" aria-label="תפריט" style="display:none;"><svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><rect y="7" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="14.5" width="32" height="3" rx="1.5" fill="#1976d2"/><rect y="22" width="32" height="3" rx="1.5" fill="#1976d2"/></svg></button>
+  <div id="sidebar-placeholder"></div>
+  <script>
+    fetch('sidebar.html')
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById('sidebar-placeholder').innerHTML = html;
+        var script = document.createElement('script');
+        script.src = 'js/mobile-menu.js';
+        document.body.appendChild(script);
+      });
+  </script>
+  <div class="main">
+    <div class="header">
+      <h2>רשימת סניפים</h2>
+      <button class="add-btn btn btn-primary" onclick="openModal()">הוספת סניף חדש</button>
+    </div>
+    <div class="table-responsive">
+      <table class="branches-table">
+        <thead>
+          <tr>
+            <th>שם סניף</th>
+            <th>כתובת</th>
+            <th>סוג עסק</th>
+            <th>כשרות</th>
+            <th>סטטוס</th>
+            <th style="text-align:center">פעולות</th>
+          </tr>
+        </thead>
+        <tbody id="branch-list"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <script src="js/branches.js"></script>
+</body>
+</html>
