@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", () => {
         <td data-label="סוג ביקורת"><span class="badge ${typeColor}">${review.type || ''}</span></td>
         <td data-label="מבקר">${review.reviewer || ''}</td>
         <td data-label="ציון">
-          <span class="badge ${scoreColor}">${score.toFixed(1)}/10</span>
+          <span class="badge ${scoreColor}">${score.toFixed(1)}/5</span>
           <div class="score-details" style="font-size: 11px; color: #666; margin-top: 2px;">
             ${answeredQuestions}/${totalQuestions} שאלות
           </div>
@@ -109,13 +109,11 @@ document.addEventListener("DOMContentLoaded", () => {
         const index = parseInt(this.getAttribute('data-index'));
         const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
         const review = reviews[index];
-        
         // Store the review data for the edit page
         localStorage.setItem('currentReview', JSON.stringify(review));
         localStorage.setItem('currentReviewIndex', index);
-        
-        // Redirect to review edit page
-        window.location.href = 'review-edit.html';
+        // Redirect to edit review page
+        window.location.href = 'edit-review.html';
       });
     });
 

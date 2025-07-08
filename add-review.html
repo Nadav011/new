@@ -45,12 +45,18 @@
       <div class="review-type-header" id="reviewTypeHeader"></div>
       <div class="questions-section">
         <div id="questionsContainer" class="questions-container"></div>
-        <div id="noQuestionsBox" class="no-questions-box">
-          <div class="no-questions-message">לא הוגדרו שאלות לסקר זה</div>
-          <button type="button" class="btn btn-primary btn-define" id="defineQuestionsBtn">
-            <span class="plus-icon">➕</span> עבור לניהול סקרים
+        <div id="noQuestionsBox" class="no-questions-box empty-state card" style="display: none; max-width: 420px; margin: 48px auto 0 auto; padding: 48px 32px 40px 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border-radius: 20px;">
+          <div class="empty-icon">📝</div>
+          <h3 class="empty-title">לא נוספו שאלות</h3>
+          <p class="empty-description">לא הוגדרו שאלות עבור סוג ביקורת זה. לחץ על הכפתור כדי ליצור שאלות.</p>
+          <button type="button" class="btn btn-primary btn-add-first" id="createQuestionsBtn" style="margin: 24px auto 0 auto; display: inline-flex; min-width: 180px; max-width: 240px; width: auto;">
+            <span class="plus-icon">＋</span> צור שאלות
           </button>
         </div>
+        <!-- Add Question Floating Button -->
+        <button type="button" class="btn btn-primary btn-add-question" id="addQuestionBtn" style="position: absolute; left: 32px; bottom: 32px; z-index: 10; display: none;">
+          <span class="plus-icon">＋</span> הוסף שאלה
+        </button>
       </div>
       <div class="text-areas-section">
         <div class="text-area-group">
@@ -70,6 +76,41 @@
     
     <div class="save-btn-row">
       <button type="button" class="btn btn-primary btn-save-modern" id="saveReviewBtn">שמור ביקורת</button>
+    </div>
+  </div>
+
+  <!-- Question Modal for Add Review -->
+  <div id="addReviewQuestionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addReviewQuestionModalTitle" style="display: none;">
+    <div class="modal-content">
+      <button class="modal-close" id="closeAddReviewQuestionModalBtn">&times;</button>
+      <h3 id="addReviewQuestionModalTitle">הוספת שאלה לביקורת</h3>
+      <form id="addReviewQuestionForm">
+        <div class="form-section">
+          <div class="form-group">
+            <label for="addReviewItemName">שם השאלה *</label>
+            <input type="text" id="addReviewItemName" name="itemName" placeholder="הכנס שם השאלה" required>
+          </div>
+          <div class="form-group">
+            <label for="addReviewItemType">סוג השאלה *</label>
+            <select id="addReviewItemType" name="itemType" required>
+              <option value="text">שאלת טקסט חופשי</option>
+              <option value="score">שאלת ציון (1-5)</option>
+              <option value="ok-partial-notok">תקין / חלקי / לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addReviewTopic">נושא *</label>
+            <select id="addReviewTopic" name="topic" required>
+              <option value="">בחר נושא</option>
+              <!-- Topics will be loaded dynamically -->
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">הוסף שאלה</button>
+          <button type="button" class="btn btn-secondary" id="cancelAddReviewQuestionBtn">ביטול</button>
+        </div>
+      </form>
     </div>
   </div>
 

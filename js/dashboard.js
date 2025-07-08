@@ -28,6 +28,65 @@ function updateDashboardStats() {
   updateBranchPerformanceStats(reviews, branches);
 }
 
+// --- Outstanding & Needs Improvement Branches: Arrow Navigation & Auto-Rotation ---
+let outstandingBranches = [];
+let needsImprovementBranches = [];
+let outstandingIndex = 0;
+let needsImprovementIndex = 0;
+let outstandingInterval = null;
+let needsImprovementInterval = null;
+
+function renderBranchStatCard(type, branches, index, cardSelector) {
+  const card = document.querySelector(cardSelector);
+  if (!card) return;
+  const valueElement = card.querySelector('.stat-value');
+  if (!branches.length) {
+    valueElement.innerHTML = 'אין נתונים';
+    return;
+  }
+  const branch = branches[index % branches.length];
+  valueElement.innerHTML = `
+    <span>${branch.name} (${branch.average.toFixed(1)})</span>
+    <button class="arrow-btn" id="${type}-up" style="margin:0 4px;">▲</button>
+    <button class="arrow-btn" id="${type}-down">▼</button>
+  `;
+  document.getElementById(`${type}-up`).onclick = () => {
+    if (type === 'outstanding') {
+      outstandingIndex = (outstandingIndex - 1 + branches.length) % branches.length;
+      renderBranchStatCard(type, branches, outstandingIndex, cardSelector);
+    } else {
+      needsImprovementIndex = (needsImprovementIndex - 1 + branches.length) % branches.length;
+      renderBranchStatCard(type, branches, needsImprovementIndex, cardSelector);
+    }
+  };
+  document.getElementById(`${type}-down`).onclick = () => {
+    if (type === 'outstanding') {
+      outstandingIndex = (outstandingIndex + 1) % branches.length;
+      renderBranchStatCard(type, branches, outstandingIndex, cardSelector);
+    } else {
+      needsImprovementIndex = (needsImprovementIndex + 1) % branches.length;
+      renderBranchStatCard(type, branches, needsImprovementIndex, cardSelector);
+    }
+  };
+}
+
+function startBranchAutoRotation() {
+  if (outstandingInterval) clearInterval(outstandingInterval);
+  if (needsImprovementInterval) clearInterval(needsImprovementInterval);
+  outstandingInterval = setInterval(() => {
+    if (outstandingBranches.length > 1) {
+      outstandingIndex = (outstandingIndex + 1) % outstandingBranches.length;
+      renderBranchStatCard('outstanding', outstandingBranches, outstandingIndex, '.stat-card:nth-child(3)');
+    }
+  }, 30000);
+  needsImprovementInterval = setInterval(() => {
+    if (needsImprovementBranches.length > 1) {
+      needsImprovementIndex = (needsImprovementIndex + 1) % needsImprovementBranches.length;
+      renderBranchStatCard('needs', needsImprovementBranches, needsImprovementIndex, '.stat-card:nth-child(4)');
+    }
+  }, 30000);
+}
+
 function updateBranchPerformanceStats(reviews, branches) {
   if (reviews.length === 0) {
     return; // No reviews to analyze
@@ -78,31 +137,24 @@ function updateBranchPerformanceStats(reviews, branches) {
   if (branchAverages.length > 0) {
     // Sort by average score
     branchAverages.sort((a, b) => b.average - a.average);
-    
-    const topPerformer = branchAverages[0];
-    const needsImprovement = branchAverages[branchAverages.length - 1];
-    
-    // Update the stats cards
-    document.querySelectorAll(".stat-card").forEach(card => {
-      const title = card.querySelector(".stat-title")?.innerText?.trim();
-      const valueElement = card.querySelector(".stat-value");
-      
-      if (title === "סניף מצטיין") {
-        valueElement.innerText = `${topPerformer.name} (${topPerformer.average.toFixed(1)})`;
-        valueElement.style.color = '#2e7d32';
-        valueElement.style.fontWeight = '600';
-      } else if (title === "סניף דורש שיפור") {
-        valueElement.innerText = `${needsImprovement.name} (${needsImprovement.average.toFixed(1)})`;
-        valueElement.style.color = '#d32f2f';
-        valueElement.style.fontWeight = '600';
-      }
-    });
-    
+    // Outstanding: all with max average
+    const maxAvg = branchAverages[0].average;
+    outstandingBranches = branchAverages.filter(b => b.average === maxAvg);
+    outstandingIndex = 0;
+    // Needs Improvement: all with min average
+    const minAvg = branchAverages[branchAverages.length - 1].average;
+    needsImprovementBranches = branchAverages.filter(b => b.average === minAvg);
+    needsImprovementIndex = 0;
+    // Render with arrows
+    renderBranchStatCard('outstanding', outstandingBranches, outstandingIndex, '.stat-card:nth-child(3)');
+    renderBranchStatCard('needs', needsImprovementBranches, needsImprovementIndex, '.stat-card:nth-child(4)');
+    startBranchAutoRotation();
     // Update branch rankings section
     updateBranchRankingsWithScores(branchAverages);
   }
 }
 
+// --- Fix Recent Reviews Table: Use averageScore ---
 function updateRecentReviews() {
   const reviews = JSON.parse(localStorage.getItem("reviews") || "[]");
   const recentReviewsContainer = document.querySelector('.box:last-child');
@@ -161,17 +213,14 @@ function updateRecentReviews() {
   recentReviews.forEach((review, index) => {
     const reviewDate = new Date(review.date);
     const formattedDate = reviewDate.toLocaleDateString('he-IL');
-    
-    // Determine score color
+    // Use averageScore for display
+    const score = typeof review.averageScore === 'number' ? review.averageScore : (review.score || 0);
     let scoreColor = "green";
-    if (review.score <= 3) scoreColor = "red";
-    else if (review.score <= 7) scoreColor = "yellow";
-    
-    // Determine type color
+    if (score <= 3) scoreColor = "red";
+    else if (score <= 4) scoreColor = "yellow";
     let typeColor = "lightgreen";
     if (review.type?.includes("משלוח")) typeColor = "yellow";
     else if (review.type?.includes("ראיון")) typeColor = "pink";
-    
     reviewsHTML += `
       <div class="recent-review-row" 
            data-review-index="${sortedReviews.indexOf(review)}"
@@ -214,7 +263,7 @@ function updateRecentReviews() {
             display: inline-block;
             background-color: ${scoreColor === 'green' ? '#e0f8e9' : scoreColor === 'yellow' ? '#fff7cc' : '#fdecea'};
             color: ${scoreColor === 'green' ? '#2e7d32' : scoreColor === 'yellow' ? '#c79b00' : '#d32f2f'};
-          ">${review.score || 0}/10</span>
+          ">${score.toFixed(1)}/5</span>
         </div>
         <div style="text-align: center; font-size: 13px; color: #666;">
           ${formattedDate}
@@ -324,9 +373,9 @@ function updateBranchRankingsWithScores(branchAverages) {
     }
     
     let scoreColor = '#666';
-    if (branch.average >= 8) scoreColor = '#2e7d32';
-    else if (branch.average >= 6) scoreColor = '#f57c00';
-    else scoreColor = '#d32f2f';
+    if (branch.average >= 4) scoreColor = '#2e7d32'; // Outstanding
+    else if (branch.average >= 3) scoreColor = '#f57c00'; // Needs Improvement
+    else scoreColor = '#d32f2f'; // Poor
     
     rankingsHTML += `
       <div class="branch-ranking-row" 
@@ -357,7 +406,7 @@ function updateBranchRankingsWithScores(branchAverages) {
             display: inline-block;
             background-color: ${scoreColor === '#2e7d32' ? '#e0f8e9' : scoreColor === '#f57c00' ? '#fff3e0' : '#fdecea'};
             color: ${scoreColor};
-          ">${branch.average.toFixed(1)}/10</span>
+          ">${branch.average.toFixed(1)}/5</span>
         </div>
       </div>
     `;
@@ -420,14 +469,14 @@ function updateBranchRankings() {
           <span style="font-weight: bold; color: #333;">${branch.name}</span>
         </div>
         <div style="
-          background: ${branch.average >= 8 ? '#28a745' : branch.average >= 6 ? '#ffc107' : '#dc3545'};
+          background: ${branch.average >= 4 ? '#28a745' : branch.average >= 3 ? '#ffc107' : '#dc3545'};
           color: white;
           padding: 4px 8px;
           border-radius: 4px;
           font-size: 14px;
           font-weight: bold;
         ">
-          ${branch.average}/10
+          ${branch.average}/5
         </div>
       </div>
     `;

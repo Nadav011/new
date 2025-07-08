@@ -255,8 +255,7 @@ function saveQuestionToSurvey() {
         itemName: formData.get('itemName'),
         itemType: formData.get('itemType'),
         questionText: formData.get('questionText'),
-        topic: formData.get('topic'),
-        score: '10' // Default score for all scored questions
+        topic: formData.get('topic')
     };
     
     // Validation

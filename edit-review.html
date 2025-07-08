@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>עריכת ביקורת</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css" />
+  <link rel="stylesheet" href="css/add-review.css" />
+</head>
+<body>
+  <div id="header-container"></div>
+  <div class="main-content">
+    <div class="page-header">
+      <h1 class="page-title">עריכת ביקורת</h1>
+      <p class="page-description">ערוך את פרטי הביקורת והשאלות עבור הסניף הנבחר</p>
+    </div>
+    <div class="review-form-section">
+      <form id="editReviewForm" class="review-form-table">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="branchSelect">סניף</label>
+            <select id="branchSelect"></select>
+          </div>
+          <div class="form-group">
+            <label for="reviewTypeSelect">סוג ביקורת</label>
+            <select id="reviewTypeSelect"></select>
+          </div>
+          <div class="form-group">
+            <label for="reviewerName">שם המבקר</label>
+            <input type="text" id="reviewerName" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewDate">תאריך ביקורת</label>
+            <input type="date" id="reviewDate" required>
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="review-card">
+      <div class="review-type-header" id="reviewTypeHeader"></div>
+      <div class="questions-section">
+        <div id="questionsContainer" class="questions-container"></div>
+      </div>
+      <div class="text-areas-section">
+        <div class="text-area-group">
+          <label for="managerSummary">סיכום מנהל</label>
+          <textarea id="managerSummary" placeholder="הכנס את סיכום המנהל כאן..."></textarea>
+        </div>
+        <div class="text-area-group">
+          <label for="keyStrengths">נקודות לשימור</label>
+          <textarea id="keyStrengths" placeholder="הכנס את החוזקות העיקריות כאן..."></textarea>
+        </div>
+        <div class="text-area-group">
+          <label for="areasForImprovement">נקודות לשיפור</label>
+          <textarea id="areasForImprovement" placeholder="הכנס את התחומים לשיפור כאן..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="save-btn-row">
+      <button type="button" class="btn btn-primary btn-save-modern" id="saveEditReviewBtn">שמור שינויים</button>
+    </div>
+  </div>
+  <script src="js/edit-review.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html> 

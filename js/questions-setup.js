@@ -7,7 +7,30 @@ let isEditingSurvey = false;
 // Initialize the page
 document.addEventListener('DOMContentLoaded', function() {
     loadTopics();
-    checkIfEditingSurvey();
+    // Check for ?survey= parameter in URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const surveyName = urlParams.get('survey');
+    if (surveyName) {
+        // Load the survey by name from localStorage
+        const surveys = JSON.parse(localStorage.getItem('surveys')) || [];
+        const foundSurvey = surveys.find(s => s.name === surveyName);
+        if (foundSurvey) {
+            currentSurvey = foundSurvey;
+            isEditingSurvey = true;
+            questions = currentSurvey.questions ? [...currentSurvey.questions] : [];
+            // Update UI for this survey
+            document.getElementById('surveyInfo').style.display = 'block';
+            document.getElementById('surveyName').textContent = currentSurvey.name;
+            document.getElementById('surveyDescription').textContent = currentSurvey.description || '';
+            document.getElementById('pageDescription').textContent = 'עריכת שאלות עבור הסקר הנבחר';
+            updateUI();
+        } else {
+            // Survey not found, fallback
+            checkIfEditingSurvey();
+        }
+    } else {
+        checkIfEditingSurvey();
+    }
 });
 
 // Check if we're editing a specific survey
@@ -153,54 +176,34 @@ function renderQuestions() {
         return;
     }
     
+    const typeLabels = {
+        'free-text': 'שאלת טקסט חופשי',
+        'rating-1-5': 'שאלת דירוג 1-5',
+        'status-ok': 'שאלת תקין/חלקי/לא תקין'
+    };
+    
     const questionsHTML = questions.map((question, index) => {
-        const typeLabels = {
-            'group-title': 'כותרת קבוצה',
-            'free-text': 'שאלת טקסט חופשי',
-            'rating-1-5': 'שאלת דירוג 1-5',
-            'status-ok': 'שאלת סטטוס'
-        };
-        
         const typeLabel = typeLabels[question.itemType] || question.itemType;
         
-        if (question.itemType === 'group-title') {
-            return `
-                <div class="question-item group-title" data-index="${index}">
-                    <div class="question-header">
-                        <h3 class="question-title">${question.itemName}</h3>
-                        <span class="question-type">${typeLabel}</span>
-                    </div>
-                    <div class="question-meta">
-                        <span>כותרת קבוצה</span>
-                    </div>
-                    <div class="question-actions">
-                        <button class="btn btn-secondary" onclick="editQuestion(${index})">ערוך</button>
-                        <button class="btn btn-secondary" onclick="deleteQuestion(${index})">מחק</button>
-                    </div>
+        return `
+            <div class="question-item" data-index="${index}">
+                <div class="question-header">
+                    <h3 class="question-title">${question.itemName}</h3>
+                    <span class="question-type">${typeLabel}</span>
                 </div>
-            `;
-        } else {
-            return `
-                <div class="question-item" data-index="${index}">
-                    <div class="question-header">
-                        <h3 class="question-title">${question.itemName}</h3>
-                        <span class="question-type">${typeLabel}</span>
-                    </div>
-                    <div class="question-content">
-                        <strong>שאלה:</strong> ${question.questionText || 'לא צוין'}<br>
-                        <strong>נושא:</strong> ${question.topic || 'לא צוין'}<br>
-                        <strong>ציון:</strong> ${question.score || '10'}/10
-                    </div>
-                    <div class="question-meta">
-                        <span>נוצר: ${new Date(question.createdAt).toLocaleDateString('he-IL')}</span>
-                    </div>
-                    <div class="question-actions">
-                        <button class="btn btn-secondary" onclick="editQuestion(${index})">ערוך</button>
-                        <button class="btn btn-secondary" onclick="deleteQuestion(${index})">מחק</button>
-                    </div>
+                <div class="question-content">
+                    <strong>שאלה:</strong> ${question.questionText || 'לא צוין'}<br>
+                    <strong>נושא:</strong> ${question.topic || 'לא צוין'}
                 </div>
-            `;
-        }
+                <div class="question-meta">
+                    <span>נוצר: ${new Date(question.createdAt).toLocaleDateString('he-IL')}</span>
+                </div>
+                <div class="question-actions">
+                    <button class="btn btn-secondary" onclick="editQuestion(${index})">ערוך</button>
+                    <button class="btn btn-secondary" onclick="deleteQuestion(${index})">מחק</button>
+                </div>
+            </div>
+        `;
     }).join('');
     
     questionsList.innerHTML = questionsHTML;
@@ -215,6 +218,18 @@ function openQuestionModal(questionIndex = null) {
     
     // Reset form
     form.reset();
+    
+    // Set Item Name to current survey name and lock it
+    const itemNameInput = document.getElementById('itemName');
+    if (currentSurvey && currentSurvey.name) {
+        itemNameInput.value = currentSurvey.name;
+    } else {
+        itemNameInput.value = '';
+    }
+    itemNameInput.readOnly = true;
+    
+    // Show fields for default type immediately
+    handleItemTypeChange();
     
     // Update modal title
     if (questionIndex !== null) {
@@ -254,22 +269,15 @@ function openTopicsModal() {
 function handleItemTypeChange() {
     const itemType = document.getElementById('itemType').value;
     const questionFields = document.getElementById('questionFields');
-    
-    if (itemType === 'group-title') {
-        questionFields.style.display = 'none';
-    } else {
-        questionFields.style.display = 'block';
-        
-        // Update required fields
-        const questionText = document.getElementById('questionText');
-        const topic = document.getElementById('topic');
-        
-        questionText.required = true;
-        topic.required = true;
-        
-        // Load topics in dropdown
-        loadTopicsInDropdown();
-    }
+    // Always show question fields for the three allowed types
+    questionFields.style.display = 'block';
+    // Update required fields
+    const questionText = document.getElementById('questionText');
+    const topic = document.getElementById('topic');
+    questionText.required = true;
+    topic.required = true;
+    // Load topics in dropdown
+    loadTopicsInDropdown();
 }
 
 // Load topics in dropdown
@@ -296,46 +304,35 @@ function loadTopicsInDropdown() {
 function saveQuestion() {
     const form = document.getElementById('questionForm');
     const formData = new FormData(form);
-    
+    const itemType = formData.get('itemType');
+    // Only allow the three types
+    if (!["free-text", "rating-1-5", "status-ok"].includes(itemType)) {
+        alert('סוג שאלה לא חוקי');
+        return;
+    }
     const questionData = {
         itemName: formData.get('itemName'),
-        itemType: formData.get('itemType'),
+        itemType: itemType,
         questionText: formData.get('questionText'),
         topic: formData.get('topic'),
-        score: '10', // Default score for all scored questions
         createdAt: new Date().toISOString()
     };
-    
     // Validation
-    if (!questionData.itemName || !questionData.itemType) {
+    if (!questionData.itemName || !questionData.itemType || !questionData.questionText || !questionData.topic) {
         alert('אנא מלא את כל השדות הנדרשים');
         return;
     }
-    
-    if (questionData.itemType !== 'group-title') {
-        if (!questionData.questionText || !questionData.topic) {
-            alert('אנא מלא את כל השדות הנדרשים');
-            return;
-        }
-    }
-    
     // Check if editing existing question
     const editingIndex = form.dataset.editingIndex;
-    
     if (editingIndex !== undefined) {
-        // Update existing question
         questions[parseInt(editingIndex)] = questionData;
         delete form.dataset.editingIndex;
     } else {
-        // Add new question
         questions.push(questionData);
     }
-    
     saveQuestions();
     updateUI();
     closeQuestionModal();
-    
-    // Show success message
     showSuccessMessage(editingIndex !== undefined ? 'השאלה עודכנה בהצלחה' : 'השאלה נוספה בהצלחה');
 }
 
@@ -345,11 +342,16 @@ function loadQuestionForEdit(index) {
     const form = document.getElementById('questionForm');
     
     // Set form data
-    document.getElementById('itemName').value = question.itemName;
+    const itemNameInput = document.getElementById('itemName');
+    if (currentSurvey && currentSurvey.name) {
+        itemNameInput.value = currentSurvey.name;
+    } else {
+        itemNameInput.value = '';
+    }
+    itemNameInput.readOnly = true;
     document.getElementById('itemType').value = question.itemType;
     document.getElementById('questionText').value = question.questionText || '';
     document.getElementById('topic').value = question.topic || '';
-    document.getElementById('score').value = question.score || '';
     
     // Store editing index
     form.dataset.editingIndex = index;

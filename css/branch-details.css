@@ -85,13 +85,13 @@ body {
 }
 
 .stat-box {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  border-radius: 18px;
   padding: 24px 20px;
   text-align: center;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
   position: relative;
   overflow: hidden;
 }
@@ -104,13 +104,13 @@ body {
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, #1976d2 0%, #1565c0 100%);
-  border-radius: 16px 16px 0 0;
+  border-radius: 18px 18px 0 0;
 }
 
 .stat-box:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
-  border-color: rgba(25, 118, 210, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  border-color: rgba(25, 118, 210, 0.12);
 }
 
 .stat-icon {
@@ -146,12 +146,12 @@ body {
 
 /* Reviews History */
 .reviews-history {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  padding: 32px 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 40px 24px;
   margin-bottom: 32px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
 }
 
 .reviews-empty {
@@ -167,11 +167,12 @@ body {
 
 /* Branch Details */
 .branch-details {
-  background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  border-radius: 16px;
-  padding: 32px 24px;
-  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.04);
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.03);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  padding: 40px 24px;
+  margin-bottom: 32px;
 }
 
 .branch-details-list {
@@ -209,6 +210,45 @@ body {
   color: #6b7280;
   font-size: 14px;
   text-align: left;
+}
+
+/* Modern review history table styles */
+.branch-reviews-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
+  border-radius: 16px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+  overflow: hidden;
+  font-family: inherit;
+  margin-top: 16px;
+}
+.branch-reviews-table th, .branch-reviews-table td {
+  padding: 16px 18px;
+  text-align: center;
+  font-size: 16px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.branch-reviews-table th {
+  background: #f7f8fa;
+  font-weight: 700;
+  color: #1d1d1f;
+  font-size: 17px;
+}
+.branch-reviews-table tr:last-child td {
+  border-bottom: none;
+}
+.branch-reviews-table tr {
+  transition: background 0.18s;
+  cursor: pointer;
+}
+.branch-reviews-table tr:hover {
+  background: #f0f4fa;
+}
+.branch-reviews-table td {
+  color: #333;
+  font-weight: 500;
 }
 
 /* Mobile Responsive */

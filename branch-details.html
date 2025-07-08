@@ -17,7 +17,7 @@
       <button class="btn-edit" onclick="openEditPopup()">✏️ עריכת פרטי סניף</button>
     </div>
 
-    <div class="branch-header">
+    <div class="branch-header card">
       <h1 class="branch-name" id="branch-name">שם סניף</h1>
       <p class="branch-address" id="branch-address">כתובת מלאה</p>
     </div>
@@ -45,14 +45,16 @@
       </div>
     </div>
 
-    <div class="reviews-history">
-      <h2 class="section-header">היסטוריית ביקורות בסניף</h2>
-      <div class="reviews-empty">לא בוצעו ביקורות בסניף זה עדיין.</div>
-    </div>
-
-    <div class="branch-details">
+    <div class="branch-details card">
       <h2 class="section-header">פרטי הסניף</h2>
       <ul class="branch-details-list" id="branch-details-list"></ul>
+      <div id="branch-attachments" class="branch-attachments" style="margin-top:24px;"></div>
+    </div>
+
+    <div class="reviews-history card">
+      <h2 class="section-header">היסטוריית ביקורות בסניף</h2>
+      <div class="reviews-empty">לא בוצעו ביקורות בסניף זה עדיין.</div>
+      <!-- Table will be injected by JS -->
     </div>
   </div>
 
@@ -111,5 +113,6 @@
         document.body.appendChild(script);
       });
   </script>
+  <script src="js/branch-details.js"></script>
 </body>
 </html>

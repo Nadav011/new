@@ -57,18 +57,16 @@
       <form id="questionForm">
         <div class="form-section">
           <div class="form-group">
-            <label for="itemName">שם הפריט</label>
-            <input type="text" id="itemName" name="itemName" placeholder="הכנס שם הפריט" required>
+            <label for="itemName">Review Type (שם פריט)</label>
+            <input type="text" id="itemName" name="itemName" required readonly>
           </div>
           
           <div class="form-group">
             <label for="itemType">סוג הפריט *</label>
             <select id="itemType" name="itemType" required onchange="handleItemTypeChange()">
-              <option value="">בחר סוג פריט</option>
-              <option value="group-title">כותרת קבוצה</option>
-              <option value="free-text">שאלת טקסט חופשי (ציון: 10)</option>
-              <option value="rating-1-5">שאלת דירוג 1-5 (ציון: 10)</option>
-              <option value="status-ok">שאלת סטטוס תקין/חלקי/לא תקין (ציון: 10)</option>
+              <option value="free-text">שאלת טקסט חופשי</option>
+              <option value="rating-1-5">שאלת דירוג 1-5</option>
+              <option value="status-ok">שאלת תקין/חלקי/לא תקין</option>
             </select>
           </div>
         </div>
@@ -90,7 +88,6 @@
           <div class="score-info">
             <div class="score-badge">
               <span class="score-icon">🎯</span>
-              <span>ציון מקסימלי: 10</span>
             </div>
             <p class="score-description">הציון יוענק אוטומטית בהתאם לתשובה</p>
           </div>

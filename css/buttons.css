@@ -1,28 +1,29 @@
+/* Unified Button Styles - Minimal, Apple-like */
 .btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  padding: 5px 14px;
-  border: 1px solid #e0e0e0;
-  border-radius: 999px;
-  font-size: 14px;
-  font-family: inherit;
+  padding: 8px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  font-size: 15px;
+  font-family: 'Heebo', Arial, sans-serif;
   font-weight: 500;
   cursor: pointer;
-  background: linear-gradient(180deg, #fff 90%, #f6f6f7 100%);
+  background: linear-gradient(180deg, #fff 90%, #f7f8fa 100%);
   color: #222;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
   transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
   outline: none;
   min-width: 0;
-  min-height: 32px;
+  min-height: 36px;
   letter-spacing: 0.01em;
 }
 
 .btn:active {
-  background: linear-gradient(180deg, #f6f6f7 80%, #ededed 100%);
+  background: linear-gradient(180deg, #f7f8fa 80%, #ededed 100%);
   color: #1976d2;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 
 .btn:focus {
@@ -32,7 +33,7 @@
 
 .btn-view {
   color: #1976d2;
-  background: linear-gradient(180deg, #f7faff 90%, #eaf2fb 100%);
+  background: linear-gradient(180deg, #f7faff 90%, #f3f6fa 100%);
   border: 1px solid #d0e3fa;
 }
 .btn-view:hover, .btn-view:focus {
@@ -68,7 +69,7 @@
   color: #fff;
   border: 1px solid #1976d2;
   font-weight: 600;
-  box-shadow: 0 2px 8px rgba(25,118,210,0.07);
+  box-shadow: 0 2px 8px rgba(25,118,210,0.06);
 }
 .btn-primary:hover, .btn-primary:focus {
   background: linear-gradient(180deg, #1565c0 90%, #1976d2 100%);
@@ -76,16 +77,28 @@
   border: 1.5px solid #1251a3;
 }
 
+.btn-secondary {
+  background: linear-gradient(180deg, #f7f8fa 90%, #f3f4f6 100%);
+  color: #374151;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+}
+.btn-secondary:hover, .btn-secondary:focus {
+  background: linear-gradient(180deg, #e5e7eb 90%, #f3f4f6 100%);
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+}
+
 .btn-icon {
-  padding: 5px 8px;
-  border-radius: 999px;
-  font-size: 15px;
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 16px;
   background: transparent;
   color: inherit;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e5e7eb;
   box-shadow: none;
   min-width: 0;
-  min-height: 32px;
+  min-height: 36px;
 }
 
 .btn-icon:hover, .btn-icon:focus {
@@ -96,13 +109,13 @@
 
 @media (max-width: 600px) {
   .btn {
-    font-size: 13px;
-    padding: 5px 7px;
-    min-height: 28px;
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 32px;
   }
   .btn-icon {
-    font-size: 13px;
-    padding: 5px 6px;
-    min-height: 28px;
+    font-size: 14px;
+    padding: 8px 8px;
+    min-height: 32px;
   }
 } 

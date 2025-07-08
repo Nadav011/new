@@ -52,12 +52,12 @@ function loadReviewMetadata(reviewData) {
   // Calculate and display total score
   const totalScore = calculateTotalScore(reviewData);
   const scoreElement = document.getElementById('totalScore');
-  scoreElement.textContent = `${totalScore.toFixed(1)}/10`;
+  scoreElement.textContent = `${totalScore.toFixed(2)}/5`;
   
   // Color code the score
-  if (totalScore >= 8) {
+  if (totalScore >= 4.5) {
     scoreElement.style.color = '#10b981';
-  } else if (totalScore >= 6) {
+  } else if (totalScore >= 3) {
     scoreElement.style.color = '#f59e0b';
   } else {
     scoreElement.style.color = '#ef4444';
@@ -67,29 +67,56 @@ function loadReviewMetadata(reviewData) {
 function loadQuestionsAndAnswers(reviewData) {
   const questionsContainer = document.getElementById('questionsContainer');
   questionsContainer.innerHTML = '';
-  
   const questions = reviewData.questions || [];
-  const answers = reviewData.answers || {};
-  
   if (questions.length === 0) {
     questionsContainer.innerHTML = '<p class="no-questions">לא נמצאו שאלות לביקורת זו</p>';
     return;
   }
-  
-  let currentGroup = null;
-  
   questions.forEach((question, index) => {
-    // Check if this is a group title
-    if (question.type === 'group-title') {
-      currentGroup = question.text;
-      const groupElement = createGroupTitleElement(question);
-      questionsContainer.appendChild(groupElement);
-      return;
+    // Use the review.questions array for answers
+    const answerObj = reviewData.questions[index] || {};
+    const type = question.itemType || question.type;
+    let answerContent = '';
+    if (type === 'free-text') {
+      answerContent = `
+        <div class="question-answer">
+          <div class="free-text-answer" style="background:#f7f8fa;border-radius:10px;padding:14px 18px;margin-bottom:10px;color:#222;font-size:16px;min-height:38px;">${answerObj.answer ? answerObj.answer : '<span style=\'color:#aaa\'>לא נכתבה תשובה</span>'}</div>
+          <div class="score-btn-row" style="margin-top: 12px;">
+            ${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}${answerObj.score == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    } else if (type === 'rating-1-5') {
+      answerContent = `
+        <div class="question-answer">
+          <div class="score-btn-row" style="margin-top: 12px;">
+            ${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}${answerObj.score == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
+          </div>
+        </div>
+      `;
+    } else if (type === 'status-ok') {
+      answerContent = `
+        <div class="question-answer">
+          <div class="status-selector" style="margin-top: 12px;">
+            <span class="score-btn${answerObj.score == 5 ? ' selected' : ''}">✅ תקין${answerObj.score == 5 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+            <span class="score-btn${answerObj.score == 3 ? ' selected' : ''}">⚠️ חלקי${answerObj.score == 3 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+            <span class="score-btn${answerObj.score == 1 ? ' selected' : ''}">❌ לא תקין${answerObj.score == 1 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+          </div>
+        </div>
+      `;
     }
-    
-    // Create question element
-    const questionElement = createQuestionElement(question, answers[question.id] || answers[index], index);
-    questionsContainer.appendChild(questionElement);
+    const questionDiv = document.createElement('div');
+    questionDiv.className = 'question-item';
+    questionDiv.innerHTML = `
+      <div class="question-header">
+        <h3 class="question-title">${question.itemName || question.questionText || question.text}</h3>
+      </div>
+      <div class="question-content">
+        <div class="question-meta">${question.topic ? `<span class="question-meta-label">נושא:</span> <span>${question.topic}</span>` : ''}</div>
+        ${answerContent}
+      </div>
+    `;
+    questionsContainer.appendChild(questionDiv);
   });
 }
 
@@ -110,69 +137,62 @@ function createGroupTitleElement(groupQuestion) {
 function createQuestionElement(question, answer, index) {
   const questionDiv = document.createElement('div');
   questionDiv.className = 'question-item';
-  
-  const questionType = getQuestionTypeLabel(question.type);
-  const questionMeta = getQuestionMeta(question);
-  
+
+  // Map legacy and new types
+  let type = question.itemType || question.type;
+  if (type === 'free-text') type = 'free-text';
+  else if (type === 'rating-1-5') type = 'rating-1-5';
+  else if (type === 'status-ok') type = 'status-ok';
+
   let answerContent = '';
-  
-  if (question.type === 'text') {
+
+  if (type === 'free-text') {
     answerContent = `
       <div class="question-answer">
-        <p class="answer-text">${answer || 'לא נענה'}</p>
-      </div>
-    `;
-  } else if (question.type === 'score') {
-    const score = answer || 0;
-    const scoreColor = score >= 8 ? 'ok' : score >= 6 ? 'partial' : 'not-ok';
-    answerContent = `
-      <div class="question-answer">
-        <div class="answer-score">
-          <span>⭐</span>
-          <span>${score}/10</span>
+        <div class="free-text-answer" style="background:#f7f8fa;border-radius:10px;padding:14px 18px;margin-bottom:10px;color:#222;font-size:16px;min-height:38px;">${answer && answer.text ? answer.text : '<span style=\'color:#aaa\'>לא נכתבה תשובה</span>'}</div>
+        <div class="score-btn-row" style="margin-top: 12px;">
+          ${[1,2,3,4,5].map(num => `<span class="score-btn${answer && answer.score == num ? ' selected' : ''}">${num}${answer && answer.score == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
         </div>
       </div>
     `;
-  } else if (question.type === 'yes-no') {
-    const status = answer === 'yes' ? 'ok' : answer === 'no' ? 'not-ok' : 'partial';
-    const statusText = answer === 'yes' ? 'כן' : answer === 'no' ? 'לא' : 'לא נענה';
+  } else if (type === 'rating-1-5') {
     answerContent = `
       <div class="question-answer">
-        <div class="answer-status ${status}">
-          <span>${answer === 'yes' ? '✅' : answer === 'no' ? '❌' : '❓'}</span>
-          <span>${statusText}</span>
+        <div class="score-btn-row" style="margin-top: 12px;">
+          ${[1,2,3,4,5].map(num => `<span class="score-btn${answer == num ? ' selected' : ''}">${num}${answer == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
         </div>
       </div>
     `;
-  } else if (question.type === 'multiple-choice') {
-    const selectedOption = question.options ? question.options[answer] : answer;
+  } else if (type === 'status-ok') {
     answerContent = `
       <div class="question-answer">
-        <p class="answer-text">${selectedOption || 'לא נבחר'}</p>
+        <div class="status-selector" style="margin-top: 12px;">
+          <span class="score-btn${answer == 5 ? ' selected' : ''}">✅ תקין${answer == 5 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+          <span class="score-btn${answer == 3 ? ' selected' : ''}">⚠️ חלקי${answer == 3 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+          <span class="score-btn${answer == 1 ? ' selected' : ''}">❌ לא תקין${answer == 1 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+        </div>
       </div>
     `;
   }
-  
+
   questionDiv.innerHTML = `
     <div class="question-header">
-      <h3 class="question-title">${question.text}</h3>
-      <span class="question-type">${questionType}</span>
+      <h3 class="question-title">${question.itemName || question.text}</h3>
     </div>
     <div class="question-content">
-      ${questionMeta ? `<div class="question-meta">${questionMeta}</div>` : ''}
+      <div class="question-meta">${question.topic ? `<span class="question-meta-label">נושא:</span> <span>${question.topic}</span>` : ''}</div>
       ${answerContent}
     </div>
   `;
-  
+
   return questionDiv;
 }
 
 function getQuestionTypeLabel(type) {
   const typeLabels = {
-    'text': 'תשובה חופשית',
-    'score': 'ציון 1-10',
-    'yes-no': 'כן/לא',
-    'multiple-choice': 'בחירה מרובה'
+    'free-text': 'תשובה חופשית',
+    'rating-1-5': 'דירוג 1-5',
+    'status-ok': 'תקין/חלקי/לא תקין'
   };
   return typeLabels[type] || type;
 }
@@ -209,21 +229,14 @@ function loadSummaryInfo(reviewData) {
 
 function calculateTotalScore(reviewData) {
   const questions = reviewData.questions || [];
-  const answers = reviewData.answers || {};
-  
   let totalScore = 0;
   let scoredQuestions = 0;
-  
-  questions.forEach((question, index) => {
-    if (question.type === 'score') {
-      const score = answers[question.id] || answers[index] || 0;
-      if (score > 0) {
-        totalScore += score;
-        scoredQuestions++;
-      }
+  questions.forEach((q) => {
+    if (typeof q.score === 'number' && q.score > 0) {
+      totalScore += q.score;
+      scoredQuestions++;
     }
   });
-  
   return scoredQuestions > 0 ? totalScore / scoredQuestions : 0;
 }
 
