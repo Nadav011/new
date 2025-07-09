@@ -1,81 +1,90 @@
-// Edit Review Page Logic
+// Rebuilt edit-review.js from review-view.js, but with editable Q&A section
 window.addEventListener('DOMContentLoaded', function() {
-  // Load review to edit
-  let review = JSON.parse(localStorage.getItem('currentReview') || '{}');
-  let reviewIndex = localStorage.getItem('currentReviewIndex');
-  if (!review || Object.keys(review).length === 0) {
-    alert('לא נמצאה ביקורת לעריכה');
-    window.location.href = 'reviews.html';
-    return;
-  }
-  if (!Array.isArray(review.questions)) review.questions = [];
-
-  // Load branches and surveys
+  // Load review data
+  const review = JSON.parse(localStorage.getItem('currentReview') || '{}');
+  const reviewIndex = localStorage.getItem('currentReviewIndex');
   const branches = JSON.parse(localStorage.getItem('branches') || '[]');
   const surveys = JSON.parse(localStorage.getItem('surveys') || '[]');
 
-  // Fill branch select
+  // --- Populate branch info ---
+  const branch = branches.find(b => b.name === review.branch) || {};
+  document.getElementById('branchName').textContent = branch.name || review.branch || '';
+  document.getElementById('branchAddress').textContent = branch.address || '';
+  document.getElementById('managerName').textContent = branch.managerName || branch.manager || '';
+  document.getElementById('managerPhone').textContent = branch.managerPhone || branch.contact || '';
+  document.getElementById('franchiseeName').textContent = branch.franchisee || branch.franchiseeName || '-';
+  document.getElementById('kashrutType').textContent = branch.kashrutType || '-';
+  document.getElementById('businessType').textContent = branch.businessType || '-';
+  document.getElementById('branchStatus').textContent = branch.status || '-';
+
+  // --- Populate meta fields ---
   const branchSelect = document.getElementById('branchSelect');
-  branches.forEach(branch => {
+  branchSelect.innerHTML = '';
+  branches.forEach(b => {
     const option = document.createElement('option');
-    option.value = branch.name;
-    option.textContent = branch.name + (branch.city ? ' - ' + branch.city : '');
+    option.value = b.name;
+    option.textContent = b.name + (b.city ? ' - ' + b.city : '');
+    if (b.name === review.branch) option.selected = true;
     branchSelect.appendChild(option);
   });
-  branchSelect.value = review.branch;
-
-  // Fill review type select
   const typeSelect = document.getElementById('reviewTypeSelect');
+  typeSelect.innerHTML = '';
   surveys.forEach(s => {
     const option = document.createElement('option');
     option.value = s.name;
     option.textContent = s.name;
+    if (s.name === review.type) option.selected = true;
     typeSelect.appendChild(option);
   });
-  typeSelect.value = review.type;
-
-  // Fill other fields
   document.getElementById('reviewerName').value = review.reviewer || '';
   document.getElementById('reviewDate').value = review.date || '';
+
+  // --- Populate summary fields ---
   document.getElementById('managerSummary').value = review.managerSummary || '';
   document.getElementById('keyStrengths').value = review.keyStrengths || '';
   document.getElementById('areasForImprovement').value = review.areasForImprovement || '';
 
-  // --- Robustly match answers to questions ---
-  function findAnswerForQuestion(question, idx) {
-    // Try by index, then by questionText/itemName
-    let answer = review.questions[idx];
-    if (!answer && question.questionText) {
-      answer = review.questions.find(q => q.questionText === question.questionText);
-    }
-    if (!answer && question.itemName) {
-      answer = review.questions.find(q => q.itemName === question.itemName);
-    }
-    return answer || {};
-  }
-
-  // --- Render questions for editing ---
+  // --- Render editable Q&A section ---
   function renderQuestions() {
     const questionsContainer = document.getElementById('questionsContainer');
     questionsContainer.innerHTML = '';
-    const selectedSurvey = surveys.find(s => s.name === typeSelect.value);
-    if (!selectedSurvey || !selectedSurvey.questions) return;
-    selectedSurvey.questions.forEach((question, index) => {
-      let answer = findAnswerForQuestion(question, index);
+    let survey = surveys.find(s => s.name === review.type);
+    let questions = (survey && Array.isArray(survey.questions) && survey.questions.length > 0)
+      ? survey.questions : (review.questions && review.questions.length > 0 ? review.questions : []);
+    console.log('Loaded review:', review);
+    console.log('Review answers:', review.questions);
+    console.log('Selected survey:', survey);
+    console.log('Survey questions:', survey ? survey.questions : undefined);
+    if (!questions.length) {
+      questionsContainer.innerHTML = '<div style="color:#b91c1c;font-size:18px;padding:32px;text-align:center;">לא נמצאו שאלות עבור סוג ביקורת זה.<br>ודא שקיים שאלון מתאים במערכת.</div>';
+      return;
+    }
+    questions.forEach((question, index) => {
+      // Find answer by questionId, questionText, or itemName
+      let answer = (review.questions || []).find(a =>
+        (a.questionId && question.questionId && a.questionId === question.questionId) ||
+        (a.questionText && question.questionText && a.questionText === question.questionText) ||
+        (a.itemName && question.itemName && a.itemName === question.itemName)
+      ) || {};
       let qDiv = document.createElement('div');
       qDiv.className = 'question-item';
-      let html = `<div class='question-header'><h3 class='question-title'>${question.questionText || question.itemName || ''}</h3></div><div class='question-content'>`;
-      if (question.itemType === 'free-text') {
-        html += `<textarea class='edit-free-text' data-q='${index}' rows='3' style='width:100%;margin-bottom:10px;'>${answer.answer || ''}</textarea>`;
-        html += `<div class='score-btn-row'>${[1,2,3,4,5].map(num => `<span class='score-btn${answer.score == num ? ' selected' : ''}' data-q='${index}' data-score='${num}'>${num}</span>`).join('')}</div>`;
-      } else if (question.itemType === 'rating-1-5') {
-        html += `<div class='score-btn-row'>${[1,2,3,4,5].map(num => `<span class='score-btn${answer.score == num ? ' selected' : ''}' data-q='${index}' data-score='${num}'>${num}</span>`).join('')}</div>`;
-      } else if (question.itemType === 'status-ok') {
-        html += `<div class='score-btn-row'>`;
-        html += `<span class='score-btn${answer.score == 5 ? ' selected' : ''}' data-q='${index}' data-score='5'> 197 תקין</span>`;
-        html += `<span class='score-btn${answer.score == 3 ? ' selected' : ''}' data-q='${index}' data-score='3'> 6a7 חלקי</span>`;
-        html += `<span class='score-btn${answer.score == 1 ? ' selected' : ''}' data-q='${index}' data-score='1'> 274c לא תקין</span>`;
-        html += `</div>`;
+      let questionTitle = question.questionText || question.text || '';
+      let metaHtml = '';
+      if (question.topic) metaHtml += `<span class='question-meta-label'>נושא:</span> <span>${question.topic}</span>`;
+      if (question.required) metaHtml += `<span class='question-meta-label' style='margin-right:16px;'>חובה:</span> <span>כן</span>`;
+      let html = `<div class='question-header'><h3 class='question-title'>${questionTitle}</h3></div><div class='question-content'>`;
+      if (metaHtml) html += `<div class='question-meta' style='margin-bottom:8px;'>${metaHtml}</div>`;
+      // Editable answer input
+      if ((question.itemType || question.type) === 'free-text') {
+        html += `<div class='question-row-flex'><div class='score-btn-row'>${[1,2,3,4,5].map(num => `<span class='score-btn${answer.score == num ? ' selected' : ''}' data-q='${questionTitle}' data-score='${num}'>${num}</span>`).join('')}</div></div>`;
+      } else if ((question.itemType || question.type) === 'rating-1-5') {
+        html += `<div class='question-row-flex'><div class='score-btn-row'>${[1,2,3,4,5].map(num => `<span class='score-btn${answer.score == num ? ' selected' : ''}' data-q='${questionTitle}' data-score='${num}'>${num}</span>`).join('')}</div></div>`;
+      } else if ((question.itemType || question.type) === 'status-ok') {
+        html += `<div class='question-row-flex'><div class='status-selector'>`;
+        html += `<span class='score-btn${answer.score == 5 ? ' selected' : ''}' data-q='${questionTitle}' data-score='5'>✅ תקין</span>`;
+        html += `<span class='score-btn${answer.score == 3 ? ' selected' : ''}' data-q='${questionTitle}' data-score='3'>⚠️ חלקי</span>`;
+        html += `<span class='score-btn${answer.score == 1 ? ' selected' : ''}' data-q='${questionTitle}' data-score='1'>❌ לא תקין</span>`;
+        html += `</div></div>`;
       }
       html += `</div>`;
       qDiv.innerHTML = html;
@@ -84,34 +93,56 @@ window.addEventListener('DOMContentLoaded', function() {
     // Add event listeners for score selection
     questionsContainer.querySelectorAll('.score-btn').forEach(btn => {
       btn.onclick = function() {
-        const qIdx = parseInt(this.getAttribute('data-q'));
+        const qKey = this.getAttribute('data-q');
         const score = parseInt(this.getAttribute('data-score'));
         // Remove selected from siblings
         this.parentElement.querySelectorAll('.score-btn').forEach(b => b.classList.remove('selected'));
         this.classList.add('selected');
-        // Update answer in review object
-        if (!review.questions[qIdx]) review.questions[qIdx] = {};
-        review.questions[qIdx].score = score;
-        if (selectedSurvey.questions[qIdx].itemType === 'rating-1-5') {
-          review.questions[qIdx].answer = score;
+        // Update answer in review.questions by identifier
+        let qObj = (review.questions || []).find(a =>
+          (a.questionText && a.questionText === qKey) ||
+          (a.itemName && a.itemName === qKey) ||
+          (a.text && a.text === qKey)
+        );
+        if (!qObj) {
+          qObj = { itemName: qKey };
+          if (!review.questions) review.questions = [];
+          review.questions.push(qObj);
         }
+        qObj.score = score;
+        if ((questions.find(q => (q.itemName || q.questionText || q.text) === qKey)?.itemType || questions.find(q => (q.itemName || q.questionText || q.text) === qKey)?.type) === 'rating-1-5') {
+          qObj.answer = score;
+        }
+      };
+    });
+    // Add event listeners for textarea changes
+    questionsContainer.querySelectorAll('textarea.edit-free-text').forEach(textarea => {
+      textarea.oninput = function() {
+        const qKey = this.getAttribute('data-q');
+        let qObj = (review.questions || []).find(a =>
+          (a.questionText && a.questionText === qKey) ||
+          (a.itemName && a.itemName === qKey) ||
+          (a.text && a.text === qKey)
+        );
+        if (!qObj) {
+          qObj = { itemName: qKey };
+          if (!review.questions) review.questions = [];
+          review.questions.push(qObj);
+        }
+        qObj.answer = this.value;
       };
     });
   }
 
-  // Render questions initially
+  // Initial render
   renderQuestions();
+  typeSelect.addEventListener('change', renderQuestions);
 
-  // Update questions if review type changes
-  typeSelect.addEventListener('change', function() {
-    renderQuestions();
-  });
-
-  // Save logic
+  // --- Save logic ---
   document.getElementById('saveEditReviewBtn').onclick = function() {
     // Validate required fields
     if (!branchSelect.value || !typeSelect.value || !document.getElementById('reviewerName').value.trim() || !document.getElementById('reviewDate').value) {
-      alert('נא למלא את כל השדות החיוניים');
+      showMinimalAlert('נא למלא את כל השדות החיוניים', false);
       return;
     }
     // Update review object
@@ -122,20 +153,9 @@ window.addEventListener('DOMContentLoaded', function() {
     review.managerSummary = document.getElementById('managerSummary').value;
     review.keyStrengths = document.getElementById('keyStrengths').value;
     review.areasForImprovement = document.getElementById('areasForImprovement').value;
-    // Update answers for free-text
-    const selectedSurvey = surveys.find(s => s.name === typeSelect.value);
-    if (selectedSurvey && selectedSurvey.questions) {
-      selectedSurvey.questions.forEach((question, index) => {
-        if (question.itemType === 'free-text') {
-          const textarea = document.querySelector(`textarea.edit-free-text[data-q='${index}']`);
-          if (!review.questions[index]) review.questions[index] = {};
-          review.questions[index].answer = textarea.value;
-        }
-      });
-    }
     // Recalculate scores
     let totalScore = 0, answeredQuestions = 0;
-    review.questions.forEach((q, idx) => {
+    (review.questions || []).forEach((q, idx) => {
       if (typeof q.score === 'number' && q.score > 0) {
         totalScore += q.score;
         answeredQuestions++;
@@ -144,7 +164,7 @@ window.addEventListener('DOMContentLoaded', function() {
     review.totalScore = totalScore;
     review.answeredQuestions = answeredQuestions;
     review.averageScore = answeredQuestions > 0 ? totalScore / answeredQuestions : 0;
-    review.totalQuestions = selectedSurvey && selectedSurvey.questions ? selectedSurvey.questions.length : 0;
+    review.totalQuestions = (surveys.find(s => s.name === review.type)?.questions?.length) || (review.questions?.length) || 0;
     // Save back to reviews array
     let reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
     if (reviewIndex !== null && reviews[reviewIndex]) {
@@ -157,7 +177,33 @@ window.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('reviews', JSON.stringify(reviews));
     localStorage.setItem('currentReview', JSON.stringify(review));
     localStorage.setItem('currentReviewIndex', reviewIndex);
-    alert('הביקורת עודכנה בהצלחה!');
-    window.location.href = 'review-view.html';
+    showMinimalAlert('הביקורת עודכנה בהצלחה!', true, function() {
+      window.location.href = 'reviews.html';
+    });
   };
+
+  // --- Minimal Apple-style alert ---
+  function showMinimalAlert(msg, success, cb) {
+    let alertDiv = document.createElement('div');
+    alertDiv.textContent = msg;
+    alertDiv.style.position = 'fixed';
+    alertDiv.style.top = '32px';
+    alertDiv.style.left = '50%';
+    alertDiv.style.transform = 'translateX(-50%)';
+    alertDiv.style.background = success ? 'linear-gradient(90deg,#4ade80,#22d3ee)' : '#fff1f2';
+    alertDiv.style.color = success ? '#1d1d1f' : '#b91c1c';
+    alertDiv.style.padding = '16px 32px';
+    alertDiv.style.fontSize = '18px';
+    alertDiv.style.borderRadius = '12px';
+    alertDiv.style.boxShadow = '0 2px 12px rgba(0,0,0,0.08)';
+    alertDiv.style.zIndex = 9999;
+    document.body.appendChild(alertDiv);
+    setTimeout(() => {
+      alertDiv.style.opacity = 0;
+      setTimeout(() => {
+        if (alertDiv.parentNode) alertDiv.parentNode.removeChild(alertDiv);
+        if (cb) cb();
+      }, 400);
+    }, 1800);
+  }
 }); 

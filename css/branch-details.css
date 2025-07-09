@@ -212,45 +212,6 @@ body {
   text-align: left;
 }
 
-/* Modern review history table styles */
-.branch-reviews-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  background: linear-gradient(135deg, #fff 0%, #f8f9fa 100%);
-  border-radius: 16px;
-  box-shadow: 0 2px 12px rgba(0,0,0,0.04);
-  overflow: hidden;
-  font-family: inherit;
-  margin-top: 16px;
-}
-.branch-reviews-table th, .branch-reviews-table td {
-  padding: 16px 18px;
-  text-align: center;
-  font-size: 16px;
-  border-bottom: 1px solid #e5e7eb;
-}
-.branch-reviews-table th {
-  background: #f7f8fa;
-  font-weight: 700;
-  color: #1d1d1f;
-  font-size: 17px;
-}
-.branch-reviews-table tr:last-child td {
-  border-bottom: none;
-}
-.branch-reviews-table tr {
-  transition: background 0.18s;
-  cursor: pointer;
-}
-.branch-reviews-table tr:hover {
-  background: #f0f4fa;
-}
-.branch-reviews-table td {
-  color: #333;
-  font-weight: 500;
-}
-
 /* Mobile Responsive */
 @media (max-width: 768px) {
   .main-content {
@@ -432,4 +393,42 @@ body {
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
+}
+
+/* === UNIFY FILE UPLOAD GRID FOR INLINE EDIT & POPUP (OVERRIDE) === */
+.inline-edit-card .file-upload-group,
+.file-upload-group {
+  display: grid !important;
+  grid-template-columns: repeat(4, 1fr) !important;
+  gap: 20px !important;
+  align-items: stretch !important;
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  max-width: 100% !important;
+  justify-content: unset !important;
+  overflow-x: unset !important;
+}
+@media (max-width: 1200px) {
+  .inline-edit-card .file-upload-group,
+  .file-upload-group {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+@media (max-width: 700px) {
+  .inline-edit-card .file-upload-group,
+  .file-upload-group {
+    grid-template-columns: 1fr !important;
+  }
+}
+.inline-edit-card .file-upload-item,
+.file-upload-item {
+  min-width: 0 !important;
+  max-width: unset !important;
+  flex: unset !important;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 8px !important;
 }

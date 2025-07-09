@@ -161,10 +161,9 @@ body {
 
 /* Branch Information */
 .branch-details {
-  display: grid;
-  grid-template-columns: 1fr auto;
-  gap: 32px;
-  align-items: start;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
 }
 
 .branch-main {
@@ -187,35 +186,38 @@ body {
   line-height: 1.5;
 }
 
+/* Branch Manager box: full width, modern card style */
 .branch-manager {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px;
-  background: #f8f9fa;
+  width: 100%;
+  margin-top: 10px;
+  background: #fff;
   border-radius: 12px;
-  border: 1px solid #e9ecef;
-}
-
-.manager-info {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  padding: 18px 20px;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: flex-start;
+  border: 1px solid #e5e7eb;
 }
-
+.manager-info-row {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 18px;
+  align-items: center;
+  width: 100%;
+}
 .manager-label {
-  font-size: 14px;
-  font-weight: 600;
   color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 1rem;
+  min-width: unset;
+  margin-left: 4px;
+  font-weight: 500;
 }
-
-.manager-name,
-.manager-phone {
-  font-size: 16px;
-  font-weight: 600;
+.manager-name, .manager-phone, .manager-franchisee, .manager-kashrut, .manager-business-type, .manager-status {
+  font-weight: 500;
   color: #1d1d1f;
+  font-size: 1.05rem;
 }
 
 /* Review Metadata */
@@ -653,6 +655,11 @@ body {
   outline-offset: 2px;
 } 
 
+/* Prevent focus outline on non-editable elements */
+*:not(input):not(textarea):not(select):focus {
+  outline: none !important;
+}
+
 /* Score buttons for review-view */
 .score-btn {
   display: inline-block;
@@ -684,32 +691,312 @@ body {
   color: #1565c0;
 } 
 
-.score-badge, .answer-status, .answer-score {
-  display: inline-block;
-  padding: 6px 16px;
-  border-radius: 999px;
-  font-size: 15px;
-  font-weight: 600;
-  background: linear-gradient(135deg, #f7f8fa 0%, #ffffff 100%);
-  color: #374151;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+/* --- Two-sided layout for score and status buttons --- */
+.question-answer-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0;
+  margin-top: 8px;
+}
+.status-selector {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 0 0 auto;
+}
+.score-btn-row {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  align-items: center;
+  justify-content: flex-end;
+  flex: 1 1 auto;
+}
+.score-btn-row .score-btn {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 50%;
+  padding: 0;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1.5px solid #e5e7eb;
+  background: #f3f4f6;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  box-shadow: none;
+  outline: none;
+  margin: 0;
   letter-spacing: 0.01em;
-  transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.score-btn-row .score-btn.selected {
+  color: #fff;
+  border: none;
+  background: #22d3ee;
+}
+.status-selector .score-btn {
+  min-width: 36px;
+  height: 32px;
+  padding: 0 14px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1.5px solid #e5e7eb;
+  border-radius: 16px;
+  background: #f3f4f6;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  box-shadow: none;
+  outline: none;
+  margin: 0;
+  letter-spacing: 0.01em;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.status-selector .score-btn.selected {
+  color: #fff;
+  border: none;
+}
+.status-selector .score-btn[data-score="5"].selected {
+  background: #22c55e;
+}
+.status-selector .score-btn[data-score="3"].selected {
+  background: #f59e42;
+}
+.status-selector .score-btn[data-score="1"].selected {
+  background: #ef4444;
+}
+.status-selector .score-btn[data-score="5"]:not(.selected) {
+  border-color: #b6eec7;
+}
+.status-selector .score-btn[data-score="3"]:not(.selected) {
+  border-color: #ffe0b2;
+}
+.status-selector .score-btn[data-score="1"]:not(.selected) {
+  border-color: #fecaca;
+}
+.score-btn-row .score-btn:active, .status-selector .score-btn:active {
+  filter: brightness(0.97);
 }
 
-.score-badge.low, .answer-status.not-ok {
-  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-  color: #d32f2f;
-  border: 1px solid #ef9a9a;
+/* --- Question Title Typography --- */
+.question-title {
+  font-size: 1.12rem;
+  font-weight: 600;
+  margin: 0 0 10px 0;
+  letter-spacing: 0.01em;
 }
-.score-badge.medium, .answer-status.partial {
-  background: linear-gradient(135deg, #fffde7 0%, #fff9c4 100%);
-  color: #fbc02d;
-  border: 1px solid #ffe082;
+
+/* --- Spacing between question blocks --- */
+.question-item {
+  margin-bottom: 24px;
 }
-.score-badge.high, .answer-status.ok {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  color: #388e3c;
-  border: 1px solid #a5d6a7;
+
+/* --- Ensure answer blocks have clear margin from title --- */
+.question-content {
+  margin-top: 2px;
+} 
+
+/* --- Branch Manager Box: Full Width, Modern Card --- */
+.branch-manager {
+  width: 100%;
+  margin-top: 10px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  padding: 14px 18px 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: flex-start;
+  border: 1px solid #e5e7eb;
+}
+.branch-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* --- Score Buttons and Summary: Right-Aligned (RTL) --- */
+.question-answer-row, .score-btn-row, .status-selector {
+  justify-content: flex-end !important;
+  direction: rtl;
+}
+.totalScore, .meta-value.score {
+  text-align: right;
+  float: right;
+  direction: rtl;
+} 
+
+/* --- All answer buttons right-aligned (LTR) --- */
+.question-answer-row, .score-btn-row, .status-selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 12px;
+}
+.score-btn-row .score-btn, .status-selector .score-btn {
+  min-width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  padding: 0 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  border: 1.5px solid #e5e7eb;
+  background: #f3f4f6;
+  color: #222;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border 0.15s;
+  box-shadow: none;
+  outline: none;
+  margin: 0;
+  letter-spacing: 0.01em;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.score-btn-row .score-btn.selected, .status-selector .score-btn.selected {
+  color: #fff;
+  border: none;
+  background: #22d3ee;
+}
+.status-selector .score-btn[data-score="5"].selected {
+  background: #22c55e;
+}
+.status-selector .score-btn[data-score="3"].selected {
+  background: #f59e42;
+}
+.status-selector .score-btn[data-score="1"].selected {
+  background: #ef4444;
+}
+.status-selector .score-btn[data-score="5"]:not(.selected) {
+  border-color: #b6eec7;
+}
+.status-selector .score-btn[data-score="3"]:not(.selected) {
+  border-color: #ffe0b2;
+}
+.status-selector .score-btn[data-score="1"]:not(.selected) {
+  border-color: #fecaca;
+}
+.score-btn-row .score-btn:active, .status-selector .score-btn:active {
+  filter: brightness(0.97);
+} 
+
+.question-answer-row .score-btn-row {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+} 
+
+.score-btn-row {
+  margin-left: auto !important;
+  margin-right: 0 !important;
+  display: flex;
+  justify-content: flex-end !important;
+} 
+
+.question-row-flex {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  width: 100%;
+}
+.question-text-flex {
+  flex: 1 1 auto;
+  text-align: right;
+  padding-left: 16px;
+  font-weight: 500;
+}
+.score-btn-row, .status-selector {
+  flex: 0 0 auto;
+} 
+
+/* --- FORCE CENTERED SCORE/STATUS BUTTONS (PIXEL-PERFECT LIKE ADD-REVIEW) --- */
+.score-btn-row, .status-selector {
+  display: flex;
+  flex-direction: row;
+  justify-content: center !important;
+  align-items: center;
+  gap: 12px;
+  margin-inline: auto !important;
+} 
+
+/* --- UNIFIED QUESTION CARD TYPOGRAPHY & LAYOUT (MATCH ADD-REVIEW) --- */
+.question-title, .question-text {
+  font-size: 20px !important;
+  font-weight: 700 !important;
+  color: #222;
+  text-align: center;
+  margin-bottom: 16px;
+}
+.question-meta, .question-meta-label {
+  font-size: 18px !important;
+  font-weight: 700 !important;
+  color: #1976d2;
+  margin-bottom: 8px;
+  display: inline-block;
+} 
+
+/* BADGES & TAGS: Use only global .badge/.tag from branches-tags.css */
+.badge, .score-badge, .review-type-badge, .status-tag {
+  @extend .badge;
+}
+
+/* BUTTONS: Use only global .btn, .btn-primary, .btn-secondary from buttons.css */
+.btn, .btn-primary, .btn-secondary, .btn-icon {
+  @extend .btn;
+}
+
+/* QUESTION BLOCKS: Unified style */
+.question-item, .questions-section, .summary-content, .review-section {
+  background: linear-gradient(135deg, #fff 0%, #f7f8fa 100%);
+  border-radius: 24px;
+  box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+  border: 1px solid rgba(0,0,0,0.06);
+  padding: 32px;
+  margin-bottom: 32px;
+}
+
+/* SCORE BUTTONS: Unified style */
+.score-btn, .status-selector .score-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 36px;
+  min-height: 36px;
+  border-radius: 50%;
+  background: #f5f5f7;
+  color: #222;
+  font-size: 1.1rem;
+  font-weight: 600;
+  text-align: center;
+  cursor: pointer;
+  border: 1.5px solid #e5e7eb;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
+  margin: 0 4px;
+}
+.score-btn.selected, .score-btn.active, .status-selector .score-btn.selected {
+  background: #1976d2;
+  color: #fff;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.12);
+  border: none;
+}
+.score-btn:hover, .status-selector .score-btn:hover {
+  background: #e3eafc;
+  color: #1976d2;
 } 

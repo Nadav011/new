@@ -1,3 +1,76 @@
+/* --- GLOBAL BUTTON DESIGN SYSTEM (APPLE-LIKE, MINIMAL, SOFT) --- */
+.button, button, .btn, .action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Heebo', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0.5em 1.5em;
+  box-shadow: 0 1px 4px 0 rgba(60,60,60,0.04);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+  cursor: pointer;
+  outline: none;
+  min-height: 40px;
+  min-width: 40px;
+  gap: 0.5em;
+}
+.button:active, button:active, .btn:active, .action-btn:active {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #1976d2;
+  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
+}
+.button:hover, button:hover, .btn:hover, .action-btn:hover {
+  background: linear-gradient(135deg, #f7f8fa 0%, #e3e7ed 100%);
+  color: #1976d2;
+  border-color: #b6c2d1;
+}
+.button:disabled, button:disabled, .btn:disabled, .action-btn:disabled {
+  background: #f3f4f6;
+  color: #bdbdbd;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Icon button variant */
+.button.btn-icon, button.btn-icon, .btn.btn-icon, .action-btn.btn-icon {
+  padding: 0.5em;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+}
+/* Primary button variant */
+.button.primary, button.primary, .btn.primary, .action-btn.primary {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: #fff;
+  border: none;
+}
+.button.primary:hover, button.primary:hover, .btn.primary:hover, .action-btn.primary:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+  color: #fff;
+}
+/* Danger button variant */
+.button.danger, button.danger, .btn.danger, .action-btn.danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+  border: none;
+}
+.button.danger:hover, button.danger:hover, .btn.danger:hover, .action-btn.danger:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #fff;
+}
+/* Remove legacy/conflicting button rules below this line */
+
+/* Prevent focus outline on non-editable elements globally */
+*:not(input):not(textarea):not(select):focus {
+  outline: none !important;
+}
+
 /* Unified Button Styles - Minimal, Apple-like */
 .btn {
   display: inline-flex;

@@ -41,33 +41,64 @@ function renderBranchStatCard(type, branches, index, cardSelector) {
   if (!card) return;
   const valueElement = card.querySelector('.stat-value');
   if (!branches.length) {
-    valueElement.innerHTML = 'אין נתונים';
+    valueElement.querySelector('.branch-name').innerText = 'אין נתונים';
+    valueElement.querySelector('.branch-contact').style.display = 'none';
+    valueElement.querySelector('.arrow-up').style.display = 'none';
+    valueElement.querySelector('.arrow-down').style.display = 'none';
     return;
   }
   const branch = branches[index % branches.length];
+  // Render branch name and score badge, no parentheses
+  let scoreClass = "badge score-high";
+  if (branch.average < 3) scoreClass = "badge score-low";
+  else if (branch.average < 4) scoreClass = "badge score-medium";
   valueElement.innerHTML = `
-    <span>${branch.name} (${branch.average.toFixed(1)})</span>
-    <button class="arrow-btn" id="${type}-up" style="margin:0 4px;">▲</button>
-    <button class="arrow-btn" id="${type}-down">▼</button>
+    <span class="${scoreClass}">${branch.average.toFixed(1)}</span>
+    <span class="branch-name">${branch.name}</span>
+    <div class="arrow-controls" style="display:inline-flex;">
+      <button class="arrow-btn arrow-up" title="הקודם">▲</button>
+      <button class="arrow-btn arrow-down" title="הבא">▼</button>
+    </div>
+    <div class="branch-contact" style="display:none;"></div>
   `;
-  document.getElementById(`${type}-up`).onclick = () => {
-    if (type === 'outstanding') {
-      outstandingIndex = (outstandingIndex - 1 + branches.length) % branches.length;
-      renderBranchStatCard(type, branches, outstandingIndex, cardSelector);
-    } else {
-      needsImprovementIndex = (needsImprovementIndex - 1 + branches.length) % branches.length;
-      renderBranchStatCard(type, branches, needsImprovementIndex, cardSelector);
-    }
-  };
-  document.getElementById(`${type}-down`).onclick = () => {
-    if (type === 'outstanding') {
-      outstandingIndex = (outstandingIndex + 1) % branches.length;
-      renderBranchStatCard(type, branches, outstandingIndex, cardSelector);
-    } else {
-      needsImprovementIndex = (needsImprovementIndex + 1) % branches.length;
-      renderBranchStatCard(type, branches, needsImprovementIndex, cardSelector);
-    }
-  };
+  const contactDiv = valueElement.querySelector('.branch-contact');
+  if (branch.manager || branch.contact) {
+    contactDiv.innerText = branch.manager ? `מנהל: ${branch.manager}` : '';
+    if (branch.contact) contactDiv.innerText += branch.manager ? ` | ${branch.contact}` : branch.contact;
+    contactDiv.style.display = 'inline-block';
+  } else {
+    contactDiv.style.display = 'none';
+  }
+  // Arrow visibility/enable logic
+  const upBtn = valueElement.querySelector('.arrow-up');
+  const downBtn = valueElement.querySelector('.arrow-down');
+  if (branches.length <= 1) {
+    upBtn.style.display = 'none';
+    downBtn.style.display = 'none';
+  } else {
+    upBtn.style.display = 'inline-flex';
+    downBtn.style.display = 'inline-flex';
+    upBtn.disabled = false;
+    downBtn.disabled = false;
+    upBtn.onclick = () => {
+      if (type === 'outstanding') {
+        outstandingIndex = (outstandingIndex - 1 + outstandingBranches.length) % outstandingBranches.length;
+        renderBranchStatCard(type, outstandingBranches, outstandingIndex, cardSelector);
+      } else {
+        needsImprovementIndex = (needsImprovementIndex - 1 + needsImprovementBranches.length) % needsImprovementBranches.length;
+        renderBranchStatCard(type, needsImprovementBranches, needsImprovementIndex, cardSelector);
+      }
+    };
+    downBtn.onclick = () => {
+      if (type === 'outstanding') {
+        outstandingIndex = (outstandingIndex + 1) % outstandingBranches.length;
+        renderBranchStatCard(type, outstandingBranches, outstandingIndex, cardSelector);
+      } else {
+        needsImprovementIndex = (needsImprovementIndex + 1) % needsImprovementBranches.length;
+        renderBranchStatCard(type, needsImprovementBranches, needsImprovementIndex, cardSelector);
+      }
+    };
+  }
 }
 
 function startBranchAutoRotation() {
@@ -127,31 +158,28 @@ function updateBranchPerformanceStats(reviews, branches) {
     }
   });
   
-  // Calculate averages and find top/bottom performers
+  // Merge with branch info for contact/manager
+  const branchInfoMap = {};
+  branches.forEach(b => { branchInfoMap[b.name] = b; });
+  // Calculate averages and sort
   const branchAverages = Object.keys(branchScores).map(branch => ({
     name: branch,
     average: branchScores[branch].total / branchScores[branch].count,
-    scores: branchScores[branch].scores
+    scores: branchScores[branch].scores,
+    manager: branchInfoMap[branch]?.manager || '',
+    contact: branchInfoMap[branch]?.contact || ''
   }));
   
-  if (branchAverages.length > 0) {
-    // Sort by average score
-    branchAverages.sort((a, b) => b.average - a.average);
-    // Outstanding: all with max average
-    const maxAvg = branchAverages[0].average;
-    outstandingBranches = branchAverages.filter(b => b.average === maxAvg);
-    outstandingIndex = 0;
-    // Needs Improvement: all with min average
-    const minAvg = branchAverages[branchAverages.length - 1].average;
-    needsImprovementBranches = branchAverages.filter(b => b.average === minAvg);
-    needsImprovementIndex = 0;
-    // Render with arrows
-    renderBranchStatCard('outstanding', outstandingBranches, outstandingIndex, '.stat-card:nth-child(3)');
-    renderBranchStatCard('needs', needsImprovementBranches, needsImprovementIndex, '.stat-card:nth-child(4)');
-    startBranchAutoRotation();
-    // Update branch rankings section
-    updateBranchRankingsWithScores(branchAverages);
-  }
+  // Outstanding: only branches with average >= 3, sorted high to low
+  outstandingBranches = branchAverages.filter(b => b.average >= 3).sort((a, b) => b.average - a.average);
+  outstandingIndex = 0;
+  // Needs Improvement: only branches with average < 3, sorted low to high
+  needsImprovementBranches = branchAverages.filter(b => b.average < 3).sort((a, b) => a.average - b.average);
+  needsImprovementIndex = 0;
+  renderBranchStatCard('outstanding', outstandingBranches, outstandingIndex, '.stat-card.stat-outstanding');
+  renderBranchStatCard('needs', needsImprovementBranches, needsImprovementIndex, '.stat-card.stat-needs');
+  startBranchAutoRotation();
+  updateBranchRankingsWithScores(branchAverages.sort((a, b) => b.average - a.average));
 }
 
 // --- Fix Recent Reviews Table: Use averageScore ---
@@ -209,18 +237,30 @@ function updateRecentReviews() {
     </div>
   `;
   
+  // פונקציה שממירה מחרוזת לצבע HSL רך וייחודי (דטרמיניסטי, עם salt)
+  function stringToHslColor(str, s = 60, l = 85) {
+    str = str + 'surveys-color'; // salt
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h = Math.abs(hash) % 360;
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  }
   // Add review rows
   recentReviews.forEach((review, index) => {
     const reviewDate = new Date(review.date);
     const formattedDate = reviewDate.toLocaleDateString('he-IL');
     // Use averageScore for display
     const score = typeof review.averageScore === 'number' ? review.averageScore : (review.score || 0);
-    let scoreColor = "green";
-    if (score <= 3) scoreColor = "red";
-    else if (score <= 4) scoreColor = "yellow";
-    let typeColor = "lightgreen";
-    if (review.type?.includes("משלוח")) typeColor = "yellow";
-    else if (review.type?.includes("ראיון")) typeColor = "pink";
+    let scoreClass = "badge score-high";
+    if (score <= 3) scoreClass = "badge score-low";
+    else if (score <= 4) scoreClass = "badge score-medium";
+    // צבע דינאמי רך לפי שם סוג ביקורת (כמו בניהול שאלונים)
+    const typeName = (review.type || '').trim();
+    const bgColor = stringToHslColor(typeName, 60, 85);
+    // Review type badge color (דינאמי, רך, אחיד בכל האתר)
+    const typeClass = 'badge';
     reviewsHTML += `
       <div class="recent-review-row" 
            data-review-index="${sortedReviews.indexOf(review)}"
@@ -244,29 +284,20 @@ function updateRecentReviews() {
           <div style="font-size: 13px; color: #666; margin-bottom: 4px;">
             ${review.type || 'סוג לא מוגדר'} - ${review.reviewer || 'מבקר לא מוגדר'}
           </div>
-          <span class="badge ${typeColor}" style="
-            padding: 4px 8px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            display: inline-block;
-            background-color: ${typeColor === 'lightgreen' ? '#e0f7fa' : typeColor === 'yellow' ? '#fff7cc' : '#ffe0f0'};
-            color: ${typeColor === 'lightgreen' ? '#00695c' : typeColor === 'yellow' ? '#c79b00' : '#c2185b'};
-          ">${review.type || 'לא מוגדר'}</span>
+          <span class="${typeClass}" style="background: ${bgColor}; color: #1d1d1f;">${review.type || 'לא מוגדר'}</span>
         </div>
         <div style="text-align: center;">
-          <span class="badge ${scoreColor}" style="
+          <span class="${scoreClass}" style="
             padding: 6px 10px;
             border-radius: 20px;
             font-size: 12px;
             font-weight: bold;
-            display: inline-block;
-            background-color: ${scoreColor === 'green' ? '#e0f8e9' : scoreColor === 'yellow' ? '#fff7cc' : '#fdecea'};
-            color: ${scoreColor === 'green' ? '#2e7d32' : scoreColor === 'yellow' ? '#c79b00' : '#d32f2f'};
-          ">${score.toFixed(1)}/5</span>
+            display: inline-block;">
+            ${score.toFixed(1)}/5
+          </span>
         </div>
         <div style="text-align: center; font-size: 13px; color: #666;">
-          ${formattedDate}
+          <span class="badge date-soft"><span class="calendar-icon">📅</span> ${formattedDate}</span>
         </div>
       </div>
     `;
@@ -278,16 +309,7 @@ function updateRecentReviews() {
   if (reviews.length > 5) {
     reviewsHTML += `
       <div style="text-align: center; margin-top: 15px;">
-        <a href="reviews.html" style="
-          color: #007bff;
-          text-decoration: none;
-          font-size: 14px;
-          padding: 8px 16px;
-          border: 1px solid #007bff;
-          border-radius: 6px;
-          transition: all 0.2s ease;
-        " onmouseover="this.style.backgroundColor='#007bff'; this.style.color='white'" 
-           onmouseout="this.style.backgroundColor='transparent'; this.style.color='#007bff'">
+        <a href="reviews.html" class="btn btn-primary" style="font-size: 15px; min-width: 160px;">
           צפה בכל הביקורות (${reviews.length})
         </a>
       </div>
@@ -356,6 +378,7 @@ function updateBranchRankingsWithScores(branchAverages) {
   `;
   
   // Add branch rows
+  const branches = JSON.parse(localStorage.getItem('branches') || '[]');
   branchAverages.forEach((branch, index) => {
     const rank = index + 1;
     const isTop3 = rank <= 3;
@@ -377,6 +400,9 @@ function updateBranchRankingsWithScores(branchAverages) {
     else if (branch.average >= 3) scoreColor = '#f57c00'; // Needs Improvement
     else scoreColor = '#d32f2f'; // Poor
     
+    // שם סניף: כל התא לחיץ (cursor:pointer על כל ה-div)
+    const branchIndex = branches.findIndex(b => b.name === branch.name);
+    const branchNameHtml = `<div class="branch-link" data-index="${branchIndex}" style="cursor:pointer; font-weight:600; color:#333;">${branch.name}</div>`;
     rankingsHTML += `
       <div class="branch-ranking-row" 
            style="
@@ -394,9 +420,7 @@ function updateBranchRankingsWithScores(branchAverages) {
         <div style="text-align: center; font-weight: bold; color: ${rankColor};">
           ${rank}
         </div>
-        <div style="font-weight: 600; color: #333;">
-          ${branch.name}
-        </div>
+        ${branchNameHtml}
         <div style="text-align: center;">
           <span style="
             padding: 6px 10px;
@@ -415,6 +439,17 @@ function updateBranchRankingsWithScores(branchAverages) {
   rankingsHTML += '</div>';
   
   rankingsContainer.innerHTML = rankingsHTML;
+  // מאזין קליק לכל branch-link
+  setTimeout(() => {
+    document.querySelectorAll('.branch-link').forEach(el => {
+      el.onclick = function() {
+        const idx = this.getAttribute('data-index');
+        if (idx !== null && idx !== '-1') {
+          window.location.href = `branch-details.html?index=${idx}`;
+        }
+      };
+    });
+  }, 100);
 }
 
 function updateBranchRankings() {

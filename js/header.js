@@ -50,3 +50,11 @@ if (document.readyState === 'loading') {
 
 // Also try to initialize after a short delay as a fallback
 setTimeout(initHeader, 500); 
+
+document.addEventListener('mousedown', function(e) {
+  const tag = e.target.tagName.toLowerCase();
+  if (!['input', 'textarea', 'select', 'button'].includes(tag)) {
+    e.preventDefault();
+    if (typeof e.target.blur === 'function') e.target.blur();
+  }
+}); 

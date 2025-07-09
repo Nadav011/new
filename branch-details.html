@@ -7,6 +7,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/header.css" />
   <link rel="stylesheet" href="css/branch-details.css" />
+  <link rel="stylesheet" href="css/branches-tags.css">
 </head>
 <body>
   <div id="header-container"></div>
@@ -58,6 +59,9 @@
     </div>
   </div>
 
+  <!-- Modal container for edit branch popup -->
+  <div id="editBranchModalContainer"></div>
+
   <script>
     let currentBranchIndex = null;
     let currentBranch = null;
@@ -77,8 +81,88 @@
     }
 
     function openEditPopup() {
-      // Implementation for edit popup
-      alert("פונקציונליות עריכה תתווסף בקרוב");
+      // Fetch and show the edit branch modal (reusing popup.html)
+      fetch('popup.html')
+        .then(res => res.text())
+        .then(html => {
+          // Only keep the modal markup
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          const modal = tempDiv.querySelector('.modal');
+          if (!modal) return;
+          // Remove any existing modal
+          const container = document.getElementById('editBranchModalContainer');
+          container.innerHTML = '';
+          container.appendChild(modal);
+          document.body.style.overflow = "hidden";
+
+          // Pre-fill form with current branch data
+          const urlParams = new URLSearchParams(window.location.search);
+          let branchIndex = urlParams.get('index');
+          let branches = JSON.parse(localStorage.getItem('branches') || '[]');
+          let branch = null;
+          if (branchIndex !== null && branches[branchIndex]) {
+            branch = branches[branchIndex];
+          } else if (localStorage.getItem('currentBranch')) {
+            branch = JSON.parse(localStorage.getItem('currentBranch'));
+            branchIndex = branches.findIndex(b => b.name === branch.name);
+          }
+          const form = modal.querySelector('#branchForm');
+          if (branch && form) {
+            Object.entries(branch).forEach(([key, value]) => {
+              const input = form.querySelector(`[name="${key}"]`);
+              if (input) input.value = value;
+            });
+          } else if (form) {
+            form.reset();
+          }
+
+          // Save logic
+          const saveBtn = modal.querySelector('[data-save]');
+          const cancelBtn = modal.querySelector('[data-cancel]');
+          const closeBtn = modal.querySelector('.modal-close');
+          function closeModal() {
+            container.innerHTML = '';
+            document.body.style.overflow = '';
+          }
+          if (cancelBtn) cancelBtn.onclick = closeModal;
+          if (closeBtn) closeBtn.onclick = closeModal;
+          if (saveBtn) {
+            saveBtn.onclick = function() {
+              const inputs = form.querySelectorAll('input[name], select[name]');
+              const data = {};
+              inputs.forEach(input => {
+                if (input.type === 'file') return;
+                data[input.name] = input.value.trim();
+              });
+              // Keep attachments if present
+              if (branch && branch.attachments) data.attachments = branch.attachments;
+              if (!data["name"] || !data["address"] || !data["businessType"] || !data["status"]) {
+                alert("נא למלא את כל השדות החיוניים: שם סניף, כתובת, סוג עסק, סטטוס");
+                return;
+              }
+              let branches = JSON.parse(localStorage.getItem("branches") || "[]");
+              if (branch && branchIndex !== null) {
+                branches[branchIndex] = data;
+              } else {
+                branches.push(data);
+              }
+              localStorage.setItem("branches", JSON.stringify(branches));
+              closeModal();
+              window.location.reload();
+            };
+          }
+          // Close modal on overlay click or Esc
+          modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+          });
+          document.addEventListener('keydown', function escListener(e) {
+            if (e.key === 'Escape') {
+              closeModal();
+              document.removeEventListener('keydown', escListener);
+            }
+          });
+        });
     }
 
     // Load branch details from URL parameters

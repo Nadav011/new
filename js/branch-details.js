@@ -75,6 +75,8 @@ window.addEventListener('load', function() {
             <th>תאריך</th>
             <th>סוג ביקורת</th>
             <th>ציון סופי</th>
+            <th>שם סניף</th>
+            <th>הערות</th>
           </tr>
         </thead>
         <tbody></tbody>
@@ -86,11 +88,26 @@ window.addEventListener('load', function() {
     branchReviews.forEach((r, idx) => {
       const tr = document.createElement('tr');
       const score = typeof r.averageScore === 'number' ? r.averageScore : (r.score || 0);
+      let scoreClass = 'score-badge';
+      if (score >= 4.5) scoreClass += ' high';
+      else if (score >= 3) scoreClass += ' medium';
+      else scoreClass += ' low';
+      // Review type badge mapping (צבע דינאמי רך)
+      const typeName = (r.type || '').trim();
+      const bgColor = stringToHslColor(typeName, 60, 85);
+      const typeHtml = `<span class='badge' style="background: ${bgColor}; color: #1d1d1f;">${typeName}</span>`;
+      // מבקר ותאריך ב-badge עגול ורך (כמו ב-reviews.js)
+      const reviewerBadge = `<span class='badge gray'>${r.reviewer || '-'}</span>`;
+      const dateBadge = `<span class='badge date-soft'><span class='calendar-icon'>📅</span> ${r.date || '-'}</span>`;
+      // שם הסניף וכתובת ב-badge עגול ללא צבע (ברירת מחדל)
+      const branchNameBadge = `<span class='badge primary'>${r.branch || '-'}</span>`;
       tr.innerHTML = `
-        <td>${r.reviewer || '-'}</td>
-        <td>${r.date || '-'}</td>
-        <td>${r.type || '-'}</td>
-        <td>${score.toFixed(2)}/5</td>
+        <td>${reviewerBadge}</td>
+        <td>${dateBadge}</td>
+        <td>${typeHtml}</td>
+        <td class="score-cell"><span class="${scoreClass}">${score.toFixed(2)}/5</span></td>
+        <td>${branchNameBadge}</td>
+        <td>${r.comments || ''}</td>
       `;
       tr.style.cursor = 'pointer';
       tr.onclick = function() {
@@ -113,7 +130,21 @@ window.addEventListener('load', function() {
 });
 
 // Helper to open the branch popup from details page
+function ensurePopupCssLoaded() {
+  const id = 'popup-css-link';
+  let link = document.getElementById(id);
+  if (link) {
+    link.parentNode.removeChild(link);
+  }
+  link = document.createElement('link');
+  link.id = id;
+  link.rel = 'stylesheet';
+  link.href = 'css/popup.css?v=' + Date.now(); // Force reload every time
+  document.head.appendChild(link);
+}
+
 function openBranchPopupForDetails(branch, index) {
+  ensurePopupCssLoaded();
   fetch('popup.html')
     .then(res => res.text())
     .then(html => {
@@ -128,6 +159,7 @@ function openBranchPopupForDetails(branch, index) {
 
       const saveBtn = modal.querySelector('[data-save]');
       const cancelBtn = modal.querySelector('[data-cancel]');
+      const closeBtn = modal.querySelector('.modal-close');
       const form = modal.querySelector("#branchForm");
 
       // Pre-fill form with branch data
@@ -167,7 +199,76 @@ function openBranchPopupForDetails(branch, index) {
         saveBtn.addEventListener("click", saveDataAndClose);
       }
       if (cancelBtn) {
-        cancelBtn.addEventListener("click", closeModal);
+        cancelBtn.onclick = function() {
+          if (modalContainer && modalContainer.parentNode) {
+            modalContainer.parentNode.removeChild(modalContainer);
+          }
+          document.body.style.overflow = '';
+        };
+      }
+      if (closeBtn) {
+        closeBtn.onclick = function() {
+          if (modalContainer && modalContainer.parentNode) {
+            modalContainer.parentNode.removeChild(modalContainer);
+          }
+          document.body.style.overflow = '';
+        };
       }
     });
-} 
+}
+
+// פונקציה שממירה מחרוזת לצבע HSL רך וייחודי (דטרמיניסטי, עם salt)
+function stringToHslColor(str, s = 60, l = 85) {
+  str = str + 'surveys-color'; // salt
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash = str.charCodeAt(i) + ((hash << 5) - hash);
+  }
+  const h = Math.abs(hash) % 360;
+  return `hsl(${h}, ${s}%, ${l}%)`;
+}
+
+// פונקציה ליצירת טבלת היסטוריית ביקורות עם תגים עגולים לכל הערכים
+function renderReviewsTable(reviews) {
+  const table = document.createElement('table');
+  table.className = 'reviews-table';
+  table.innerHTML = `
+    <thead>
+      <tr>
+        <th>מבקר</th>
+        <th>תאריך</th>
+        <th>סוג ביקורת</th>
+        <th>ציון סופי</th>
+        <th>שם סניף</th>
+        <th>הערות</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  `;
+  const tbody = table.querySelector('tbody');
+  reviews.forEach(r => {
+    const typeName = (r.type || '').trim();
+    const bgColor = stringToHslColor(typeName, 60, 85);
+    const typeHtml = `<span class='badge' style="background: ${bgColor}; color: #1d1d1f;">${typeName}</span>`;
+    const reviewerBadge = `<span class='badge date-soft'>${r.reviewer || '-'}</span>`;
+    const dateBadge = `<span class='badge date-soft'>${r.date || '-'}</span>`;
+    const branchNameBadge = `<span class='badge'>${r.branch || '-'}</span>`;
+    const scoreClass = 'badge';
+    const scoreHtml = `<span class="${scoreClass}">${(r.score || 0).toFixed(2)}/5</span>`;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${reviewerBadge}</td>
+      <td>${dateBadge}</td>
+      <td>${typeHtml}</td>
+      <td class="score-cell"><span class="${scoreClass}">${score.toFixed(2)}/5</span></td>
+      <td>${branchNameBadge}</td>
+      <td>${r.comments || ''}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+  return table;
+}
+// דוגמה לשימוש: (יש להכניס את זה במקום בו נטענות הביקורות)
+// const reviews = [...];
+// const table = renderReviewsTable(reviews);
+// document.querySelector('.reviews-history.card').appendChild(table); 

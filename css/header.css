@@ -18,13 +18,14 @@
   padding: 0 24px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   height: 72px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
+  margin-left: auto;
 }
 
 .site-title {
@@ -40,6 +41,8 @@
 }
 
 .main-nav {
+  margin-right: 64px;
+  margin-left: auto;
   display: flex;
   align-items: center;
 }
@@ -49,7 +52,9 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  gap: 4px;
+  gap: 8px;
+  justify-content: flex-end;
+  width: 100%;
 }
 
 .nav-link {
@@ -678,3 +683,19 @@ button.btn-delete:hover {
     flex-wrap: wrap;
   }
 } 
+
+.logo-link {
+  display: block;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+.logo-link:focus, .logo-link:hover {
+  outline: none;
+  text-decoration: none;
+  background: rgba(0,0,0,0.03);
+  border-radius: 10px;
+  transition: background 0.15s;
+} 
+
+/* REMOVE legacy/conflicting badge/button/header styles below */ 

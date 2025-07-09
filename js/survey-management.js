@@ -84,7 +84,7 @@ function renderSurveys() {
                     <h5>שאלות הסקר (${questionCount})</h5>
                     ${previewQuestions.map(q => `
                         <div class="question-preview-item">
-                            <span class="question-type-badge">${getQuestionTypeLabel(q.itemType)}</span>
+                            <span class="badge gray">${getQuestionTypeLabel(q.itemType)}</span>
                             <span>${q.itemName}</span>
                         </div>
                     `).join('')}
@@ -306,7 +306,7 @@ function updateSurveyQuestionsDisplay() {
                         <div class="survey-question-info">
                             <div class="survey-question-title">${question.itemName}</div>
                             <div class="survey-question-meta">
-                                <span class="type-badge group">כותרת קבוצה</span>
+                                <span class="badge gray">כותרת קבוצה</span>
                             </div>
                         </div>
                         <div class="survey-question-actions">
@@ -321,9 +321,9 @@ function updateSurveyQuestionsDisplay() {
                             <div class="survey-question-title">${question.itemName}</div>
                             <div class="survey-question-text">${question.questionText}</div>
                             <div class="survey-question-meta">
-                                <span class="type-badge">${typeLabel}</span>
-                                <span class="topic-badge">${question.topic}</span>
-                                <span class="score-badge">ציון: 10</span>
+                                <span class="badge primary">${typeLabel}</span>
+                                <span class="badge gray">${question.topic}</span>
+                                <span class="badge success">ציון: 10</span>
                             </div>
                         </div>
                         <div class="survey-question-actions">

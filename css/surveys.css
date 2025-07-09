@@ -224,47 +224,73 @@ body {
   color: #1d1d1f;
 }
 
-.btn-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  margin-top: 24px;
+/* Remove conflicting reset for modal-content buttons */
+.modal-content button {
+  all: unset;
+  /* Remove this line to allow .btn styles to apply */
 }
 
+/* Unify button styles with add-review.css */
 .btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   padding: 12px 24px;
   border-radius: 12px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   border: none;
   font-family: inherit;
-  min-width: 120px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: #f3f4f6;
+  color: #222;
 }
-
 .btn-primary {
   background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
   color: white;
   box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);
 }
-
 .btn-primary:hover {
   background: linear-gradient(135deg, #1565c0 0%, #0d47a1 100%);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(25, 118, 210, 0.4);
 }
-
 .btn-cancel-outline {
   background: transparent;
   color: #6b7280;
-  border: 1px solid #d1d5db;
+  border: 1.5px solid #d1d5db;
 }
-
 .btn-cancel-outline:hover {
   background: #f9fafb;
   color: #374151;
   border-color: #9ca3af;
+}
+.btn:focus {
+  outline: 2px solid #1976d2;
+  outline-offset: 2px;
+}
+
+/* Ensure .btn-row matches spacing/alignment from add-review */
+.btn-row {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 18px;
+}
+
+@media (max-width: 768px) {
+  .btn-row {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .btn {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
 @keyframes fadeIn {

@@ -66,4 +66,26 @@ document.addEventListener('DOMContentLoaded', function () {
     closeModal();
     location.reload(); // לטעון מחדש את הדף לצפייה בשינויים
   });
+
+  // Update file name badge for each file input
+  const fileInputs = form.querySelectorAll('input[type="file"]');
+  fileInputs.forEach(input => {
+    const badge = document.getElementById(input.id + '-badge');
+    badge.textContent = 'לא נבחר קובץ';
+    badge.style.display = 'inline-block';
+    badge.style.color = '#bbb';
+    input.addEventListener('change', function() {
+      if (input.files && input.files.length > 0) {
+        let name = input.files[0].name;
+        if (name.length > 32) {
+          name = name.slice(0, 16) + '…' + name.slice(-12);
+        }
+        badge.textContent = name;
+        badge.style.color = '#333';
+      } else {
+        badge.textContent = 'לא נבחר קובץ';
+        badge.style.color = '#bbb';
+      }
+    });
+  });
 });

@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
 <link href="css/header.css" rel="stylesheet"/>
 <link href="css/dashboard.css" rel="stylesheet"/>
+<link rel="stylesheet" href="css/branches-tags.css">
 </head>
 <body>
   <div id="header-container"></div>
@@ -17,20 +18,38 @@
     <!-- Stats -->
     <div class="stats">
       <div class="stat-card">
+        <span class="stat-icon">🏬</span>
         <div class="stat-title">סניפים פעילים</div>
         <div class="stat-value">0</div>
       </div>
       <div class="stat-card">
+        <span class="stat-icon">🗒️</span>
         <div class="stat-title">ביקורות שבוצעו</div>
         <div class="stat-value">0</div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card stat-outstanding">
+        <span class="stat-icon">📈</span>
         <div class="stat-title">סניף מצטיין</div>
-        <div class="stat-value">אין נתונים</div>
+        <div class="stat-value">
+          <span class="branch-name">אין נתונים</span>
+          <div class="arrow-controls">
+            <button class="arrow-btn arrow-up" title="הקודם">▲</button>
+            <button class="arrow-btn arrow-down" title="הבא">▼</button>
+          </div>
+          <div class="branch-contact" style="display:none;"></div>
+        </div>
       </div>
-      <div class="stat-card">
+      <div class="stat-card stat-needs">
+        <span class="stat-icon">📉</span>
         <div class="stat-title">סניף דורש שיפור</div>
-        <div class="stat-value">אין נתונים</div>
+        <div class="stat-value">
+          <span class="branch-name">אין נתונים</span>
+          <div class="arrow-controls">
+            <button class="arrow-btn arrow-up" title="הקודם">▲</button>
+            <button class="arrow-btn arrow-down" title="הבא">▼</button>
+          </div>
+          <div class="branch-contact" style="display:none;"></div>
+        </div>
       </div>
     </div>
     <!-- Two Side-by-Side Boxes -->

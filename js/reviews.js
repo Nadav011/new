@@ -36,6 +36,60 @@ document.addEventListener("DOMContentLoaded", () => {
     typeFilter.appendChild(option);
   });
 
+  // הגדרת צבעים רכים לסוגי ביקורת (דינאמי לפי שם)
+  // (אין צורך ב-typeMap יותר)
+  const colorClasses = [
+    "badge review-type-mystery", // ורוד/אדום
+    "badge review-type-service", // סגול/כחול בהיר
+    "badge review-type-clean",   // צהוב/ירוק בהיר
+    "badge review-type-safety",  // כתום/צהוב
+    "badge review-type-other"    // סגול בהיר
+  ];
+  // מיפוי אחיד של שמות סוגי ביקורת לסלאג צבע אחיד (כמו בכל העמודים)
+  const typeMap = {
+    'לקוח סמוי': 'mystery',
+    'Mystery Shopper': 'mystery',
+    'בדיקת ניקיון': 'clean',
+    'Cleanliness Check': 'clean',
+    'בדיקת שירות': 'service',
+    'Service Quality': 'service',
+    'בדיקת בטיחות': 'safety',
+    'Safety Check': 'safety',
+    // אפשר להוסיף עוד שמות
+  };
+  // מערך כל הסוגים שמופיעים בפועל (לפי סדר הופעה)
+  const allTypes = Array.from(new Set(reviews.map(r => (r.type || '').trim())));
+
+  // Use the same card-like badge for reviewer, branch, and date columns
+  const reviewerBadgeClass = 'badge gray';
+  const branchBadgeClass = 'badge primary';
+  const dateBadgeClass = 'badge date-soft';
+
+  function formatDate(dateStr) {
+    if (!dateStr) return '';
+    // Try to parse YYYY-MM-DD or similar
+    const d = new Date(dateStr);
+    if (!isNaN(d)) {
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0');
+      const year = d.getFullYear();
+      return `${day}.${month}.${year}`;
+    }
+    // fallback: return as is
+    return dateStr;
+  }
+
+  // פונקציה שממירה מחרוזת לצבע HSL רך וייחודי (דטרמיניסטי, עם salt)
+  function stringToHslColor(str, s = 60, l = 85) {
+    str = str + 'surveys-color'; // salt
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const h = Math.abs(hash) % 360;
+    return `hsl(${h}, ${s}%, ${l}%)`;
+  }
+
   function renderTable(filteredReviews) {
     tableBody.innerHTML = "";
     reviewCount.textContent = filteredReviews.length;
@@ -47,34 +101,36 @@ document.addEventListener("DOMContentLoaded", () => {
       const score = review.averageScore || review.score || 0;
       const answeredQuestions = review.answeredQuestions || 0;
       const totalQuestions = review.totalQuestions || 0;
-      
-      let scoreColor = "green";
-      if (score <= 3) scoreColor = "red";
-      else if (score <= 7) scoreColor = "yellow";
+      // Score badge color (אחיד ללוח בקרה)
+      let scoreClass = "badge score-high";
+      if (score < 3) scoreClass = "badge score-low";
+      else if (score < 4) scoreClass = "badge score-medium";
+      // Review type badge color (דינאמי, רך, אחיד בכל האתר)
+      const typeName = (review.type || '').trim();
+      const bgColor = stringToHslColor(typeName, 60, 85);
+      const typeClass = 'badge';
+      console.log('Review type:', review.type, '=> typeClass:', typeClass);
 
-      let typeColor = "lightgreen";
-      if (review.type?.includes("משלוח")) typeColor = "yellow";
-      else if (review.type?.includes("ראיון")) typeColor = "pink";
+      const reviewer = review.reviewer || '';
+      const branch = review.branch || '';
+      const formattedDate = formatDate(review.date);
 
       // RTL column order: Date | Branch | Review Type | Reviewer | Score | Actions
       row.innerHTML = `
-        <td data-label="תאריך">${review.date || ''}<br><span class="calendar-icon">📅 ${review.day || ''}</span></td>
-        <td data-label="סניף">
-          <div class="branch-name">${review.branch || ''}</div>
-          <div class="branch-sub">${review.city || ''}</div>
-        </td>
-        <td data-label="סוג ביקורת"><span class="badge ${typeColor}">${review.type || ''}</span></td>
-        <td data-label="מבקר">${review.reviewer || ''}</td>
+        <td data-label="תאריך"><span class="${dateBadgeClass}"><span class="calendar-icon">📅</span> ${formattedDate}</span></td>
+        <td data-label="סניף"><span class="badge primary">${branch}</span></td>
+        <td data-label="סוג ביקורת"><span class="badge" style="background: ${bgColor}; color: #1d1d1f;">${typeName}</span></td>
+        <td data-label="מבקר"><span class="badge gray">${reviewer}</span></td>
         <td data-label="ציון">
-          <span class="badge ${scoreColor}">${score.toFixed(1)}/5</span>
+          <span class="${scoreClass}">${score.toFixed(1)}/5</span>
           <div class="score-details" style="font-size: 11px; color: #666; margin-top: 2px;">
             ${answeredQuestions}/${totalQuestions} שאלות
           </div>
         </td>
-        <td data-label="פעולות" class="actions">
-          <button class="btn btn-icon btn-view view" data-index="${index}">👁️ צפייה</button>
-          <button class="btn btn-icon btn-edit edit" data-index="${index}">✏️ עריכה</button>
-          <button class="btn btn-icon btn-delete delete" data-index="${index}">🗑️ מחיקה</button>
+        <td data-label="פעולות" class="action-btns">
+          <button class="btn btn-icon btn-view view" data-index="${index}" title="צפייה">👁️ צפייה</button>
+          <button class="btn btn-icon btn-edit edit" data-index="${index}" title="עריכה">✏️ עריכה</button>
+          <button class="btn btn-icon btn-delete delete" data-index="${index}" title="מחיקה">🗑️ מחיקה</button>
         </td>
       `;
       tableBody.appendChild(row);
@@ -144,7 +200,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const selectedBranch = branchFilter.value.trim();
 
     const filtered = reviews.filter(r => {
-      const matchesSearch = !search || (r.title && r.title.toLowerCase().includes(search));
+      // Free text search: match title, branch, or type
+      const matchesSearch = !search ||
+        (r.title && r.title.toLowerCase().includes(search)) ||
+        (r.branch && r.branch.toLowerCase().includes(search)) ||
+        (r.type && r.type.toLowerCase().includes(search));
       const matchesType = selectedType === "כל הסוגים" || (r.type && r.type.trim() === selectedType);
       const matchesBranch = selectedBranch === "כל הסניפים" || (r.branch && r.branch.trim() === selectedBranch);
       return matchesSearch && matchesType && matchesBranch;

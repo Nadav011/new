@@ -31,8 +31,12 @@ function loadBranchInfo(reviewData) {
   if (branch) {
     document.getElementById('branchName').textContent = branch.name || 'לא צוין';
     document.getElementById('branchAddress').textContent = branch.address || 'לא צוין';
-    document.getElementById('managerName').textContent = branch.managerName || 'לא צוין';
-    document.getElementById('managerPhone').textContent = branch.managerPhone || 'לא צוין';
+    document.getElementById('managerName').textContent = branch.managerName || branch.manager || 'לא צוין';
+    document.getElementById('managerPhone').textContent = branch.managerPhone || branch.contact || 'לא צוין';
+    document.getElementById('franchiseeName').textContent = branch.franchisee || branch.franchiseeName || '-';
+    document.getElementById('kashrutType').textContent = branch.kashrutType || '-';
+    document.getElementById('businessType').textContent = branch.businessType || '-';
+    document.getElementById('branchStatus').textContent = branch.status || '-';
   } else {
     document.getElementById('branchName').textContent = reviewData.branch || 'לא צוין';
     document.getElementById('branchAddress').textContent = 'לא נמצאו פרטי סניף';
@@ -55,12 +59,13 @@ function loadReviewMetadata(reviewData) {
   scoreElement.textContent = `${totalScore.toFixed(2)}/5`;
   
   // Color code the score
+  scoreElement.className = '';
   if (totalScore >= 4.5) {
-    scoreElement.style.color = '#10b981';
+    scoreElement.className = 'badge score-high';
   } else if (totalScore >= 3) {
-    scoreElement.style.color = '#f59e0b';
+    scoreElement.className = 'badge score-medium';
   } else {
-    scoreElement.style.color = '#ef4444';
+    scoreElement.className = 'badge score-low';
   }
 }
 
@@ -79,28 +84,23 @@ function loadQuestionsAndAnswers(reviewData) {
     let answerContent = '';
     if (type === 'free-text') {
       answerContent = `
-        <div class="question-answer">
-          <div class="free-text-answer" style="background:#f7f8fa;border-radius:10px;padding:14px 18px;margin-bottom:10px;color:#222;font-size:16px;min-height:38px;">${answerObj.answer ? answerObj.answer : '<span style=\'color:#aaa\'>לא נכתבה תשובה</span>'}</div>
-          <div class="score-btn-row" style="margin-top: 12px;">
-            ${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}${answerObj.score == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
-          </div>
+        <div class="question-row-flex">
+          <div class="score-btn-row">${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}</span>`).join('')}</div>
         </div>
       `;
     } else if (type === 'rating-1-5') {
       answerContent = `
-        <div class="question-answer">
-          <div class="score-btn-row" style="margin-top: 12px;">
-            ${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}${answerObj.score == num ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>`).join('')}
-          </div>
+        <div class="question-row-flex">
+          <div class="score-btn-row">${[1,2,3,4,5].map(num => `<span class="score-btn${answerObj.score == num ? ' selected' : ''}">${num}</span>`).join('')}</div>
         </div>
       `;
     } else if (type === 'status-ok') {
       answerContent = `
-        <div class="question-answer">
-          <div class="status-selector" style="margin-top: 12px;">
-            <span class="score-btn${answerObj.score == 5 ? ' selected' : ''}">✅ תקין${answerObj.score == 5 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
-            <span class="score-btn${answerObj.score == 3 ? ' selected' : ''}">⚠️ חלקי${answerObj.score == 3 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
-            <span class="score-btn${answerObj.score == 1 ? ' selected' : ''}">❌ לא תקין${answerObj.score == 1 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+        <div class="question-row-flex">
+          <div class="status-selector">
+            <span class="score-btn${answerObj.score == 5 ? ' selected' : ''}" data-score="5">✅ תקין</span>
+            <span class="score-btn${answerObj.score == 3 ? ' selected' : ''}" data-score="3">⚠️ חלקי</span>
+            <span class="score-btn${answerObj.score == 1 ? ' selected' : ''}" data-score="1">❌ לא תקין</span>
           </div>
         </div>
       `;
@@ -109,7 +109,7 @@ function loadQuestionsAndAnswers(reviewData) {
     questionDiv.className = 'question-item';
     questionDiv.innerHTML = `
       <div class="question-header">
-        <h3 class="question-title">${question.itemName || question.questionText || question.text}</h3>
+        <h3 class="question-title">${question.questionText || question.text}</h3>
       </div>
       <div class="question-content">
         <div class="question-meta">${question.topic ? `<span class="question-meta-label">נושא:</span> <span>${question.topic}</span>` : ''}</div>
@@ -167,9 +167,9 @@ function createQuestionElement(question, answer, index) {
     answerContent = `
       <div class="question-answer">
         <div class="status-selector" style="margin-top: 12px;">
-          <span class="score-btn${answer == 5 ? ' selected' : ''}">✅ תקין${answer == 5 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
-          <span class="score-btn${answer == 3 ? ' selected' : ''}">⚠️ חלקי${answer == 3 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
-          <span class="score-btn${answer == 1 ? ' selected' : ''}">❌ לא תקין${answer == 1 ? ' <span style=\'font-size:18px;vertical-align:middle;\'>✔</span>' : ''}</span>
+          <span class="score-btn${answer == 5 ? ' selected' : ''}" data-score="5">✅ תקין</span>
+          <span class="score-btn${answer == 3 ? ' selected' : ''}" data-score="3">⚠️ חלקי</span>
+          <span class="score-btn${answer == 1 ? ' selected' : ''}" data-score="1">❌ לא תקין</span>
         </div>
       </div>
     `;
@@ -177,7 +177,7 @@ function createQuestionElement(question, answer, index) {
 
   questionDiv.innerHTML = `
     <div class="question-header">
-      <h3 class="question-title">${question.itemName || question.text}</h3>
+      <h3 class="question-title">${question.questionText || question.text}</h3>
     </div>
     <div class="question-content">
       <div class="question-meta">${question.topic ? `<span class="question-meta-label">נושא:</span> <span>${question.topic}</span>` : ''}</div>
@@ -243,9 +243,18 @@ function calculateTotalScore(reviewData) {
 // Action Functions
 function editReview() {
   const reviewIndex = localStorage.getItem('currentReviewIndex');
-  if (reviewIndex !== null) {
-    // Redirect to edit page (you'll need to create this)
-    window.location.href = `review-edit.html?index=${reviewIndex}`;
+  const reviews = JSON.parse(localStorage.getItem('reviews') || '[]');
+  let review = null;
+  if (reviewIndex !== null && reviews[reviewIndex]) {
+    review = reviews[reviewIndex];
+  } else {
+    // fallback: try to use currentReview
+    review = JSON.parse(localStorage.getItem('currentReview') || '{}');
+  }
+  if (review) {
+    localStorage.setItem('currentReview', JSON.stringify(review));
+    localStorage.setItem('currentReviewIndex', reviewIndex);
+    window.location.href = 'edit-review.html';
   } else {
     alert('לא ניתן לערוך ביקורת זו');
   }
