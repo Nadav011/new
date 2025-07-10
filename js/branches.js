@@ -189,6 +189,30 @@ function openBranchPopup(branch = null, index = null) {
       if (closeBtn) {
         closeBtn.addEventListener("click", closeModal);
       }
+
+      // Add file input event listeners for file name badge display (like in edit)
+      const fileInputs = form.querySelectorAll('input[type="file"]');
+      fileInputs.forEach(input => {
+        const badge = modal.querySelector(`#${input.id}-badge`);
+        badge.textContent = 'לא נבחר קובץ';
+        badge.style.color = '#bbb';
+        badge.style.background = '#f3f4f6';
+        badge.style.borderColor = '#d1d5db';
+        input.addEventListener('change', function() {
+          if (input.files && input.files.length > 0) {
+            let name = input.files[0].name;
+            badge.textContent = name;
+            badge.style.color = '#333';
+            badge.style.background = '#e8f5e8';
+            badge.style.borderColor = '#10b981';
+          } else {
+            badge.textContent = 'לא נבחר קובץ';
+            badge.style.color = '#bbb';
+            badge.style.background = '#f3f4f6';
+            badge.style.borderColor = '#d1d5db';
+          }
+        });
+      });
     });
 }
 
@@ -341,7 +365,12 @@ function openInlineEditForm(branch, index, rowElement) {
   fileInputs.forEach(input => {
     const badge = document.getElementById(input.id + '-badge');
     // Set existing file name if available
-    if (branch[input.name]) {
+    if (branch[input.name] && typeof branch[input.name] === 'object' && branch[input.name].name) {
+      badge.textContent = branch[input.name].name;
+      badge.style.color = '#333';
+      badge.style.background = '#e8f5e8';
+      badge.style.borderColor = '#10b981';
+    } else if (branch[input.name]) {
       badge.textContent = branch[input.name];
       badge.style.color = '#333';
       badge.style.background = '#e8f5e8';
@@ -354,16 +383,19 @@ function openInlineEditForm(branch, index, rowElement) {
     }
     input.addEventListener('change', function() {
       if (input.files && input.files.length > 0) {
-        let name = input.files[0].name;
-        badge.textContent = name;
+        let file = input.files[0];
+        badge.textContent = file.name;
         badge.style.color = '#333';
         badge.style.background = '#e8f5e8';
         badge.style.borderColor = '#10b981';
+        // Save both name and ObjectURL
+        branch[input.name] = { name: file.name, url: URL.createObjectURL(file) };
       } else {
         badge.textContent = 'לא נבחר קובץ';
         badge.style.color = '#bbb';
         badge.style.background = '#f3f4f6';
         badge.style.borderColor = '#d1d5db';
+        branch[input.name] = null;
       }
     });
   });
@@ -374,7 +406,8 @@ function openInlineEditForm(branch, index, rowElement) {
     form.querySelectorAll('input,select').forEach(input => {
       if (input.type === 'file') {
         if (input.files.length > 0) {
-          data[input.name] = input.files[0].name;
+          const file = input.files[0];
+          data[input.name] = { name: file.name, url: URL.createObjectURL(file) };
         } else if (branch[input.name]) {
           data[input.name] = branch[input.name];
         }

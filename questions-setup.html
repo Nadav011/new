@@ -12,23 +12,27 @@
   <div id="header-container"></div>
   
   <div class="main-content">
+    <div class="page-header-center">
+      <div class="page-header-row">
+        <a href="survey-management.html" class="back-link btn btn-primary" id="backLink">⬅ חזרה לניהול סקרים</a>
+        <h1 class="page-title">הגדרת שאלות</h1>
+        <div class="header-actions-inline">
+          <button class="btn btn-secondary" onclick="openTopicsModal()">
+            <span class="settings-icon">⚙️</span> ניהול נושאים
+          </button>
+          <button class="btn btn-primary btn-add-question" onclick="openQuestionModal()">
+            <span class="plus-icon">＋</span> הוסף שאלה
+          </button>
+        </div>
+      </div>
+      <p class="page-description" id="pageDescription">ניהול שאלות עבור ביקורות הסניפים</p>
+    </div>
     <div class="page-header">
       <div class="header-left">
-        <a href="survey-management.html" class="back-link" id="backLink">⬅ חזרה לניהול סקרים</a>
-        <h1 class="page-title">הגדרת שאלות</h1>
-        <p class="page-description" id="pageDescription">ניהול שאלות עבור ביקורות הסניפים</p>
         <div id="surveyInfo" class="survey-info" style="display: none;">
           <h3 id="surveyName" class="survey-name"></h3>
           <p id="surveyDescription" class="survey-description"></p>
         </div>
-      </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" onclick="openTopicsModal()">
-          <span class="settings-icon">⚙️</span> ניהול נושאים
-        </button>
-        <button class="btn btn-primary btn-add-question" onclick="openQuestionModal()">
-          <span class="plus-icon">＋</span> הוסף שאלה
-        </button>
       </div>
     </div>
 
@@ -57,12 +61,11 @@
       <form id="questionForm">
         <div class="form-section">
           <div class="form-group">
-            <label for="itemName">Review Type (שם פריט)</label>
+            <label for="itemName">שם השאלון</label>
             <input type="text" id="itemName" name="itemName" required readonly>
           </div>
-          
           <div class="form-group">
-            <label for="itemType">סוג הפריט *</label>
+            <label for="itemType">סוג השאלה *</label>
             <select id="itemType" name="itemType" required onchange="handleItemTypeChange()">
               <option value="free-text">שאלת טקסט חופשי</option>
               <option value="rating-1-5">שאלת דירוג 1-5</option>
@@ -70,29 +73,29 @@
             </select>
           </div>
         </div>
-
         <div id="questionFields" class="form-section" style="display: none;">
           <div class="form-group">
             <label for="questionText">טקסט השאלה *</label>
             <textarea id="questionText" name="questionText" placeholder="הכנס את השאלה" rows="3"></textarea>
           </div>
-          
           <div class="form-group">
-            <label for="topic">נושא *</label>
+            <label for="topic">נושא (לא חובה)</label>
             <select id="topic" name="topic">
               <option value="">בחר נושא</option>
               <!-- Topics will be loaded dynamically -->
             </select>
           </div>
-          
+          <div class="form-group">
+            <label for="subtopic">תת נושא (לא חובה)</label>
+            <input type="text" id="subtopic" name="subtopic" placeholder="הכנס תת נושא (אם יש)">
+          </div>
           <div class="score-info">
             <div class="score-badge">
-              <span class="score-icon">🎯</span>
+              <span class="score-icon">🏅</span>
             </div>
             <p class="score-description">הציון יוענק אוטומטית בהתאם לתשובה</p>
           </div>
         </div>
-
         <div class="btn-row">
           <button type="button" class="btn btn-primary" onclick="saveQuestion()">שמור שאלה</button>
           <button type="button" class="btn btn-secondary" onclick="closeQuestionModal()">ביטול</button>

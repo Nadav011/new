@@ -84,135 +84,138 @@ document.addEventListener("DOMContentLoaded", function () {
   
   // Function to render questions for review
   function renderQuestionsForReview(questions) {
-    const questionsHTML = questions.map((question, index) => {
-      let answerInput = '';
-      if (question.itemType === 'free-text') {
-        answerInput = `
-          <textarea 
-            class="question-answer" 
-            data-question-index="${index}"
-            placeholder="הכנס תשובה..."
-            rows="3"
-            style="
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #d1d5db;
-              border-radius: 8px;
-              font-family: inherit;
-              resize: vertical;
-            "
-          ></textarea>
-          <div class="rating-input" data-question-index="${index}" style="margin-top: 10px; text-align: center;">
-            ${[1, 2, 3, 4, 5].map(num => `
-              <label style="display: inline-block; margin: 0 8px;">
-                <input type="radio" name="rating_${index}" value="${num}" style="display: none;">
-                <span class="rating-option" style="
-                  display: inline-block;
-                  width: 40px;
-                  height: 40px;
-                  border: 2px solid #d1d5db;
-                  border-radius: 50%;
-                  text-align: center;
-                  line-height: 36px;
-                  cursor: pointer;
-                  transition: all 0.2s ease;
-                  font-weight: bold;
-                ">${num}</span>
-              </label>
-            `).join('')}
-          </div>
-        `;
-      } else if (question.itemType === 'rating-1-5') {
-        answerInput = `
-          <div class="rating-input" data-question-index="${index}" style="text-align: center;">
-            ${[1, 2, 3, 4, 5].map(num => `
-              <label style="display: inline-block; margin: 0 8px;">
-                <input type="radio" name="rating_${index}" value="${num}" style="display: none;">
-                <span class="rating-option" style="
-                  display: inline-block;
-                  width: 40px;
-                  height: 40px;
-                  border: 2px solid #d1d5db;
-                  border-radius: 50%;
-                  text-align: center;
-                  line-height: 36px;
-                  cursor: pointer;
-                  transition: all 0.2s ease;
-                  font-weight: bold;
-                ">${num}</span>
-              </label>
-            `).join('')}
-          </div>
-        `;
-      } else if (question.itemType === 'status-ok') {
-        answerInput = `
-          <div class="status-input" data-question-index="${index}" style="text-align: center;">
-            <label style="display: inline-block; margin: 0 8px;">
-              <input type="radio" name="status_${index}" value="תקין" style="display: none;">
-              <span class="status-option" style="
-                display: inline-block;
-                padding: 8px 16px;
-                border: 2px solid #d1d5db;
-                border-radius: 20px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-weight: 600;
-              ">✅ תקין</span>
-            </label>
-            <label style="display: inline-block; margin: 0 8px;">
-              <input type="radio" name="status_${index}" value="חלקי" style="display: none;">
-              <span class="status-option" style="
-                display: inline-block;
-                padding: 8px 16px;
-                border: 2px solid #d1d5db;
-                border-radius: 20px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-weight: 600;
-              ">⚠️ חלקי</span>
-            </label>
-            <label style="display: inline-block; margin: 0 8px;">
-              <input type="radio" name="status_${index}" value="לא תקין" style="display: none;">
-              <span class="status-option" style="
-                display: inline-block;
-                padding: 8px 16px;
-                border: 2px solid #d1d5db;
-                border-radius: 20px;
-                cursor: pointer;
-                transition: all 0.2s ease;
-                font-weight: 600;
-              ">❌ לא תקין</span>
-            </label>
-          </div>
-        `;
-      }
+    // Group questions by topic/category
+    const grouped = {};
+    questions.forEach((q, i) => {
+      const topic = q.topic || 'ללא נושא';
+      if (!grouped[topic]) grouped[topic] = [];
+      grouped[topic].push({ ...q, _index: i });
+    });
+    // Build HTML by topic, with numbering (up to 9 questions per topic)
+    let topicIndex = 1;
+    let questionsHTML = Object.entries(grouped).map(([topic, qs]) => {
+      const currentTopicNumber = topicIndex;
+      topicIndex++;
       return `
-        <div class="question-item" style="
-          background: white;
-          border: 1px solid #e5e7eb;
-          border-radius: 12px;
-          padding: 20px;
-          margin: 12px 0;
-          box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        ">
-          <div class="question-header" style="margin-bottom: 16px;">
-            <h3 class="question-text" style="
-              font-size: 16px;
-              font-weight: 600;
-              color: #1d1d1f;
-              margin: 0 0 8px 0;
-            ">${question.questionText}</h3>
-            <div class="question-meta" style="
-              display: flex;
-              gap: 16px;
-              font-size: 13px;
-              color: #6b7280;
-            ">
-              <span><strong>נושא:</strong> ${question.topic}</span>
-            </div>
+        <div class="review-topic-group">
+          <div class="review-topic-header modern-topic-header">
+            <span class='topic-number'>${currentTopicNumber}</span><span class="topic-name">${topic}</span>
           </div>
-          <div class="question-answer-section">
-            ${answerInput}
+          <div class="review-topic-questions">
+            ${qs.map((question, qIdx) => {
+              let answerInput = '';
+              let qNum = `${currentTopicNumber}.${qIdx + 1}`;
+              if (question.itemType === 'free-text') {
+                answerInput = `
+                  <textarea 
+                    class="question-answer" 
+                    data-question-index="${question._index}"
+                    placeholder="הכנס תשובה..."
+                    rows="3"
+                    style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; resize: vertical;"
+                  ></textarea>
+                  <div class="rating-input" data-question-index="${question._index}" style="margin-top: 10px; text-align: center;">
+                    ${[1, 2, 3, 4, 5].map(num => `
+                      <label style="display: inline-block; margin: 0 8px;">
+                        <input type="radio" name="rating_${question._index}" value="${num}" style="display: none;">
+                        <span class="rating-option" style="display: inline-block; width: 40px; height: 40px; border: 2px solid #d1d5db; border-radius: 50%; text-align: center; line-height: 36px; cursor: pointer; transition: all 0.2s ease; font-weight: bold;">${num}</span>
+                      </label>
+                    `).join('')}
+                  </div>
+                `;
+              } else if (question.itemType === 'rating-1-5') {
+                answerInput = `
+                  <div class="rating-input" data-question-index="${question._index}" style="text-align: center;">
+                    ${[1, 2, 3, 4, 5].map(num => `
+                      <label style="display: inline-block; margin: 0 8px;">
+                        <input type="radio" name="rating_${question._index}" value="${num}" style="display: none;">
+                        <span class="rating-option" style="display: inline-block; width: 40px; height: 40px; border: 2px solid #d1d5db; border-radius: 50%; text-align: center; line-height: 36px; cursor: pointer; transition: all 0.2s ease; font-weight: bold;">${num}</span>
+                      </label>
+                    `).join('')}
+                  </div>
+                `;
+              } else if (question.itemType === 'status-ok') {
+                answerInput = `
+                  <div class="status-input" data-question-index="${question._index}" style="text-align: center;">
+                    <label style="display: inline-block; margin: 0 8px;">
+                      <input type="radio" name="status_${question._index}" value="תקין" style="display: none;">
+                      <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">✅ תקין</span>
+                    </label>
+                    <label style="display: inline-block; margin: 0 8px;">
+                      <input type="radio" name="status_${question._index}" value="חלקי" style="display: none;">
+                      <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">⚠️ חלקי</span>
+                    </label>
+                    <label style="display: inline-block; margin: 0 8px;">
+                      <input type="radio" name="status_${question._index}" value="לא תקין" style="display: none;">
+                      <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">❌ לא תקין</span>
+                    </label>
+                  </div>
+                `;
+              }
+              return `
+                <div class="question-item">
+                  <div class="question-header">
+                    <span class='question-number'>${qNum}</span>
+                    <h3 class="question-text">${question.questionText}</h3>
+                  </div>
+                  <div class="question-topic-under">
+                    ${question.subtopic ? `<span class='question-subtopic'>${question.subtopic}</span>` : ''} ${topic}
+                  </div>
+                  <div class="question-answer-section">
+                    ${(() => {
+                      if (question.itemType === 'free-text') {
+                        return `
+                          <textarea 
+                            class="question-answer" 
+                            data-question-index="${question._index}"
+                            placeholder="הכנס תשובה..."
+                            rows="3"
+                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 8px; font-family: inherit; resize: vertical;"
+                          ></textarea>
+                          <div class="rating-input" data-question-index="${question._index}" style="margin-top: 10px; text-align: center;">
+                            ${[1, 2, 3, 4, 5].map(num => `
+                              <label style="display: inline-block; margin: 0 8px;">
+                                <input type="radio" name="rating_${question._index}" value="${num}" style="display: none;">
+                                <span class="rating-option" style="display: inline-block; width: 40px; height: 40px; border: 2px solid #d1d5db; border-radius: 50%; text-align: center; line-height: 36px; cursor: pointer; transition: all 0.2s ease; font-weight: bold;">${num}</span>
+                              </label>
+                            `).join('')}
+                          </div>
+                        `;
+                      } else if (question.itemType === 'rating-1-5') {
+                        return `
+                          <div class="rating-input" data-question-index="${question._index}" style="text-align: center;">
+                            ${[1, 2, 3, 4, 5].map(num => `
+                              <label style="display: inline-block; margin: 0 8px;">
+                                <input type="radio" name="rating_${question._index}" value="${num}" style="display: none;">
+                                <span class="rating-option" style="display: inline-block; width: 40px; height: 40px; border: 2px solid #d1d5db; border-radius: 50%; text-align: center; line-height: 36px; cursor: pointer; transition: all 0.2s ease; font-weight: bold;">${num}</span>
+                              </label>
+                            `).join('')}
+                          </div>
+                        `;
+                      } else if (question.itemType === 'status-ok') {
+                        return `
+                          <div class="status-input" data-question-index="${question._index}" style="text-align: center;">
+                            <label style="display: inline-block; margin: 0 8px;">
+                              <input type="radio" name="status_${question._index}" value="תקין" style="display: none;">
+                              <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">✅ תקין</span>
+                            </label>
+                            <label style="display: inline-block; margin: 0 8px;">
+                              <input type="radio" name="status_${question._index}" value="חלקי" style="display: none;">
+                              <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">⚠️ חלקי</span>
+                            </label>
+                            <label style="display: inline-block; margin: 0 8px;">
+                              <input type="radio" name="status_${question._index}" value="לא תקין" style="display: none;">
+                              <span class="status-option" style="display: inline-block; padding: 8px 16px; border: 2px solid #d1d5db; border-radius: 20px; cursor: pointer; transition: all 0.2s ease; font-weight: 600;">❌ לא תקין</span>
+                            </label>
+                          </div>
+                        `;
+                      }
+                      return '';
+                    })()}
+                  </div>
+                </div>
+              `;
+            }).join('')}
           </div>
         </div>
       `;
@@ -279,6 +282,21 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = `questions-setup.html?survey=${encodeURIComponent(selectedType)}`;
       } else {
         alert('Please select a review type first.');
+      }
+    });
+  }
+
+  // Add event listener for the new header add questions button
+  const addQuestionsHeaderBtn = document.getElementById('addQuestionsHeaderBtn');
+  if (addQuestionsHeaderBtn) {
+    addQuestionsHeaderBtn.addEventListener('click', function(e) {
+      e.preventDefault();
+      const typeSelect = document.getElementById('reviewTypeSelect');
+      const selectedType = typeSelect ? typeSelect.value : '';
+      if (selectedType && selectedType !== 'בחר סוג ביקורת...') {
+        window.location.href = `questions-setup.html?survey=${encodeURIComponent(selectedType)}`;
+      } else {
+        alert('יש לבחור סוג ביקורת לפני הוספת שאלות');
       }
     });
   }

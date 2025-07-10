@@ -12,20 +12,20 @@
   <div id="header-container"></div>
   
   <div class="main-content">
-    <div class="page-header">
-      <div class="header-left">
-        <a href="add-review.html" class="back-link">⬅ חזרה להוספת ביקורת</a>
+    <div class="page-header-center">
+      <div class="page-header-row">
+        <a href="add-review.html" class="back-link btn btn-primary">⬅ חזרה להוספת ביקורת</a>
         <h1 class="page-title">ניהול סקרים</h1>
-        <p class="page-description">צור ונהל סקרים (סוגי ביקורות) עם שאלות מותאמות</p>
+        <div class="header-actions-inline">
+          <button class="btn btn-secondary" onclick="openTopicsModal()">
+            <span class="settings-icon">⚙️</span> ניהול נושאים
+          </button>
+          <button class="btn btn-primary btn-add-survey" onclick="openSurveyModal()">
+            <span class="plus-icon">＋</span> צור סקר חדש
+          </button>
+        </div>
       </div>
-      <div class="header-actions">
-        <button class="btn btn-secondary" onclick="openTopicsModal()">
-          <span class="settings-icon">⚙️</span> ניהול נושאים
-        </button>
-        <button class="btn btn-primary btn-add-survey" onclick="openSurveyModal()">
-          <span class="plus-icon">＋</span> צור סקר חדש
-        </button>
-      </div>
+      <p class="page-description">צור ונהל סקרים (סוגי ביקורות) עם שאלות מותאמות</p>
     </div>
 
     <div class="surveys-container">

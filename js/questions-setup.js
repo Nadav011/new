@@ -5,6 +5,32 @@ let currentSurvey = null;
 let isEditingSurvey = false;
 
 // Initialize the page
+function updatePageForSurvey() {
+    if (currentSurvey) {
+        // Show survey info
+        document.getElementById('surveyInfo').style.display = 'block';
+        document.getElementById('surveyName').textContent = currentSurvey.name;
+        document.getElementById('surveyDescription').textContent = currentSurvey.description || 'אין תיאור';
+        // Update page title and description together
+        const pageTitle = document.querySelector('.page-title');
+        const pageDescription = document.getElementById('pageDescription');
+        if (pageTitle) pageTitle.textContent = 'עריכת שאלות';
+        if (pageDescription) pageDescription.textContent = 'עריכת שאלות עבור הסקר הנבחר';
+        // Update back link
+        const backLink = document.getElementById('backLink');
+        backLink.textContent = '⬅ חזרה לניהול סקרים';
+        backLink.href = 'survey-management.html';
+    }
+}
+
+// When not editing a survey, set the default title and description
+function setDefaultPageHeader() {
+    const pageTitle = document.querySelector('.page-title');
+    const pageDescription = document.getElementById('pageDescription');
+    if (pageTitle) pageTitle.textContent = 'הגדרת שאלות';
+    if (pageDescription) pageDescription.textContent = 'ניהול שאלות עבור ביקורות הסניפים';
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     loadTopics();
     // Check for ?survey= parameter in URL
@@ -18,17 +44,22 @@ document.addEventListener('DOMContentLoaded', function() {
             currentSurvey = foundSurvey;
             isEditingSurvey = true;
             questions = currentSurvey.questions ? [...currentSurvey.questions] : [];
-            // Update UI for this survey
             document.getElementById('surveyInfo').style.display = 'block';
             document.getElementById('surveyName').textContent = currentSurvey.name;
             document.getElementById('surveyDescription').textContent = currentSurvey.description || '';
-            document.getElementById('pageDescription').textContent = 'עריכת שאלות עבור הסקר הנבחר';
+            // Set edit mode header
+            const pageTitle = document.querySelector('.page-title');
+            const pageDescription = document.getElementById('pageDescription');
+            if (pageTitle) pageTitle.textContent = 'עריכת שאלות';
+            if (pageDescription) pageDescription.textContent = 'עריכת שאלות עבור הסקר הנבחר';
             updateUI();
         } else {
             // Survey not found, fallback
+            setDefaultPageHeader();
             checkIfEditingSurvey();
         }
     } else {
+        setDefaultPageHeader();
         checkIfEditingSurvey();
     }
 });
@@ -84,24 +115,6 @@ function loadQuestions() {
         questions = currentSurvey.questions ? [...currentSurvey.questions] : [];
     } else {
         loadGlobalQuestions();
-    }
-}
-
-// Update page UI for survey editing
-function updatePageForSurvey() {
-    if (currentSurvey) {
-        // Show survey info
-        document.getElementById('surveyInfo').style.display = 'block';
-        document.getElementById('surveyName').textContent = currentSurvey.name;
-        document.getElementById('surveyDescription').textContent = currentSurvey.description || 'אין תיאור';
-        
-        // Update page description
-        document.getElementById('pageDescription').textContent = 'עריכת שאלות עבור הסקר הנבחר';
-        
-        // Update back link
-        const backLink = document.getElementById('backLink');
-        backLink.textContent = '⬅ חזרה לניהול סקרים';
-        backLink.href = 'survey-management.html';
     }
 }
 
@@ -182,27 +195,45 @@ function renderQuestions() {
         'status-ok': 'שאלת תקין/חלקי/לא תקין'
     };
     
-    const questionsHTML = questions.map((question, index) => {
-        const typeLabel = typeLabels[question.itemType] || question.itemType;
-        
+    // Group questions by topic
+    const grouped = {};
+    questions.forEach((q, i) => {
+        const topic = q.topic || 'ללא נושא';
+        if (!grouped[topic]) grouped[topic] = [];
+        grouped[topic].push({ ...q, _index: i });
+    });
+    
+    // Build HTML by topic
+    let questionsHTML = Object.entries(grouped).map(([topic, qs]) => {
         return `
-            <div class="question-item" data-index="${index}">
-                <div class="question-header">
-                    <h3 class="question-title">${question.itemName}</h3>
-                    <span class="question-type">${typeLabel}</span>
-                </div>
-                <div class="question-content">
-                    <strong>שאלה:</strong> ${question.questionText || 'לא צוין'}<br>
-                    <strong>נושא:</strong> ${question.topic || 'לא צוין'}
-                </div>
-                <div class="question-meta">
-                    <span>נוצר: ${new Date(question.createdAt).toLocaleDateString('he-IL')}</span>
-                </div>
-                <div class="question-actions">
-                    <button class="btn btn-secondary" onclick="editQuestion(${index})">ערוך</button>
-                    <button class="btn btn-secondary" onclick="deleteQuestion(${index})">מחק</button>
-                </div>
+          <div class="setup-topic-group">
+            <div class="setup-topic-header">${topic}</div>
+            <div class="setup-topic-questions">
+              ${qs.map((question, index) => {
+                const typeLabel = typeLabels[question.itemType] || question.itemType;
+                let subtopicLine = question.subtopic ? `<span class='setup-subtopic'>${question.subtopic}</span>` : '';
+                return `
+                  <div class="question-item" data-index="${question._index}">
+                    <div class="question-header">
+                      <h3 class="question-title">${question.itemName}</h3>
+                      <span class="question-type">${typeLabel}</span>
+                    </div>
+                    <div class="question-content">
+                      <strong>שאלה:</strong> ${question.questionText || 'לא צויין'}<br>
+                      ${subtopicLine}
+                    </div>
+                    <div class="question-meta">
+                      <span>נוצר: ${new Date(question.createdAt).toLocaleDateString('he-IL')}</span>
+                    </div>
+                    <div class="question-actions">
+                      <button class="btn btn-secondary" onclick="editQuestion(${question._index})">ערוך</button>
+                      <button class="btn btn-secondary" onclick="deleteQuestion(${question._index})">מחק</button>
+                    </div>
+                  </div>
+                `;
+              }).join('')}
             </div>
+          </div>
         `;
     }).join('');
     
@@ -275,7 +306,7 @@ function handleItemTypeChange() {
     const questionText = document.getElementById('questionText');
     const topic = document.getElementById('topic');
     questionText.required = true;
-    topic.required = true;
+    topic.required = false;
     // Load topics in dropdown
     loadTopicsInDropdown();
 }
@@ -315,10 +346,11 @@ function saveQuestion() {
         itemType: itemType,
         questionText: formData.get('questionText'),
         topic: formData.get('topic'),
+        subtopic: formData.get('subtopic'),
         createdAt: new Date().toISOString()
     };
     // Validation
-    if (!questionData.itemName || !questionData.itemType || !questionData.questionText || !questionData.topic) {
+    if (!questionData.itemName || !questionData.itemType || !questionData.questionText) {
         alert('אנא מלא את כל השדות הנדרשים');
         return;
     }
@@ -352,6 +384,7 @@ function loadQuestionForEdit(index) {
     document.getElementById('itemType').value = question.itemType;
     document.getElementById('questionText').value = question.questionText || '';
     document.getElementById('topic').value = question.topic || '';
+    document.getElementById('subtopic').value = question.subtopic || '';
     
     // Store editing index
     form.dataset.editingIndex = index;

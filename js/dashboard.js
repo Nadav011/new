@@ -400,27 +400,38 @@ function updateBranchRankingsWithScores(branchAverages) {
     else if (branch.average >= 3) scoreColor = '#f57c00'; // Needs Improvement
     else scoreColor = '#d32f2f'; // Poor
     
-    // שם סניף: כל התא לחיץ (cursor:pointer על כל ה-div)
+    // Soften the row background colors and set rank color to match score
+    let rowBg = '#fff';
+    let thisRankColor = '#222';
+    if (branch.average >= 4) {
+      rowBg = '#e0f8e9'; // softer green
+      thisRankColor = '#16a34a';
+    } else if (branch.average >= 3) {
+      rowBg = '#fff9db'; // softer yellow
+      thisRankColor = '#ea580c';
+    } else {
+      rowBg = '#ffe4e6'; // softer red
+      thisRankColor = '#dc2626';
+    }
+
+    // Make the entire row clickable to open branch-details.html for the branch
     const branchIndex = branches.findIndex(b => b.name === branch.name);
-    const branchNameHtml = `<div class="branch-link" data-index="${branchIndex}" style="cursor:pointer; font-weight:600; color:#333;">${branch.name}</div>`;
     rankingsHTML += `
-      <div class="branch-ranking-row" 
-           style="
-             padding: 12px 16px;
-             border-bottom: 1px solid #eee;
-             display: grid;
-             grid-template-columns: 40px 1fr 80px;
-             gap: 16px;
-             align-items: center;
-             background-color: ${backgroundColor};
-             transition: background-color 0.2s ease;
-           "
-           onmouseover="this.style.backgroundColor='${backgroundColor === '#fff' ? '#f8f9fa' : backgroundColor === '#f0f8f0' ? '#e8f5e8' : '#ffe8e8'}'"
-           onmouseout="this.style.backgroundColor='${backgroundColor}'">
-        <div style="text-align: center; font-weight: bold; color: ${rankColor};">
-          ${rank}
-        </div>
-        ${branchNameHtml}
+      <div class="branch-ranking-row" style="
+        padding: 12px 16px;
+        border-bottom: 1px solid #eee;
+        display: grid;
+        grid-template-columns: 40px 1fr 80px;
+        gap: 16px;
+        align-items: center;
+        background: ${rowBg};
+        color: #222;
+        font-weight: 700;
+        transition: background 0.2s, color 0.2s;
+        cursor: pointer;
+      " onclick="window.location.href='branch-details.html?index=${branchIndex}'">
+        <div style="text-align: center; font-weight: bold; color: ${thisRankColor};">${rank}</div>
+        <div style="font-weight:700; color:#222;">${branch.name}</div>
         <div style="text-align: center;">
           <span style="
             padding: 6px 10px;

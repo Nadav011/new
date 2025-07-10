@@ -1,4 +1,20 @@
 // Header mobile menu functionality
+function isUserLoggedIn() {
+  return localStorage.getItem('userLoggedIn') === 'true';
+}
+
+function blockNavIfNotLoggedIn() {
+  const navLinks = document.querySelectorAll('.nav-link');
+  navLinks.forEach(link => {
+    link.addEventListener('click', function(e) {
+      if (!isUserLoggedIn()) {
+        e.preventDefault();
+        alert('יש להתחבר כדי לגשת לאתר');
+      }
+    });
+  });
+}
+
 function initHeader() {
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');
   const mainNav = document.querySelector('.main-nav');
@@ -39,6 +55,8 @@ function initHeader() {
       link.classList.add('active');
     }
   });
+  // Block navigation if not logged in
+  blockNavIfNotLoggedIn();
 }
 
 // Auto-initialize if DOM is already loaded

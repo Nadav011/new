@@ -12,12 +12,17 @@
   <div id="header-container"></div>
   
   <div class="main-content">
-    <div class="page-header">
-      <div class="header-left">
-        <a href="questions-setup.html" class="back-link">⬅ חזרה להגדרת שאלות</a>
+    <div class="page-header-center">
+      <div class="page-header-row">
+        <a href="questions-setup.html" class="back-link btn btn-primary">⬅ חזרה להגדרת שאלות</a>
         <h1 class="page-title">ניהול נושאים</h1>
-        <p class="page-description">הוסף, ערוך ומחק נושאים עבור השאלות</p>
+        <div class="header-actions-inline">
+          <button class="btn btn-primary" onclick="document.getElementById('newTopicName').focus()">
+            <span class="plus-icon">＋</span> הוסף נושא
+          </button>
+        </div>
       </div>
+      <p class="page-description">הוסף, ערוך ומחק נושאים עבור השאלות</p>
     </div>
 
     <div class="topics-container">

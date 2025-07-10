@@ -569,3 +569,13 @@ body {
   color: #ff4d67;
   border-color: #ffd6db;
 } 
+
+/* Fix for date badge in recent reviews table */
+.recent-reviews-table .badge.date-soft {
+  padding: 0.18em 0.7em;
+  min-width: 0;
+  font-size: 12px;
+  white-space: nowrap;
+  box-sizing: border-box;
+  max-width: 100%;
+} 

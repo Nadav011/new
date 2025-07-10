@@ -141,6 +141,8 @@
       const pass = document.getElementById("password").value;
       const found = users.find(u => u.username === user && u.password === pass);
       if (found) {
+        localStorage.setItem('userLoggedIn', 'true');
+        localStorage.setItem('userEmail', user);
         window.location.href = "dashboard.html";
       } else {
         alert("שם משתמש או סיסמה שגויים");
@@ -148,7 +150,11 @@
     }
 
     function handleGoogleCredentialResponse(response) {
-      console.log("Encoded JWT ID token: " + response.credential);
+      // Decode JWT to get email
+      const payload = JSON.parse(atob(response.credential.split('.')[1]));
+      const email = payload.email || '';
+      localStorage.setItem('userLoggedIn', 'true');
+      localStorage.setItem('userEmail', email);
       // כאן תוכל להחליט האם לאשר לפי אימייל או דומיין וכו'
       window.location.href = "dashboard.html";
     }

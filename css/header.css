@@ -26,6 +26,7 @@
   display: flex;
   align-items: center;
   margin-left: auto;
+  min-width: 0;
 }
 
 .site-title {
@@ -38,6 +39,10 @@
   margin: 0;
   letter-spacing: -0.02em;
   font-family: 'Heebo', -apple-system, BlinkMacSystemFont, sans-serif;
+  white-space: nowrap;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .main-nav {
@@ -685,10 +690,10 @@ button.btn-delete:hover {
 } 
 
 .logo-link {
-  display: block;
+  display: flex;
+  align-items: center;
   text-decoration: none;
-  color: inherit;
-  cursor: pointer;
+  min-width: 0;
 }
 .logo-link:focus, .logo-link:hover {
   outline: none;

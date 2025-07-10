@@ -161,9 +161,12 @@ body {
 .question-text {
   font-size: 16px;
   font-weight: 600;
-  color: #374151;
-  margin-bottom: 16px;
+  color: #1a1a1a;
+  margin: 0;
+  display: inline;
   line-height: 1.5;
+  letter-spacing: 0.01em;
+  vertical-align: middle;
 }
 
 .rating-container {
@@ -1009,4 +1012,198 @@ input[style*='border: 2px solid #e53935'], select[style*='border: 2px solid #e53
 .score-btn:hover, .status-selector .score-btn:hover {
   background: #e3eafc;
   color: #1976d2;
+}
+
+/* Modern review page container */
+.modern-review-page {
+  background: #f7f8fa;
+  padding: 24px 0 48px 0;
+  min-height: 100vh;
+}
+
+/* Topic header styling */
+.modern-topic-header {
+  font-size: 1.08rem;
+  font-weight: 700;
+  color: #1976d2;
+  background: linear-gradient(90deg, #f7f8fa 0%, #e3f2fd 100%);
+  border-radius: 14px;
+  padding: 12px 18px 8px 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 1px 6px rgba(25,118,210,0.06);
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topic-number {
+  font-size: 1.08em;
+  font-weight: 700;
+  color: #1976d2;
+  background: #e3f2fd;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 8px;
+  box-shadow: 0 1px 3px rgba(25,118,210,0.06);
+  flex-shrink: 0;
+}
+
+.modern-topic-header .topic-name {
+  font-size: 1.08em;
+  font-weight: 600;
+  color: #1a237e;
+  letter-spacing: 0.01em;
+  margin: 0;
+  line-height: 1.2;
+  max-width: 70vw;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1 1 auto;
+  transition: color 0.2s;
+}
+
+.modern-topic-header .topic-name:hover {
+  color: #1976d2;
+}
+
+.review-topic-group {
+  margin-bottom: 32px;
+}
+
+.review-topic-questions {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.question-item {
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 14px 14px 10px 14px;
+  margin: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  transition: box-shadow 0.2s;
+}
+.question-item:hover {
+  box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+}
+
+.question-header {
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-number {
+  font-size: 1em;
+  color: #1976d2;
+  font-weight: 600;
+  min-width: 28px;
+  text-align: left;
+  background: #e3f2fd;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-left: 6px;
+  box-shadow: 0 1px 3px rgba(25,118,210,0.05);
+}
+
+.question-text {
+  font-size: 16.5px;
+  font-weight: 500;
+  color: #23272f;
+  margin: 0;
+  display: inline-block;
+  line-height: 1.6;
+  letter-spacing: 0.01em;
+  vertical-align: middle;
+  padding: 2px 0 2px 0;
+  background: none;
+  border: none;
+  box-shadow: none;
+}
+
+.question-text:hover {
+  box-shadow: 0 2px 8px rgba(25,118,210,0.08);
+}
+
+.question-topic-under {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 6px;
+  margin-top: -6px;
+  font-weight: 400;
+  letter-spacing: 0.01em;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.question-subtopic {
+  font-size: 13px;
+  color: #283593;
+  font-weight: 600;
+  font-style: normal;
+  background: #e3f2fd;
+  border-right: 4px solid #64b5f6;
+  border-radius: 7px;
+  padding: 4px 16px 4px 10px;
+  margin-right: 12px;
+  margin-left: 0;
+  display: inline-block;
+  opacity: 1;
+  box-shadow: 0 1px 4px rgba(100,181,246,0.08);
+  transition: background 0.18s, color 0.18s;
+  letter-spacing: 0.01em;
+  position: relative;
+}
+
+.question-subtopic::before {
+  content: "תת נושא: ";
+  color: #1976d2;
+  font-weight: 700;
+  margin-left: 4px;
+  font-size: 12px;
+}
+
+.question-subtopic:hover {
+  background: #bbdefb;
+  color: #1565c0;
+}
+
+@media (max-width: 700px) {
+  .modern-review-page {
+    padding: 8px 0 20px 0;
+  }
+  .modern-topic-header {
+    font-size: 0.98rem;
+    padding: 8px 8px 6px 8px;
+  }
+  .modern-topic-header .topic-name {
+    font-size: 0.98em;
+    max-width: 50vw;
+  }
+  .topic-number, .question-number {
+    width: 20px;
+    height: 20px;
+    font-size: 0.95em;
+  }
+  .question-item {
+    padding: 8px 4px 6px 4px;
+  }
+  .question-text {
+    font-size: 14.5px;
+    padding: 1px 0 1px 0;
+  }
 }
