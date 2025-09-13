@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>פרטי סניף</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css" />
+  <link rel="stylesheet" href="css/branch-details.css" />
+  <link rel="stylesheet" href="css/branches-tags.css">
+  <link rel="stylesheet" href="css/reviews.css" />
+  <link rel="stylesheet" href="css/buttons.css" />
+  <style>
+.branch-files-box {
+  display: none;
+  margin-top: 18px;
+  padding: 32px 32px 22px 32px;
+  background: linear-gradient(135deg, #f7faff 0%, #e3f2fd 100%);
+  border-radius: 22px;
+  box-shadow: 0 4px 24px rgba(25,118,210,0.10);
+  min-width: 400px;
+  max-width: 900px;
+  width: 100%;
+  text-align: right;
+  border: 1.5px solid #e3f2fd;
+  margin-left: auto;
+  margin-right: auto;
+}
+.branch-files-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  justify-content: flex-start;
+  align-items: stretch;
+  max-width: 100%;
+}
+.branch-file-row {
+  display: flex;
+  align-items: center;
+  padding: 0;
+  border: none;
+  background: none;
+  width: 100%;
+}
+.branch-file-badge {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  color: #222;
+  border-radius: 18px;
+  border: 1.5px solid #e5e7eb;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 12px 0;
+  box-shadow: 0 2px 8px 0 rgba(60, 60, 60, 0.06);
+  text-decoration: none;
+  transition: color 0.18s, border 0.18s, box-shadow 0.18s, transform 0.18s;
+  cursor: pointer;
+  margin: 0;
+  letter-spacing: 0.03em;
+  min-width: 0;
+  position: relative;
+  overflow: hidden;
+}
+.branch-file-badge::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 18px;
+  pointer-events: none;
+  border: 1.5px solid rgba(255,255,255,0.13);
+  box-shadow: 0 0 0 1px rgba(255,255,255,0.09) inset;
+}
+.branch-file-badge:hover, .branch-file-badge:focus {
+  background: none;
+  color: #1976d2;
+  border: 2px solid #b6c2d1;
+  box-shadow: 0 4px 16px 0 rgba(60, 60, 60, 0.10);
+  transform: translateY(-1px) scale(1.04);
+  text-decoration: none;
+}
+.branch-file-badge-label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 16px;
+  color: inherit;
+  letter-spacing: 0.03em;
+}
+.eye-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 3px rgba(76,140,255,0.08);
+  margin-right: 0;
+  border: 1.2px solid #e3f2fd;
+}
+.eye-icon svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.eye-icon svg path {
+  fill: #4f8cff !important;
+  stroke: #1976d2 !important;
+}
+.branch-file-label {
+  background: #e3f2fd;
+  color: #1976d2;
+  font-size: 16px;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 7px 22px;
+  box-shadow: 0 1px 6px rgba(25,118,210,0.06);
+  margin-left: 2px;
+  letter-spacing: 0.01em;
+}
+.btn-view {
+  font-size: 16px;
+  padding: 8px 32px;
+  border-radius: 16px;
+  background: linear-gradient(90deg, #4f8cff 0%, #1976d2 100%);
+  color: #fff;
+  border: none;
+  font-weight: 700;
+  box-shadow: 0 2px 12px rgba(25,118,210,0.13);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.18s;
+  margin-right: auto;
+  margin-left: 0;
+  letter-spacing: 0.01em;
+}
+.btn-view:hover, .btn-view:focus {
+  background: linear-gradient(90deg, #1976d2 0%, #4f8cff 100%);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(25,118,210,0.18);
+  transform: translateY(-2px) scale(1.04);
+}
+.branch-files-box h4 {
+  margin-top: 0;
+  margin-bottom: 38px;
+  font-size: 20px;
+  color: #1976d2;
+  font-weight: 800;
+  text-align: center;
+}
+.branch-files-box .no-files {
+  color: #888;
+  margin-top: 12px;
+  font-size: 16px;
+  text-align: center;
+}
+@media (max-width: 900px) {
+  .branch-files-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .branch-files-list {
+    grid-template-columns: 1fr;
+  }
+}
+</style>
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="top-bar">
+      <a class="back-link" href="branches.html">⬅ חזרה לכל הסניפים</a>
+      <button class="back-link" onclick="openEditPopup()">✏️ עריכת פרטי סניף</button>
+    </div>
+
+    <div class="branch-header card">
+      <h1 class="branch-name" id="branch-name">שם סניף</h1>
+      <p class="branch-address" id="branch-address">כתובת מלאה</p>
+    </div>
+
+    <div class="stats-container">
+      <div class="stat-box">
+        <div class="stat-icon">📉</div>
+        <div class="stat-label">ציון הנמוך ביותר</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📈</div>
+        <div class="stat-label">ציון הגבוה ביותר</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">⭐</div>
+        <div class="stat-label">ציון ממוצע</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-icon">📅</div>
+        <div class="stat-label">סה״כ ביקורות</div>
+        <div class="stat-value">0</div>
+      </div>
+    </div>
+
+    <div class="branch-details card">
+      <h2 class="section-header" style="margin-bottom:18px;">פרטי הסניף</h2>
+      <div class="branch-files-btn-center" style="display:flex;justify-content:center;align-items:center;margin-bottom:18px;width:100%;">
+        <button id="showFilesBtn" class="btn branch-files-btn">קבצים של הסניף</button>
+      </div>
+      <ul class="branch-details-list" id="branch-details-list"></ul>
+      <div id="branch-files-box" class="branch-files-box card"></div>
+      <div id="branch-attachments" class="branch-attachments" style="margin-top:24px;"></div>
+    </div>
+
+    <div class="reviews-history card">
+      <h2 class="section-header">היסטוריית ביקורות בסניף</h2>
+      <div class="reviews-empty">לא בוצעו ביקורות בסניף זה עדיין.</div>
+      <!-- Table will be injected by JS -->
+    </div>
+  </div>
+
+  <!-- Modal container for edit branch popup -->
+  <div id="editBranchModalContainer"></div>
+
+  <script>
+    let currentBranchIndex = null;
+    let currentBranch = null;
+
+    function fillBranchDetails(branch) {
+      document.getElementById("branch-name").textContent = branch.name;
+      document.getElementById("branch-address").textContent = `${branch.address}, ${branch.city}`;
+      document.querySelector("#branch-details-list").innerHTML = `
+        <li><strong>מנהל:</strong> <span>${branch.manager || "-"}</span></li>
+        <li><strong>טלפון מנהל:</strong> <span class='phone'>${branch.managerPhone || "-"}</span></li>
+        <li><strong>סוג כשרות:</strong> <span>${branch.kosherType}</span></li>
+        <li><strong>סטטוס:</strong> <span>${branch.status}</span></li>
+        <li><strong>זכיין:</strong> <span>${branch.firstName} ${branch.lastName}</span></li>
+        <li><strong>טלפון זכיין:</strong> <span class='phone'>${branch.phone || "-"}</span></li>
+        <li><strong>סוג עסק:</strong> <span>${branch.businessType}</span></li>
+      `;
+    }
+
+    function openEditPopup() {
+      // Fetch and show the edit branch modal (reusing popup.html)
+      fetch('popup.html')
+        .then(res => res.text())
+        .then(html => {
+          // Only keep the modal markup
+          const tempDiv = document.createElement('div');
+          tempDiv.innerHTML = html;
+          const modal = tempDiv.querySelector('.modal');
+          if (!modal) return;
+          // Remove any existing modal
+          const container = document.getElementById('editBranchModalContainer');
+          container.innerHTML = '';
+          container.appendChild(modal);
+          document.body.style.overflow = "hidden";
+
+          // Pre-fill form with current branch data
+          const urlParams = new URLSearchParams(window.location.search);
+          let branchIndex = urlParams.get('index');
+          let branches = JSON.parse(localStorage.getItem('branches') || '[]');
+          let branch = null;
+          if (branchIndex !== null && branches[branchIndex]) {
+            branch = branches[branchIndex];
+          } else if (localStorage.getItem('currentBranch')) {
+            branch = JSON.parse(localStorage.getItem('currentBranch'));
+            branchIndex = branches.findIndex(b => b.name === branch.name);
+          }
+          const form = modal.querySelector('#branchForm');
+          if (branch && form) {
+            Object.entries(branch).forEach(([key, value]) => {
+              const input = form.querySelector(`[name="${key}"]`);
+              if (input) input.value = value;
+            });
+          } else if (form) {
+            form.reset();
+          }
+
+          // Save logic
+          const saveBtn = modal.querySelector('[data-save]');
+          const cancelBtn = modal.querySelector('[data-cancel]');
+          const closeBtn = modal.querySelector('.modal-close');
+          function closeModal() {
+            container.innerHTML = '';
+            document.body.style.overflow = '';
+          }
+          if (cancelBtn) cancelBtn.onclick = closeModal;
+          if (closeBtn) closeBtn.onclick = closeModal;
+          if (saveBtn) {
+            saveBtn.onclick = function() {
+              const inputs = form.querySelectorAll('input[name], select[name]');
+              const data = {};
+              inputs.forEach(input => {
+                if (input.type === 'file') return;
+                data[input.name] = input.value.trim();
+              });
+              // Keep attachments if present
+              if (branch && branch.attachments) data.attachments = branch.attachments;
+              if (!data["name"] || !data["address"] || !data["businessType"] || !data["status"]) {
+                alert("נא למלא את כל השדות החיוניים: שם סניף, כתובת, סוג עסק, סטטוס");
+                return;
+              }
+              let branches = JSON.parse(localStorage.getItem("branches") || "[]");
+              if (branch && branchIndex !== null) {
+                branches[branchIndex] = data;
+              } else {
+                branches.push(data);
+              }
+              localStorage.setItem("branches", JSON.stringify(branches));
+              closeModal();
+              window.location.reload();
+            };
+          }
+          // Close modal on overlay click or Esc
+          modal.addEventListener('click', function(e) {
+            if (e.target === modal) closeModal();
+          });
+          document.addEventListener('keydown', function escListener(e) {
+            if (e.key === 'Escape') {
+              closeModal();
+              document.removeEventListener('keydown', escListener);
+            }
+          });
+        });
+    }
+
+    // Load branch details from URL parameters
+    window.addEventListener('load', function() {
+      const urlParams = new URLSearchParams(window.location.search);
+      const branchIndex = urlParams.get('index');
+      
+      if (branchIndex !== null) {
+        currentBranchIndex = parseInt(branchIndex);
+        const branches = JSON.parse(localStorage.getItem('branches') || '[]');
+        
+        if (branches[currentBranchIndex]) {
+          currentBranch = branches[currentBranchIndex];
+          fillBranchDetails(currentBranch);
+        }
+      }
+    });
+
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+
+    // Add file box toggle logic
+    document.addEventListener('DOMContentLoaded', function() {
+      const showFilesBtn = document.getElementById('showFilesBtn');
+      const filesBox = document.getElementById('branch-files-box');
+      if (showFilesBtn && filesBox) {
+        showFilesBtn.onclick = function() {
+          if (filesBox.style.display === 'none' || filesBox.style.display === '') {
+            let filesHtml = '';
+            if (window.currentBranch) {
+              const fileFields = [
+                { key: 'idFile', label: 'תעודת זהות' },
+                { key: 'companyFile', label: 'תעודת התאגדות' },
+                { key: 'signatureFile', label: 'מורשה חתימה' },
+                { key: 'bankFile', label: 'פרטי חשבון בנק' },
+                { key: 'approvalFile', label: 'אישור ניהול ספרים' }
+              ];
+              filesHtml = '<h4>קבצים של הסניף</h4>';
+              filesHtml += '<ul class="branch-files-list">';
+              let hasFile = false;
+              fileFields.forEach(f => {
+                const fileObj = window.currentBranch[f.key];
+                if (fileObj && fileObj.url) {
+                  hasFile = true;
+                  filesHtml += `<li class='branch-file-row'><a href='${fileObj.url}' class='branch-file-badge' target='_blank' rel='noopener noreferrer' title='צפייה'><span class='branch-file-badge-label'>${f.label}<span class='eye-icon' aria-label='צפייה'><svg width='14' height='14' viewBox='0 0 22 22' fill='none' xmlns='http://www.w3.org/2000/svg'><path d='M11 5C6.5 5 2.73 8.11 1 11c1.73 2.89 5.5 6 10 6s8.27-3.11 10-6c-1.73-2.89-5.5-6-10-6zm0 10c-2.21 0-4-1.79-4-4s1.79-4 4-4 4 1.79 4 4-1.79 4-4 4zm0-6.5A2.5 2.5 0 1 0 11 15a2.5 2.5 0 0 0 0-5z' fill='#4f8cff' stroke='#1976d2' stroke-width='0.5'/></svg></span></span></a></li>`;
+                }
+              });
+              filesHtml += '</ul>';
+              if (!hasFile) filesHtml += '<div class="no-files">לא הועלו קבצים לסניף זה.</div>';
+            } else {
+              filesHtml = '<div class="no-files">לא נמצאו נתוני קבצים לסניף.</div>';
+            }
+            filesBox.innerHTML = filesHtml;
+            filesBox.style.display = 'block';
+          } else {
+            filesBox.style.display = 'none';
+          }
+        };
+      }
+    });
+  </script>
+  <script src="js/branch-details.js"></script>
+</body>
+</html>

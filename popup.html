@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הוספת סניף חדש</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/popup.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="modal" id="branchModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
+      <div class="modal-content">
+        <button class="modal-close">&times;</button>
+        <h3 id="modalTitle">הוספת סניף חדש</h3>
+
+        <form id="branchForm">
+          <div class="form-section">
+            <div class="section-title">פרטי סניף</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="branchName">שם הסניף</label>
+                <input type="text" id="branchName" placeholder="שם הסניף" name="name" required>
+              </div>
+              <div class="form-group">
+                <label for="branchCity">עיר</label>
+                <input type="text" id="branchCity" placeholder="עיר" name="city">
+              </div>
+              <div class="form-group">
+                <label for="branchAddress">כתובת מלאה</label>
+                <input type="text" id="branchAddress" placeholder="כתובת מלאה" name="address" required>
+              </div>
+              <div class="form-group">
+                <label for="managerName">שם מנהל הסניף</label>
+                <input type="text" id="managerName" placeholder="שם מנהל הסניף" name="managerName">
+              </div>
+              <div class="form-group">
+                <label for="managerPhone">טלפון מנהל הסניף</label>
+                <input type="text" id="managerPhone" placeholder="טלפון מנהל הסניף" name="managerPhone">
+              </div>
+              <div class="form-group">
+                <label for="kosherType">סוג כשרות</label>
+                <select id="kosherType" name="kosherType" required>
+                  <option disabled selected value="">בחר סוג כשרות</option>
+                  <option>כשרות רגילה</option>
+                  <option>כשרות בד"ץ</option>
+                  <option>כשרות צהר</option>
+                  <option>ללא תעודת כשרות</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label for="branchStatus">סטטוס הסניף</label>
+                <select id="branchStatus" name="status" required>
+                  <option disabled selected value="">בחר סטטוס הסניף</option>
+                  <option>פעיל</option>
+                  <option>לא פעיל</option>
+                  <option>בשיפוצים</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">פרטי הזכיין</div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="firstName">שם זכיין</label>
+                <input type="text" id="firstName" placeholder="שם זכיין" name="firstName">
+              </div>
+              <div class="form-group">
+                <label for="lastName">שם משפחה</label>
+                <input type="text" id="lastName" placeholder="שם משפחה" name="lastName">
+              </div>
+              <div class="form-group">
+                <label for="phone">מספר טלפון</label>
+                <input type="text" id="phone" placeholder="מספר טלפון" name="phone">
+              </div>
+              <div class="form-group">
+                <label for="idNumber">מספר תעודת זהות</label>
+                <input type="text" id="idNumber" placeholder="מספר תעודת זהות" name="idNumber">
+              </div>
+              <div class="form-group">
+                <label for="ownerAddress">כתובת זכיין</label>
+                <input type="text" id="ownerAddress" placeholder="כתובת זכיין" name="ownerAddress">
+              </div>
+              <div class="form-group">
+                <label for="businessType">סוג עסק</label>
+                <select id="businessType" name="businessType" required>
+                  <option disabled selected value="">בחר סוג עסק</option>
+                  <option>עוסק מורשה</option>
+                  <option>חברה בע"מ</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="form-section">
+            <div class="section-title">מסמכים נדרשים</div>
+            <div class="form-grid file-upload-group">
+              <div class="file-upload-item">
+                <label for="idFile">תעודת זהות</label>
+                <input type="file" id="idFile" name="idFile" accept=".pdf,image/*">
+                <span class="badge file-badge" id="idFile-badge">לא נבחר קובץ</span>
+              </div>
+              <div class="file-upload-item">
+                <label for="companyFile">תעודת התאגדות</label>
+                <input type="file" id="companyFile" name="companyFile" accept=".pdf,image/*">
+                <span class="badge file-badge" id="companyFile-badge">לא נבחר קובץ</span>
+              </div>
+              <div class="file-upload-item">
+                <label for="signatureFile">מורשה חתימה</label>
+                <input type="file" id="signatureFile" name="signatureFile" accept=".pdf,image/*">
+                <span class="badge file-badge" id="signatureFile-badge">לא נבחר קובץ</span>
+              </div>
+              <div class="file-upload-item">
+                <label for="bankFile">פרטי חשבון בנק</label>
+                <input type="file" id="bankFile" name="bankFile" accept=".pdf,image/*">
+                <span class="badge file-badge" id="bankFile-badge">לא נבחר קובץ</span>
+              </div>
+              <div class="file-upload-item">
+                <label for="approvalFile">אישור ניהול ספרים</label>
+                <input type="file" id="approvalFile" name="approvalFile" accept=".pdf,image/*">
+                <span class="badge file-badge" id="approvalFile-badge">לא נבחר קובץ</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="btn-row">
+            <button type="button" class="btn btn-primary" data-save>שמור וסגור</button>
+            <button type="button" class="btn btn-secondary" data-cancel onclick="closeModal()">ביטול</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html>

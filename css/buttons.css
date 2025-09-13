@@ -1,0 +1,194 @@
+/* --- GLOBAL BUTTON DESIGN SYSTEM (APPLE-LIKE, MINIMAL, SOFT) --- */
+.button, button, .btn, .action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Heebo', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #1d1d1f;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  padding: 0.5em 1.5em;
+  box-shadow: 0 1px 4px 0 rgba(60,60,60,0.04);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+  cursor: pointer;
+  outline: none;
+  min-height: 40px;
+  min-width: 40px;
+  gap: 0.5em;
+}
+.button:active, button:active, .btn:active, .action-btn:active {
+  background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+  color: #1976d2;
+  box-shadow: 0 2px 8px 0 rgba(60,60,60,0.08);
+}
+.button:hover, button:hover, .btn:hover, .action-btn:hover {
+  background: linear-gradient(135deg, #f7f8fa 0%, #e3e7ed 100%);
+  color: #1976d2;
+  border-color: #b6c2d1;
+}
+.button:disabled, button:disabled, .btn:disabled, .action-btn:disabled {
+  background: #f3f4f6;
+  color: #bdbdbd;
+  border-color: #e0e0e0;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+/* Icon button variant */
+.button.btn-icon, button.btn-icon, .btn.btn-icon, .action-btn.btn-icon {
+  padding: 0.5em;
+  min-width: 40px;
+  min-height: 40px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #ffffff 0%, #f7f8fa 100%);
+}
+/* Primary button variant */
+.button.primary, button.primary, .btn.primary, .action-btn.primary {
+  background: linear-gradient(135deg, #1976d2 0%, #1565c0 100%);
+  color: #fff;
+  border: none;
+}
+.button.primary:hover, button.primary:hover, .btn.primary:hover, .action-btn.primary:hover {
+  background: linear-gradient(135deg, #1565c0 0%, #1976d2 100%);
+  color: #fff;
+}
+/* Danger button variant */
+.button.danger, button.danger, .btn.danger, .action-btn.danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+  color: #fff;
+  border: none;
+}
+.button.danger:hover, button.danger:hover, .btn.danger:hover, .action-btn.danger:hover {
+  background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
+  color: #fff;
+}
+/* Remove legacy/conflicting button rules below this line */
+
+/* Prevent focus outline on non-editable elements globally */
+*:not(input):not(textarea):not(select):focus {
+  outline: none !important;
+}
+
+/* Unified Button Styles - Minimal, Apple-like */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  font-size: 15px;
+  font-family: 'Heebo', Arial, sans-serif;
+  font-weight: 500;
+  cursor: pointer;
+  background: linear-gradient(180deg, #fff 90%, #f7f8fa 100%);
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  transition: background 0.18s, color 0.18s, box-shadow 0.18s, border 0.18s;
+  outline: none;
+  min-width: 0;
+  min-height: 36px;
+  letter-spacing: 0.01em;
+}
+
+.btn:active {
+  background: linear-gradient(180deg, #f7f8fa 80%, #ededed 100%);
+  color: #1976d2;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+}
+
+.btn:focus {
+  border: 1.5px solid #1976d2;
+  box-shadow: 0 0 0 2px #e3f2fd;
+}
+
+.btn-view {
+  color: #1976d2;
+  background: linear-gradient(180deg, #f7faff 90%, #f3f6fa 100%);
+  border: 1px solid #d0e3fa;
+}
+.btn-view:hover, .btn-view:focus {
+  background: linear-gradient(180deg, #e3f2fd 90%, #d0e3fa 100%);
+  color: #1251a3;
+  border: 1.5px solid #1976d2;
+}
+
+.btn-edit {
+  color: #fd7e14;
+  background: linear-gradient(180deg, #fff8f2 90%, #fbeee3 100%);
+  border: 1px solid #ffe0b2;
+}
+.btn-edit:hover, .btn-edit:focus {
+  background: linear-gradient(180deg, #ffe0b2 90%, #ffd699 100%);
+  color: #b25c00;
+  border: 1.5px solid #fd7e14;
+}
+
+.btn-delete {
+  color: #d32f2f;
+  background: linear-gradient(180deg, #fff5f5 90%, #fbeaea 100%);
+  border: 1px solid #ffcdd2;
+}
+.btn-delete:hover, .btn-delete:focus {
+  background: linear-gradient(180deg, #ffcdd2 90%, #ffb3b3 100%);
+  color: #a31515;
+  border: 1.5px solid #d32f2f;
+}
+
+.btn-primary {
+  background: linear-gradient(180deg, #1976d2 90%, #1565c0 100%);
+  color: #fff;
+  border: 1px solid #1976d2;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(25,118,210,0.06);
+}
+.btn-primary:hover, .btn-primary:focus {
+  background: linear-gradient(180deg, #1565c0 90%, #1976d2 100%);
+  color: #fff;
+  border: 1.5px solid #1251a3;
+}
+
+.btn-secondary {
+  background: linear-gradient(180deg, #f7f8fa 90%, #f3f4f6 100%);
+  color: #374151;
+  border: 1px solid #d1d5db;
+  font-weight: 500;
+}
+.btn-secondary:hover, .btn-secondary:focus {
+  background: linear-gradient(180deg, #e5e7eb 90%, #f3f4f6 100%);
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+}
+
+.btn-icon {
+  padding: 8px 10px;
+  border-radius: 50%;
+  font-size: 16px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid #e5e7eb;
+  box-shadow: none;
+  min-width: 0;
+  min-height: 36px;
+}
+
+.btn-icon:hover, .btn-icon:focus {
+  background: #f5f7fa;
+  color: #1976d2;
+  border: 1.5px solid #1976d2;
+}
+
+@media (max-width: 600px) {
+  .btn {
+    font-size: 14px;
+    padding: 8px 12px;
+    min-height: 32px;
+  }
+  .btn-icon {
+    font-size: 14px;
+    padding: 8px 8px;
+    min-height: 32px;
+  }
+} 

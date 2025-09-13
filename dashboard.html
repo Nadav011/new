@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+
+<html dir="rtl" lang="he">
+<head>
+<meta charset="utf-8"/>
+<title>לוח בקרה - המקסיקני</title>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<link href="css/header.css" rel="stylesheet"/>
+<link href="css/dashboard.css" rel="stylesheet"/>
+<link rel="stylesheet" href="css/branches-tags.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <h1 class="dashboard-header">לוח בקרה</h1>
+    <!-- Stats -->
+    <div class="stats">
+      <div class="stat-card">
+        <span class="stat-icon">🏬</span>
+        <div class="stat-title">סניפים פעילים</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-card">
+        <span class="stat-icon">🗒️</span>
+        <div class="stat-title">ביקורות שבוצעו</div>
+        <div class="stat-value">0</div>
+      </div>
+      <div class="stat-card stat-outstanding">
+        <span class="stat-icon">📈</span>
+        <div class="stat-title">סניף מצטיין</div>
+        <div class="stat-value">
+          <span class="branch-name">אין נתונים</span>
+          <div class="arrow-controls">
+            <button class="arrow-btn arrow-up" title="הקודם">▲</button>
+            <button class="arrow-btn arrow-down" title="הבא">▼</button>
+          </div>
+          <div class="branch-contact" style="display:none;"></div>
+        </div>
+      </div>
+      <div class="stat-card stat-needs">
+        <span class="stat-icon">📉</span>
+        <div class="stat-title">סניף דורש שיפור</div>
+        <div class="stat-value">
+          <span class="branch-name">אין נתונים</span>
+          <div class="arrow-controls">
+            <button class="arrow-btn arrow-up" title="הקודם">▲</button>
+            <button class="arrow-btn arrow-down" title="הבא">▼</button>
+          </div>
+          <div class="branch-contact" style="display:none;"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Two Side-by-Side Boxes -->
+    <div class="sections-grid">
+      <div class="box">
+        <div class="section-title">דירוג סניפים (ציון ממוצע)</div>
+        <div class="list-empty">אין נתונים להצגה</div>
+      </div>
+      <div class="box">
+        <div class="section-title">ביקורות אחרונות</div>
+        <div class="list-empty">לא קיימות ביקורות להצגה כרגע.</div>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>

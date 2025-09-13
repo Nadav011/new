@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>ניהול סקרים - המקסיקני</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/survey-management.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header-center">
+      <div class="page-header-row">
+        <a href="add-review.html" class="back-link btn btn-primary">⬅ חזרה להוספת ביקורת</a>
+        <h1 class="page-title">ניהול סקרים</h1>
+        <div class="header-actions-inline">
+          <button class="btn btn-secondary" onclick="openTopicsModal()">
+            <span class="settings-icon">⚙️</span> ניהול נושאים
+          </button>
+          <button class="btn btn-primary btn-add-survey" onclick="openSurveyModal()">
+            <span class="plus-icon">＋</span> צור סקר חדש
+          </button>
+        </div>
+      </div>
+      <p class="page-description">צור ונהל סקרים (סוגי ביקורות) עם שאלות מותאמות</p>
+    </div>
+
+    <div class="surveys-container">
+      <div id="surveysList" class="surveys-list">
+        <!-- Surveys will be loaded here -->
+      </div>
+      
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">📋</div>
+        <h3 class="empty-title">לא נוצרו סקרים עדיין</h3>
+        <p class="empty-description">צור את הסקר הראשון כדי להתחיל</p>
+        <button class="btn btn-primary btn-add-first" onclick="openSurveyModal()">
+          <span class="plus-icon">＋</span> צור סקר ראשון
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Survey Modal -->
+  <div id="surveyModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeSurveyModal()">&times;</button>
+      <h3 id="modalTitle">יצירת סקר חדש</h3>
+      
+      <form id="surveyForm">
+        <div class="form-section">
+          <div class="form-group">
+            <label for="surveyName">שם הסקר *</label>
+            <input type="text" id="surveyName" name="surveyName" placeholder="הכנס שם הסקר" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="surveyDescription">תיאור הסקר</label>
+            <textarea id="surveyDescription" name="surveyDescription" placeholder="תיאור קצר של הסקר (אופציונלי)" rows="2"></textarea>
+          </div>
+        </div>
+
+        <div class="questions-section">
+          <div class="section-header">
+            <h4>שאלות הסקר</h4>
+            <button type="button" class="btn btn-primary btn-sm" onclick="addQuestionToSurvey()">
+              <span class="plus-icon">＋</span> הוסף שאלה
+            </button>
+          </div>
+          
+          <div id="surveyQuestions" class="survey-questions">
+            <div class="empty-questions-state">
+              <div class="empty-icon">📝</div>
+              <p>לא נוספו שאלות עדיין</p>
+              <p class="empty-hint">לחץ על "הוסף שאלה" כדי להתחיל</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" onclick="saveSurvey()">שמור סקר</button>
+          <button type="button" class="btn btn-secondary" onclick="closeSurveyModal()">ביטול</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Question Modal for Survey -->
+  <div id="questionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="questionModalTitle">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+      <h3 id="questionModalTitle">הוספת שאלה לסקר</h3>
+      
+      <form id="questionForm">
+        <div class="form-section">
+          <div class="form-group">
+            <label for="itemName">שם הפריט *</label>
+            <input type="text" id="itemName" name="itemName" placeholder="הכנס שם הפריט" required>
+          </div>
+          
+          <div class="form-group">
+            <label for="itemType">סוג הפריט *</label>
+            <select id="itemType" name="itemType" required onchange="handleItemTypeChange()">
+              <option value="">בחר סוג פריט</option>
+              <option value="group-title">כותרת קבוצה</option>
+              <option value="free-text">שאלת טקסט חופשי</option>
+              <option value="rating-1-5">שאלת דירוג 1-5</option>
+              <option value="status-ok">שאלת תקין/חלקי/לא תקין</option>
+            </select>
+          </div>
+        </div>
+
+        <div id="questionFields" class="form-section" style="display: none;">
+          <div class="form-group">
+            <label for="questionText">טקסט השאלה *</label>
+            <textarea id="questionText" name="questionText" placeholder="הכנס את השאלה" rows="3"></textarea>
+          </div>
+          
+          <div class="form-group">
+            <label for="topic">נושא *</label>
+            <select id="topic" name="topic">
+              <option value="">בחר נושא</option>
+              <!-- Topics will be loaded dynamically -->
+            </select>
+          </div>
+          
+          <div class="score-info">
+            <div class="score-badge">
+              <span class="score-icon">🎯</span>
+              <span>ציון מקסימלי: 10</span>
+            </div>
+            <p class="score-description">הציון יוענק אוטומטית בהתאם לתשובה</p>
+          </div>
+        </div>
+
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" onclick="saveQuestionToSurvey()">הוסף שאלה</button>
+          <button type="button" class="btn btn-secondary" onclick="closeQuestionModal()">ביטול</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Topics Management Modal -->
+  <div id="topicsModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="topicsModalTitle">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeTopicsModal()">&times;</button>
+      <h3 id="topicsModalTitle">ניהול נושאים</h3>
+      
+      <div class="topics-section">
+        <div class="add-topic-form">
+          <div class="form-group">
+            <label for="newTopicName">שם נושא חדש</label>
+            <div class="input-group">
+              <input type="text" id="newTopicName" placeholder="הכנס שם נושא חדש">
+              <button type="button" class="btn btn-primary" onclick="addTopic()">הוסף</button>
+            </div>
+          </div>
+        </div>
+        
+        <div class="topics-list">
+          <h4>נושאים קיימים</h4>
+          <div id="topicsList" class="topics-grid">
+            <!-- Topics will be loaded here -->
+          </div>
+        </div>
+      </div>
+      
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" onclick="closeTopicsModal()">סגור</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/survey-management.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html> 

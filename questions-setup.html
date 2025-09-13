@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <title>הגדרת שאלות - המקסיקני</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/questions-setup.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header-center">
+      <div class="page-header-row">
+        <a href="survey-management.html" class="back-link btn btn-primary" id="backLink">⬅ חזרה לניהול סקרים</a>
+        <h1 class="page-title">הגדרת שאלות</h1>
+        <div class="header-actions-inline">
+          <button class="btn btn-secondary" onclick="openTopicsModal()">
+            <span class="settings-icon">⚙️</span> ניהול נושאים
+          </button>
+          <button class="btn btn-primary btn-add-question" onclick="openQuestionModal()">
+            <span class="plus-icon">＋</span> הוסף שאלה
+          </button>
+        </div>
+      </div>
+      <p class="page-description" id="pageDescription">ניהול שאלות עבור ביקורות הסניפים</p>
+    </div>
+    <div class="page-header">
+      <div class="header-left">
+        <div id="surveyInfo" class="survey-info" style="display: none;">
+          <h3 id="surveyName" class="survey-name"></h3>
+          <p id="surveyDescription" class="survey-description"></p>
+        </div>
+      </div>
+    </div>
+
+    <div class="questions-container">
+      <div id="questionsList" class="questions-list">
+        <!-- Questions will be loaded here -->
+      </div>
+      
+      <div id="emptyState" class="empty-state">
+        <div class="empty-icon">📝</div>
+        <h3 class="empty-title">לא נוספו שאלות עדיין</h3>
+        <p class="empty-description">לחץ על כפתור ה"+" כדי להוסיף את השאלה הראשונה שלך</p>
+        <button class="btn btn-primary btn-add-first" onclick="openQuestionModal()">
+          <span class="plus-icon">＋</span> הוסף שאלה ראשונה
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Question Modal -->
+  <div id="questionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-content">
+      <button class="modal-close" onclick="closeQuestionModal()">&times;</button>
+      <h3 id="modalTitle">הוספת שאלה חדשה</h3>
+      
+      <form id="questionForm">
+        <div class="form-section">
+          <div class="form-group">
+            <label for="itemName">שם השאלון</label>
+            <input type="text" id="itemName" name="itemName" required readonly>
+          </div>
+          <div class="form-group">
+            <label for="itemType">סוג השאלה *</label>
+            <select id="itemType" name="itemType" required onchange="handleItemTypeChange()">
+              <option value="free-text">שאלת טקסט חופשי</option>
+              <option value="rating-1-5">שאלת דירוג 1-5</option>
+              <option value="status-ok">שאלת תקין/חלקי/לא תקין</option>
+            </select>
+          </div>
+        </div>
+        <div id="questionFields" class="form-section" style="display: none;">
+          <div class="form-group">
+            <label for="questionText">טקסט השאלה *</label>
+            <textarea id="questionText" name="questionText" placeholder="הכנס את השאלה" rows="3"></textarea>
+          </div>
+          <div class="form-group">
+            <label for="topic">נושא (לא חובה)</label>
+            <select id="topic" name="topic">
+              <option value="">בחר נושא</option>
+              <!-- Topics will be loaded dynamically -->
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="subtopic">תת נושא (לא חובה)</label>
+            <input type="text" id="subtopic" name="subtopic" placeholder="הכנס תת נושא (אם יש)">
+          </div>
+          <div class="score-info">
+            <div class="score-badge">
+              <span class="score-icon">🏅</span>
+            </div>
+            <p class="score-description">הציון יוענק אוטומטית בהתאם לתשובה</p>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="button" class="btn btn-primary" onclick="saveQuestion()">שמור שאלה</button>
+          <button type="button" class="btn btn-secondary" onclick="closeQuestionModal()">ביטול</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+
+  <script src="js/questions-setup.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html> 

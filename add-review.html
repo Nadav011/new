@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>הוספת ביקורת</title>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/header.css">
+  <link rel="stylesheet" href="css/add-review.css">
+</head>
+<body>
+  <div id="header-container"></div>
+  
+  <div class="main-content">
+    <div class="page-header" style="position: relative; margin-bottom: 40px; min-height: 70px;">
+      <div style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); z-index: 2;">
+        <a href="#" id="addQuestionsHeaderBtn" class="btn btn-save-modern" style="min-width: 200px; font-size: 18px; padding: 16px 40px; border-radius: 16px; font-weight: 700; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 16px rgba(25, 118, 210, 0.3);">
+          הוסף שאלות
+        </a>
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <h1 class="page-title" style="margin: 0; text-align: center;">הוספת ביקורת</h1>
+        <p class="page-description" style="margin: 0; text-align: center;">מלא את פרטי הביקורת וענה על השאלות עבור הסניף הנבחר</p>
+      </div>
+    </div>
+    
+    <div class="review-form-section">
+      <h2 class="form-section-title">פרטי הביקורת הכלליים</h2>
+      <form id="reviewForm" class="review-form-table">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="branchSelect">סניף</label>
+            <select id="branchSelect"><option>בחר סניף...</option></select>
+          </div>
+          <div class="form-group">
+            <label for="reviewTypeSelect">סוג ביקורת</label>
+            <select id="reviewTypeSelect"><option>בחר סוג ביקורת...</option></select>
+          </div>
+          <div class="form-group">
+            <label for="reviewerName">שם המבקר</label>
+            <input type="text" id="reviewerName" required>
+          </div>
+          <div class="form-group">
+            <label for="reviewDate">תאריך ביקורת</label>
+            <input type="date" id="reviewDate" required>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="review-card" role="dialog" aria-modal="true" aria-labelledby="reviewTypeHeader" tabindex="-1">
+      <div class="review-type-header" id="reviewTypeHeader"></div>
+      <div class="questions-section">
+        <div id="questionsContainer" class="questions-container"></div>
+        <div id="noQuestionsBox" class="no-questions-box empty-state card" style="display: none; max-width: 420px; margin: 48px auto 0 auto; padding: 48px 32px 40px 32px; box-shadow: 0 2px 12px rgba(0,0,0,0.04); border-radius: 20px;">
+          <div class="empty-icon">📝</div>
+          <h3 class="empty-title">לא נוספו שאלות</h3>
+          <p class="empty-description">לא הוגדרו שאלות עבור סוג ביקורת זה. לחץ על הכפתור כדי ליצור שאלות.</p>
+          <button type="button" class="btn btn-primary btn-add-first" id="createQuestionsBtn" style="margin: 24px auto 0 auto; display: inline-flex; min-width: 180px; max-width: 240px; width: auto;">
+            <span class="plus-icon">＋</span> צור שאלות
+          </button>
+        </div>
+        <!-- Add Question Floating Button -->
+        <button type="button" class="btn btn-primary btn-add-question" id="addQuestionBtn" style="position: absolute; left: 32px; bottom: 32px; z-index: 10; display: none;">
+          <span class="plus-icon">＋</span> הוסף שאלה
+        </button>
+      </div>
+      <div class="text-areas-section">
+        <div class="text-area-group">
+          <label for="managerSummary">סיכום מנהל</label>
+          <textarea id="managerSummary" placeholder="הכנס את סיכום המנהל כאן..."></textarea>
+        </div>
+        <div class="text-area-group">
+          <label for="keyStrengths">נקודות לשימור</label>
+          <textarea id="keyStrengths" placeholder="הכנס את החוזקות העיקריות כאן..."></textarea>
+        </div>
+        <div class="text-area-group">
+          <label for="areasForImprovement">נקודות לשיפור</label>
+          <textarea id="areasForImprovement" placeholder="הכנס את התחומים לשיפור כאן..."></textarea>
+        </div>
+      </div>
+    </div>
+    
+    <div class="save-btn-row">
+      <button type="button" class="btn btn-primary btn-save-modern" id="saveReviewBtn">שמור ביקורת</button>
+    </div>
+  </div>
+
+  <!-- Question Modal for Add Review -->
+  <div id="addReviewQuestionModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="addReviewQuestionModalTitle" style="display: none;">
+    <div class="modal-content">
+      <button class="modal-close" id="closeAddReviewQuestionModalBtn">&times;</button>
+      <h3 id="addReviewQuestionModalTitle">הוספת שאלה לביקורת</h3>
+      <form id="addReviewQuestionForm">
+        <div class="form-section">
+          <div class="form-group">
+            <label for="addReviewItemName">שם השאלה *</label>
+            <input type="text" id="addReviewItemName" name="itemName" placeholder="הכנס שם השאלה" required>
+          </div>
+          <div class="form-group">
+            <label for="addReviewItemType">סוג השאלה *</label>
+            <select id="addReviewItemType" name="itemType" required>
+              <option value="text">שאלת טקסט חופשי</option>
+              <option value="score">שאלת ציון (1-5)</option>
+              <option value="ok-partial-notok">תקין / חלקי / לא תקין</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="addReviewTopic">נושא *</label>
+            <select id="addReviewTopic" name="topic" required>
+              <option value="">בחר נושא</option>
+              <!-- Topics will be loaded dynamically -->
+            </select>
+          </div>
+        </div>
+        <div class="btn-row">
+          <button type="submit" class="btn btn-primary">הוסף שאלה</button>
+          <button type="button" class="btn btn-secondary" id="cancelAddReviewQuestionBtn">ביטול</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="js/add-review.js"></script>
+  <script>
+    fetch("header.html")
+      .then(res => res.text())
+      .then(html => {
+        document.getElementById("header-container").innerHTML = html;
+        // Load header.js after header is inserted
+        const script = document.createElement('script');
+        script.src = 'js/header.js';
+        script.onload = function() {
+          // Initialize header functionality after script loads
+          if (typeof initHeader === 'function') {
+            initHeader();
+          }
+        };
+        document.body.appendChild(script);
+      });
+  </script>
+</body>
+</html>
